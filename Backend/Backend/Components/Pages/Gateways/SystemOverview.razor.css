@@ -1,0 +1,7 @@
+﻿.accordion .accordion-button:not(.collapsed) {
+    background-color: #FEB7EE !important;
+    color: #0c63e4 !important; /* optional: ensure text is readable */
+}
+:root {
+    --bs-accordion-active-bg: #FEB7EE;
+}

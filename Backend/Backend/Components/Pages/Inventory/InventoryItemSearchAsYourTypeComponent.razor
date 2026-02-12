@@ -1,0 +1,44 @@
+@using Backend.Application.Inventories.GetInventoryItems
+@using MediatR
+@inject IToastService ToastService
+@inject IServiceScopeFactory ServiceScopeFactory
+
+<AutoComplete @bind-Value="SelectedItemNumber"
+TItem="Backend.Application.Inventories.GetInventoryItems.InventoryItemResponse"
+PropertyName="ItemName"
+DataProvider="ItemNumberProvider"
+Placeholder="Type article number..."
+
+OnChanged=@(OnItemSelected) />
+
+
+@code{
+    private string? SelectedItemNumber;
+    private IReadOnlyList<InventoryItemResponse> ItemNumbers = new List<InventoryItemResponse>();
+
+    [Parameter]
+    public EventCallback<InventoryItemResponse> OnItemSelected { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = ServiceScopeFactory.CreateScope();
+        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+        var query = new GetInventoryItemsQuery();
+        var result = await sender.Send(query);
+        if (result.IsSuccess)
+        {
+            ItemNumbers = result.Value;
+        }
+        else
+        {
+            ToastService.ShowError("Item nubmers could not be fetched from the database.");
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private Task<AutoCompleteDataProviderResult<InventoryItemResponse>> ItemNumberProvider(AutoCompleteDataProviderRequest<InventoryItemResponse> request)
+    {
+        return Task.FromResult(request.ApplyTo(ItemNumbers));
+    }
+}

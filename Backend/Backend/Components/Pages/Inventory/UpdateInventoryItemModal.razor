@@ -1,0 +1,79 @@
+@using Backend.Application.Inventories.GetInventoryItems
+@using Backend.Domain.Inventories
+@using static Backend.API.Components.Pages.Inventory.CreateItemModal
+
+<Modal @ref="modalRef" Size="ModalSize.Large" Title="Update Inventory Item">
+    <BodyTemplate>
+        @if (Item is not null)
+        {
+            <EditForm Model="@Item" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="col-md-6">
+                    <label class="form-label">Item Name</label>
+                    <InputText class="form-control" @bind-Value="Item.ItemName" />
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Item Number</label>
+                        <InputText class="form-control" @bind-Value="Item.ItemNumber" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Item Weight (g)</label>
+                        <InputNumber class="form-control" @bind-Value="Item.ItemWeight" step="0.1" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Threshold</label>
+                        <InputNumber class="form-control" @bind-Value="Item.Treshold" step="0.1" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Stock Indicator</label>
+                        <InputSelect class="form-select" @bind-Value="Item.Indicator">
+                            <option value="@StockIndicator.Quantity">Quantity</option>
+                            <option value="@StockIndicator.Percent">Percent</option>
+                        </InputSelect>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-circle me-2"></i>Update Item
+                    </button>
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <p class="text-muted">Loading item...</p>
+        }
+    </BodyTemplate>
+</Modal>
+
+@code
+{
+    [Parameter]
+    public EventCallback<InventoryItemRequest> OnSave { get; set; }
+    [Parameter]
+    public required InventoryItemRequest Item { get; set; }
+
+    private Modal? modalRef;
+
+    private async Task HandleValidSubmit()
+    {
+        if (OnSave.HasDelegate)
+        {
+            await OnSave.InvokeAsync(Item);
+            await modalRef!.HideAsync();
+        }
+    }
+
+    public async Task OnShow()
+    {
+        await modalRef!.ShowAsync();
+    }
+}

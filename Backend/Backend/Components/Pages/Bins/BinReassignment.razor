@@ -1,0 +1,68 @@
+﻿@using Backend.Application.Gateways.Get
+@using Backend.Application.Gateways.Shared
+@inject IToastService ToastService
+
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-header text-white rounded-top-3 bg-secondary">
+            <Icon Name="IconName.Share" class="me-2" />Assign Bin
+    </div>
+    <div class="card-body p-4">
+        <div class="mb-3">
+            <label for="gatewaySelect" class="form-label">Reassign to another Gateway:</label>
+            <select id="gatewaySelect" class="form-select" @onchange="OnSelectionChanged">
+                <option value="">-- Select Gateway --</option>
+                @foreach (var targetGateway in Gateways.Where(g => g.Id != CurrentGatewayId))
+                {
+                    <option value="@targetGateway.Id">@targetGateway.IpAddress</option>
+                }
+            </select>
+        </div>
+
+        <div class="text-end">
+            <button class="btn btn-primary" @onclick="ConfirmAssignment">
+                <Icon Name="IconName.CheckCircle" class="me-2" /> Confirm Assignment
+            </button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public BinResponse Bin { get; set; } = default!;
+
+    [Parameter]
+    public Guid CurrentGatewayId { get; set; }
+
+    [Parameter]
+    public IEnumerable<GatewayResponse> Gateways { get; set; } = Enumerable.Empty<GatewayResponse>();
+
+    [Parameter]
+    public EventCallback<(BinResponse Bin, Guid TargetGateway)> OnConfirmAssignment { get; set; }
+
+    private Guid selectedGateway;
+
+    private void OnSelectionChanged(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value as string, out var id))
+        {
+            selectedGateway = id;
+        }
+        else
+        {
+            selectedGateway = Guid.Empty;
+        }
+    }
+
+    private async Task ConfirmAssignment()
+    {
+        if (selectedGateway != Guid.Empty)
+        {
+            await OnConfirmAssignment.InvokeAsync((Bin, selectedGateway));
+        }
+        else
+        {
+            ToastService.ShowWarning("Please select a gateway");
+        }
+    }
+}

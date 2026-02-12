@@ -1,0 +1,170 @@
+﻿@using Backend.Application.Inventories.GetInventoryItems
+@using Backend.Domain.Inventories
+@using MediatR
+@inject ISender Sender
+@inject IToastService ToastService
+
+<Modal @ref="ModalRef" Size="ModalSize.ExtraLarge" Title="Assign inventory item">
+    <BodyTemplate>
+        @if (CurrentStep == Step.SelectItem)
+        {
+            <Grid TItem="InventoryItemResponse"
+            Class="table table-hover table-bordered table-striped"
+            DataProvider="InventoryItemsDataProvider"
+            AllowFiltering="true"
+            AllowPaging="true"
+            PageSize="15"
+            AllowSelection="true"
+            SelectionMode="GridSelectionMode.Single"
+            SelectedItemsChanged="OnSelectedItemsChanged"
+            Responsive="true">
+
+                <GridColumns>
+                    <GridColumn TItem="InventoryItemResponse" HeaderText="ID" PropertyName="InventoryItemId" SortKeySelector="item => item.InventoryItemId">
+                        @context.InventoryItemId
+                    </GridColumn>
+                    <GridColumn TItem="InventoryItemResponse" HeaderText="Item Name" PropertyName="ItemName" SortKeySelector="item => item.ItemName">
+                        @context.ItemName
+                    </GridColumn>
+                    <GridColumn TItem="InventoryItemResponse" HeaderText="Item Number" PropertyName="ItemNumber" SortKeySelector="item => item.ItemNumber">
+                        @context.ItemNumber
+                    </GridColumn>
+                </GridColumns>
+            </Grid>
+        }
+        else if (CurrentStep == Step.ConfigureDetails && SelectedItem is not null)
+        {
+            <div class="mb-3">
+                <label class="form-label">Threshold</label>
+                <div class="input-group">
+                    <InputNumber class="form-control"
+                    @bind-Value="Treshold"
+                    step="1.0)" />
+                    <span class="input-group-text">@GetStockUnit()</span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Capacity</label>
+                <div class="input-group">
+                    <InputNumber class="form-control"
+                    @bind-Value="Capacity"
+                    step="1.0" />
+                    <span class="input-group-text">pcs.</span>
+                </div>
+            </div>
+        }
+    </BodyTemplate>
+
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="() => ModalRef!.HideAsync()">Cancel</Button>
+
+        @if (CurrentStep == Step.SelectItem)
+        {
+            <Button Color="ButtonColor.Primary" @onclick="NextStep" Disabled="@(SelectedItem is null)">
+                Next
+            </Button>
+        }
+        else if (CurrentStep == Step.ConfigureDetails)
+        {
+            <Button Color="ButtonColor.Primary" @onclick="ConfirmAssignment" Disabled="@(!Treshold.HasValue || !Capacity.HasValue )">
+                Assign
+            </Button>
+        }
+    </FooterTemplate>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public EventCallback<Assignment> OnAssign { get; set; }
+
+    private Modal? ModalRef;
+    private InventoryItemResponse? SelectedItem;
+    private IReadOnlyList<InventoryItemResponse>? AllInventoryItems;
+    private Step CurrentStep = Step.SelectItem;
+    private double? Treshold;
+    private int? Capacity;
+
+    public async Task Show()
+    {
+        CurrentStep = Step.SelectItem;
+        SelectedItem = null;
+        Treshold = null;
+        Capacity = null;
+        if (ModalRef is null)
+            return;
+
+        await ModalRef.ShowAsync();
+    }
+
+    private async Task<GridDataProviderResult<InventoryItemResponse>> InventoryItemsDataProvider(GridDataProviderRequest<InventoryItemResponse> request)
+    {
+        if (AllInventoryItems is null)
+        {
+            var query = new GetInventoryItemsQuery();
+            var result = await Sender.Send(query);
+
+            if(result.IsSuccess)
+            {
+                AllInventoryItems = result.Value;
+            }
+            else
+            {
+                ToastService.ShowError($"Inventory items could not be fetched. {result.Error}");
+            }
+        }
+        return request.ApplyTo(AllInventoryItems?? []);
+    }
+
+    private void OnSelectedItemsChanged(HashSet<InventoryItemResponse> selected)
+    {
+        if(selected.Any())
+        {
+            SelectedItem = selected.First();
+        }
+        else
+        {
+            SelectedItem = null;
+        }
+    }
+
+    private void NextStep()
+    {
+        if (SelectedItem != null)
+        {
+            CurrentStep = Step.ConfigureDetails;
+        }
+        StateHasChanged();
+    }
+
+    private async Task ConfirmAssignment()
+    {
+        if(SelectedItem is null)
+        {
+            ToastService.ShowError("Please select an item");
+        }
+        else
+        {
+            await OnAssign.InvokeAsync(new Assignment(SelectedItem, Treshold!.Value, Capacity!.Value));
+            await ModalRef!.HideAsync();
+        }
+
+    }
+
+    private string GetStockUnit()
+    {
+        if(SelectedItem is not null)
+        {
+            return SelectedItem.StockIndicator == StockIndicator.Percent ? "%" : "pcs";
+        }
+        else
+        {
+            return "-";
+        }
+    }
+
+    private enum Step { SelectItem = 1, ConfigureDetails = 2 }
+
+    public record Assignment(InventoryItemResponse Item, double Treshold, int Capacity);
+}

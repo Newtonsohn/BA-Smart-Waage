@@ -1,0 +1,127 @@
+﻿@using System
+@using System.Collections.Generic
+@using System.Drawing
+@using Backend.Application.Bins.GetStatus
+@using Backend.Application.Inventories.Contracts
+@using Backend.Domain.Inventories
+
+@code {
+    [Parameter]
+    public required IReadOnlyList<BinStatusResponse> Bins { get; set; } 
+
+    private int GetFillPercentage(BinInventoryResponse inventory)
+    {
+        return (int)inventory.FillLevel; 
+    }
+
+}
+
+<Accordion AlwaysOpen="false">
+    @if (Bins.Any())
+    {
+        int index = 0;
+        foreach (var bin in Bins.OrderBy(b => b.IsOnline))
+        {
+            var fillPercent = (int)bin.Inventory.FillLevel;
+            var switchId = $"switch_{index++}";
+            TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Berlin");
+            var lastSeen = TimeZoneInfo.ConvertTimeFromUtc(bin.LastSeen, tz).ToString("dd/MM/yyyy HH:mm");
+
+            <AccordionItem>
+                <TitleTemplate>
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <div class="d-flex flex-column">
+                            <span class="fw-semibold">@bin.BinName</span>
+                            <small class="text-muted">Item Number: @bin.Inventory.ItemNumber</small>
+                        </div>
+
+                        <div class="d-flex align-items-center" style="width: 30%;">
+                            @if (bin.IsOnline)
+                            {
+                                <Badge Color="BadgeColor.Success" class="me-2" Pill>Online</Badge>
+                            }
+                            else
+                            {
+                                <Badge Color="BadgeColor.Warning" class="me-2" Pill>Offline</Badge>
+                            }
+
+                            @if (bin.Inventory.Indicator == StockIndicator.Percent)
+                            {
+                                <div style="flex: 1;">
+                                    <Progress class="w-100">
+                                        <ProgressBar Width="@fillPercent"
+                                                     Label="@($"{fillPercent}%")"
+                                                     Color="@(bin.Inventory.IsEmpty ? ProgressColor.Warning : ProgressColor.Primary)" />
+                                    </Progress>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="ms-2 p-2 rounded text-center w-100 @(bin.Inventory.IsEmpty ? "bg-warning" : "bg-light")">
+                                    <span class="fw-bold">
+                                        <span class="text-dark">@bin.Inventory.ItemCount</span>
+                                        <span class="small text-muted">Parts</span>
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </TitleTemplate>
+
+                <Content>
+                    <div class="row gy-3">
+                        <div class="col-12 col-md-6">
+                            <strong>Bin Name:</strong> @bin.BinName
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>Status:</strong>
+                            @if (bin.IsOnline)
+                            {
+                                <Badge Color="BadgeColor.Success" Pill>Online</Badge>
+                            }
+                            else
+                            {
+                                <Badge Color="BadgeColor.Warning" Pill>Offline</Badge>
+                            }
+                        </div>
+                        @if (bin.Inventory.Indicator == StockIndicator.Percent)
+                        {
+                            <div class="col-12 col-md-6">
+                                <strong>Fill Level:</strong>  (@fillPercent%)
+                            </div>
+                        }
+                        <div class="col-12 col-md-6">
+                            <strong>Item Name:</strong> @bin.Inventory.ItemName    
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>Item Number:</strong> @bin.Inventory.ItemNumber
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>Item Count:</strong> @bin.Inventory.ItemCount
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>Item Weight:</strong> @bin.Inventory.ItemWeight.ToString("0.##") [g]
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>Total Weight:</strong> @bin.Inventory.CurrentWeight.ToString("0.##") [g]
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>Fill Indicator:</strong>
+                            <span>@(bin.Inventory.Indicator == StockIndicator.Quantity ? "Item Quantity" : "Percentage")</span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>MAC Address:</strong> @bin.MacAddress
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <strong>Last Seen:</strong> @lastSeen
+                        </div>
+                    </div>
+                </Content>
+            </AccordionItem>
+        }
+    }
+    else
+    {
+        <p class="text-center mt-3">No data available</p>
+    }
+</Accordion>

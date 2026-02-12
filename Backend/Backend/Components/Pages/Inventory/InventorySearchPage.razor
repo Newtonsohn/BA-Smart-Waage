@@ -1,0 +1,106 @@
+﻿@page "/inventory/search"
+@using Backend.Application.Inventories.Contracts
+@using Backend.Application.Inventories.GetByItemNumber
+@using Backend.Application.Inventories.GetInventoryItems
+@using MediatR
+@using Microsoft.AspNetCore.Authorization
+
+@inject ISender Sender
+@inject IToastService ToastService
+@attribute [Authorize(Policy = "AtLeastEmployee")]
+
+
+<h3 class="mb-4">🔍 Inventory Search</h3>
+
+<InventoryItemSearchAsYourTypeComponent OnItemSelected="OnItemSelected" />
+
+@if (InventoryData != null)
+{
+    <Card Class="mb-4 shadow-sm">
+        <CardHeader>
+            <h5 class="mb-0">Item Overview</h5>
+        </CardHeader>
+        <CardBody>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Item Number:</strong> @InventoryData.ItemNumber</p>
+                    <p><strong>Total Weight:</strong> @InventoryData.TotalWeight.ToString("N2") g</p>
+                    <p><strong>Item Count:</strong> @InventoryData.ItemCount</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Inventory Fill Level:</strong></p>
+                    <Progress Class="mb-3" Style="width: 100%;">
+                        <ProgressBar Width="@(InventoryData.InventoryFillLevel)" Label="@($"{InventoryData.InventoryFillLevel:F0} %")" />
+                    </Progress>
+                </div>
+            </div>
+        </CardBody>
+    </Card>
+
+    <Card Class="shadow-sm">
+        <CardHeader>
+            <h5 class="mb-0">📦 Bin Details</h5>
+        </CardHeader>
+        <CardBody>
+            <table Responsive="true" Hover="true" Striped="true" Style="width: 100%;">
+                <thead class="table-light">
+                    <tr>
+                        <th>Bin Name</th>
+                        <th>Weight</th>
+                        <th>Item Count</th>
+                        <th>Item Weight</th>
+                        <th>Fill Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var bin in InventoryData.Bins.OrderByDescending(x => x.ItemCount))
+                    {
+                        var rowClass = bin.IsEmpty ? "bg-warning bg-opacity-50" : "";
+                        <tr class="@rowClass">
+                            <td>@bin.BinName</td>
+                            <td>@bin.CurrentWeight.ToString("N2") g</td>
+                            <td>@bin.ItemCount</td>
+                            <td>@bin.ItemWeight.ToString("N2") g</td>
+                            <td>
+                                <div style="display: flex; align-items: center; height: 100%; width: 100%;">
+                                    <Progress Class="mb-3" Style="width: 100%;align-items: center ">
+                                    <ProgressBar Color="GetProgressBarColor(bin)" Width="@(bin.FillLevel)" Label="@($"{bin.FillLevel.ToString("F0")} %")" />
+                                </Progress>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </CardBody>
+    </Card>
+}
+
+@code {
+
+    private Application.Inventories.GetByItemNumber.InventoryResponse? InventoryData; 
+
+    private async Task OnItemSelected(Backend.Application.Inventories.GetInventoryItems.InventoryItemResponse? item)
+    {
+        if (item is null)
+        {
+            return;
+        }
+        var query = new GetInventoryByItemNumberQuery(item.ItemNumber, true);
+        var result = await Sender.Send(query);
+        if (result.IsSuccess)
+        {
+            InventoryData = result.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            ToastService.ShowError(result.Error.ToString());
+        }
+    }
+
+    private ProgressColor GetProgressBarColor(BinInventoryResponse bin)
+    {
+        return bin.IsEmpty ? ProgressColor.Warning : ProgressColor.Success;
+    }
+}

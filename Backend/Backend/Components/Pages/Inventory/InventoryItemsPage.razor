@@ -1,0 +1,177 @@
+﻿@page "/inventory/items"
+@using Backend.Application.Inventories.Create
+@using Backend.Application.Inventories.GetInventoryItemById
+@using Backend.Application.Inventories.GetInventoryItems
+@using Backend.Application.Inventories.Update
+@using Backend.Domain.Inventories
+@using MediatR
+@using Microsoft.AspNetCore.Authorization
+
+@inject NavigationManager NavigationManager
+@inject ISender Sender
+@inject IToastService ToastService
+@attribute [Authorize(Policy = "AtLeastManager")]
+
+
+<h3 class="mb-4">📦 Inventory Management</h3>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <InventoryItemSearchAsYourTypeComponent OnItemSelected="OnItemSelected"/>
+
+    <button class="btn btn-primary" @onclick="() => createModalRef!.OnShow()">
+        <i class="bi bi-plus-circle me-1"></i> Add New Item
+    </button>
+</div>
+
+@if (inventoryItems?.Any() == true)
+{
+    <Grid TItem="InventoryItemResponse"
+    Class="table table-hover table-bordered table-striped"
+    DataProvider="InventoryDataProvider"
+    PageSize="10"
+    AllowRowClick = "true"
+    OnRowClick="OnRowClicked">
+
+        <GridColumns>
+            <GridColumn TItem="InventoryItemResponse" HeaderText="Item Name">
+                @context.ItemName
+            </GridColumn>
+
+            <GridColumn TItem="InventoryItemResponse" HeaderText="Item Number" HeaderTextAlignment="Alignment.Center">
+                @context.ItemNumber
+            </GridColumn>
+        </GridColumns>
+    </Grid>
+}
+else
+{
+    <p>No items found.</p>
+}
+
+<CreateItemModal @ref="createModalRef" OnCreate="OnCreate" />
+<UpdateInventoryItemModal @ref="updateModalRef" OnSave="OnSave" Item="itemToEdit" />
+@code {
+    private CreateItemModal? createModalRef;
+    private UpdateInventoryItemModal? updateModalRef;
+    private InventoryItemRequest? itemToEdit;
+    private List<InventoryItemResponse> inventoryItems = new List<InventoryItemResponse>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateInventoryItems();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnItemSelected(Backend.Application.Inventories.GetInventoryItems.InventoryItemResponse selectedItem)
+    {
+        var query = new GetInventoryItemByIdQuery(selectedItem.InventoryItemId);
+        var result = await Sender.Send(query);
+        if (result.IsSuccess)
+        {
+            itemToEdit = new()
+                {
+                    Id = result.Value.Id,
+                    Indicator = result.Value.StockIndicator,
+                    ItemName = result.Value.ItemName,
+                    ItemNumber = result.Value.ItemNumber,
+                    Treshold = result.Value.Treshold,
+                    ItemWeight = result.Value.ItemWeight
+                };
+            StateHasChanged();
+            await updateModalRef!.OnShow();
+        }
+        else
+        {
+            ToastService.ShowError("Item could not be fetched.");
+        }
+    }
+
+    private async Task<GridDataProviderResult<InventoryItemResponse>> InventoryDataProvider(GridDataProviderRequest<InventoryItemResponse> request)
+    {
+        return await Task.FromResult(request.ApplyTo(inventoryItems));
+    }
+
+    private async Task OnRowClicked(GridRowEventArgs<InventoryItemResponse> e)
+    {
+        var query = new GetInventoryItemByIdQuery(e.Item.InventoryItemId);
+        var result = await Sender.Send(query);
+        if(result.IsSuccess)
+        {
+            itemToEdit = new()
+                {
+                    Id = result.Value.Id,
+                    Indicator = result.Value.StockIndicator,
+                    ItemName = result.Value.ItemName,
+                    ItemNumber = result.Value.ItemNumber,
+                    Treshold = result.Value.Treshold,
+                    ItemWeight = result.Value.ItemWeight
+                };
+            StateHasChanged();
+            await updateModalRef!.OnShow();
+        }
+        else
+        {
+            ToastService.ShowError("Item could not be fetched.");
+        }
+    }
+
+    private async Task OnCreate(InventoryItemRequest request)
+    {
+        var command = new CreateInventoryItemCommand(
+            request.ItemName,
+            request.ItemNumber,
+            request.ItemWeight,
+            request.Treshold,
+            request.Indicator);
+        var result = await Sender.Send(command);
+
+        if (result.IsSuccess)
+        {
+            await UpdateInventoryItems();
+            ToastService.ShowSuccess("Inventory item created successfully");
+            StateHasChanged();
+        }
+        else
+        {
+            ToastService.ShowError("Inventory could not be created.");
+        }
+    }
+
+    private async Task OnSave(InventoryItemRequest request)
+    {
+        var command = new UpdateInventoryItemCommand(
+            request.Id,
+           request.ItemNumber,
+           request.ItemName,
+           request.ItemWeight,
+           request.Treshold,
+           request.Indicator);
+        var result = await Sender.Send(command);
+
+         if (result.IsSuccess)
+        {
+            await UpdateInventoryItems();
+            ToastService.ShowSuccess("Inventory item updated successfully");
+            StateHasChanged();
+        }
+        else
+        {
+            ToastService.ShowError("Inventory could not be updated.");
+        }
+    }
+
+    private async Task UpdateInventoryItems()
+    {
+        var query = new GetInventoryItemsQuery();
+        var result = await Sender.Send(query);
+        if (result.IsSuccess)
+        {
+            inventoryItems = result.Value.ToList();
+        }
+        else
+        {
+            ToastService.ShowError("Item nubmers could not be fetched from the database.");
+        }
+    }
+}

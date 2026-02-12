@@ -1,0 +1,25 @@
+services:
+  backend-api:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ASPNETCORE_HTTPS_PORTS: 8081
+      ConnectionStrings__IndustrialScaleNetDb: "Host=postgres;Port=5432;Database=IndustrialScaleNet;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      Authentication__ClientId: ${KEYCLOAK_CLIENTID}
+      Authentication__ClientSecret: ${KEYCLOAK_CLIENTSECRET}
+      Authentication__Audience: ${KEYCLOAK_AUDIENCE}
+      Authentication__MetadataAddress:  "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration"
+      Authentication__Issuer: "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}"
+      Authentication__Authority: "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://backend.dashboard:18889
+      OTEL_SERVICE_NAME: Backend
+      DOTNET_DiagnosticPort__ConnectionMode: Listen
+      DOTNET_DiagnosticPort__EndpointName: /diag/aspnet-app
+    ports:
+      - "8080" 
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

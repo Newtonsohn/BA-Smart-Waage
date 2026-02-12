@@ -1,0 +1,67 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+
+<PageTitle>Home</PageTitle>
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Inventory Management</h1>
+        <p class="lead">
+            Real-time stock visibility, automated inventory tracking, and intelligent alerts.
+        </p>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-primary">
+                <div class="card-body">
+                    <i class="bi bi-boxes display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Live Stock Monitoring</h5>
+                    <p class="card-text">
+                        Track material levels in bins across your facility. Minimize stockouts and overstocking with precision.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-success">
+                <div class="card-body">
+                    <i class="bi bi-bar-chart display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Data-Driven Insights</h5>
+                    <p class="card-text">
+                        Analyze usage trends, forecast demand, and optimize restocking intervals with intelligent analytics.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        @* <div class="col-md-4 mb-4"> *@
+        @*     <div class="card h-100 shadow-sm border-warning"> *@
+        @*         <div class="card-body"> *@
+        @*             <i class="bi bi-bell-fill display-4 text-warning mb-3"></i> *@
+        @*             <h5 class="card-title">Smart Alerts</h5> *@
+        @*             <p class="card-text"> *@
+        @*                 Get notified when stock drops below thresholds. Ensure timely replenishment and uninterrupted operations. *@
+        @*             </p> *@
+        @*         </div> *@
+        @*     </div> *@
+        @* </div> *@
+    </div>
+
+    
+    <AuthorizeView>
+    <Authorized>
+        <div class="text-center mt-5">
+            <NavLink class="btn btn-primary btn-lg" href="/inventory-search">
+                View Inventory Dashboard
+            </NavLink>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="text-center mt-5">
+            <p class="text-muted">Please <NavLink href="authentication/login">log in</NavLink> to access the inventory dashboard.</p>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+</div>

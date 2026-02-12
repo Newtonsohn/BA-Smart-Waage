@@ -1,0 +1,134 @@
+﻿@using Backend.Application.Bins.Register
+@using Backend.Application.Gateways.GetMetadata
+@using MediatR
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "AtLeastSystemAdministrator")]
+
+@page "/bins/integration"
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject ISender Sender
+@inject IToastService ToastService
+@inject ILogger<BinIntegrationPage> Logger
+<h3 class="text-xl font-bold mb-4">Gerät registrieren</h3>
+
+@if (isRegistered)
+{
+    <div class="p-4 bg-green-100 border-l-4 border-green-500 text-green-700">
+        <p>✅ Gerät erfolgreich registriert!</p>
+    </div>
+}
+else
+{
+    <EditForm Model="device" OnValidSubmit="RegisterDevice" class="space-y-4 bg-white shadow-md rounded-lg p-6">
+        <DataAnnotationsValidator />
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">📌 MAC-Adresse</label>
+            <InputText @bind-Value="device.MacAddress" class="w-full px-3 py-2 border rounded-md bg-gray-100" readonly />
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">📌 Geräte-Name</label>
+            <InputText @bind-Value="device.Name" class="w-full px-3 py-2 border rounded-md bg-gray-100" readonly />
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">🌐 Gateway</label>
+            <InputSelect @bind-Value="device.AssginedGateway" class="w-full px-3 py-2 border rounded-md">
+                <option value="">-- Select a Gateway --</option>
+                @foreach (var gateway in availableGateways)
+                {
+                    <option value="@gateway.Id">
+                        @gateway.MacAddress - @gateway.IpAddress
+                    </option>
+                }
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+            ✅ Registrierung abschließen
+        </button>
+    </EditForm>
+}
+
+@code {
+    private DeviceModel device = new();
+    private bool isRegistered = false;
+    private List<GatewayMetadataResponse> availableGateways = [];
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        device.MacAddress = ParseMacAddressFromQuery(query["mac"]);
+        await FetchUniqueName();
+        await FetchAllAvailableGateways();
+    }
+
+    private string ParseMacAddressFromQuery(string? query)
+    {
+        if (string.IsNullOrEmpty(query))
+        {
+            ToastService.ShowError("Provided MAC address does not include 12 characters, please provide a valid address.");
+            return string.Empty;
+        }
+        else
+        {
+            string macAddress = string.Join(":", Enumerable.Range(0, 6)
+            .Select(i => query.Substring(i * 2, 2).ToUpper()));
+            return macAddress;
+        }
+    }
+
+    private async Task RegisterDevice()
+    {
+        var command = new RegisterBinCommand(device.Name, device.MacAddress, device.AssginedGateway);
+        var result = await Sender.Send(command);
+        if(result.IsSuccess)
+        {
+            ToastService.ShowSuccess($"Bin [{device.Name}] has been registerd successully");
+        }
+        else
+        {
+            ToastService.ShowError($"Bin [{device.Name}] could no be registerd. Error: {result.Error.ToString()}");
+        }
+    }
+
+    private async Task FetchUniqueName()
+    {
+        var nameQuery = new GetUniqueNameForBinQuery();
+        var deviceNameResult = await Sender.Send(nameQuery);
+        if (deviceNameResult.IsFailure)
+        {
+            ToastService.ShowError("Unique device name for the bin could not be generated.");
+            Logger.LogError(deviceNameResult.Error.ToString());
+        }
+        else
+        {
+            device.Name = deviceNameResult.Value;
+        }
+    }
+
+    private async Task FetchAllAvailableGateways()
+    {
+        var gatewayQuery = new GetAllGatewayMedadataQuery();
+        var availaleGatewaysResult = await Sender.Send(gatewayQuery);
+        if (availaleGatewaysResult.IsFailure)
+        {
+            ToastService.ShowError("Available gateways could not be fetched from the backend.");
+            Logger.LogError(availaleGatewaysResult.Error.ToString());
+        }
+        else
+        {
+            availableGateways = availaleGatewaysResult.Value;
+        }
+    }
+
+    public class DeviceModel
+    {
+        public string MacAddress { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public Guid AssginedGateway { get; set; } = Guid.Empty;
+    }
+}

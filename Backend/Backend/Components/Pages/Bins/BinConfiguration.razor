@@ -1,0 +1,118 @@
+﻿@using Backend.Application.Bins.GetByMacAddress
+@using Backend.Application.Gateways.Get
+@using Backend.Domain.Inventories
+@using MediatR
+
+@inject IServiceScopeFactory ServiceScopeFactory
+@inject ISender Sender
+@inject IToastService ToastService
+
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-header text-white rounded-top-3 bg-secondary">
+       <Icon Name="IconName.GearFill" class="me-2" />Configure Bin
+    </div>
+    <div class="card-body p-4">
+        @if (binConfiguration is null)
+        {
+            <div class="alert alert-warning">
+                Configuration could not be fetched.
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@binConfiguration" OnSubmit="SaveConfiguration">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">ID</label>
+                        <TextInput @bind-Value="binConfiguration.BinId" Disabled="true" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <TextInput @bind-Value="binConfiguration.Name" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Update Interval [s]</label>
+                        <div class="input-group">
+                            <NumberInput TValue="int" class="form-control"
+                            @bind-Value="binConfiguration.UpdateInterval" />
+                            <span class="input-group-text">s</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Heartbeat Interval [s]</label>
+                        <div class="input-group">
+                            <NumberInput TValue="int" class="form-control"
+                            @bind-Value="binConfiguration.HeartbeatInterval" />
+                            <span class="input-group-text">s</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <TextInput @bind-Value="binConfiguration.AssignedInventoryItem" Disabled="true" class="form-control" />
+                    </div>
+
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <Icon Name="IconName.Save" class="me-2" /> Save
+                    </button>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public Application.Gateways.Shared.BinResponse Bin { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<BinConfigurationType> OnSave { get; set; }
+
+    private BinConfigurationType? binConfiguration;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var scope = ServiceScopeFactory.CreateScope();
+        // Resolve the sender (or any service that uses the DbContext) from the new scope.
+        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+
+        var query = new GetBinQuery(Bin.MacAddress);
+        var result = await sender.Send(query);
+        if (result.IsFailure)
+        {
+            ToastService.ShowError($"Could not fetch configuration for bin: {Bin.Name}. Error: {result.Error}");
+        }
+        else
+        {
+            binConfiguration = new(result.Value);
+            StateHasChanged();
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task SaveConfiguration(EditContext context)
+    {
+        await OnSave.InvokeAsync(binConfiguration);
+    }
+
+    public class BinConfigurationType(BinResponse bin)
+    {
+        public string BinId = bin.Id.ToString();
+        public string Name = bin.Name;
+        public int UpdateInterval = bin.UpdateInterval;
+        public int HeartbeatInterval = bin.HeartBeatInterval;
+        public string AssignedInventoryItem = bin.InventoryItem is not null ? bin.InventoryItem.ItemName.ToString() : "No item assigned" ;
+    }
+}

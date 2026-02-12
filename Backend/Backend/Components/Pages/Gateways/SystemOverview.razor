@@ -1,0 +1,223 @@
+﻿@using Backend.API.Components.Pages.Bins
+@using Backend.API.Components.Pages.Inventory
+@using Backend.Application.Bins.Assign
+@using Backend.Application.Bins.AssignInventoryItem
+@using Backend.Application.Bins.Configure
+@using Backend.Application.Gateways.Get
+@using Backend.Application.Gateways.Shared
+@using Backend.Application.Inventories.GetInventoryItems
+@using Backend.Domain.Kernel
+@using MediatR
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using static Backend.API.Components.Pages.Bins.BinConfiguration
+@using static Backend.API.Components.Pages.Inventory.AssignInventoryItemModal
+
+
+@inject ISender Sender
+@inject IToastService ToastService
+
+@attribute [Authorize(Policy = "AtLeastManager")]
+@page "/systemoverview"
+
+<div class="mb-3">
+    <label class="form-label">Search for Bin:</label>
+    <div class="input-group">
+        <div class="row">
+            <AutoComplete @bind-Value="binNameQuery"
+            TItem="BinResponse" 
+            DataProvider="BinDataProvider" 
+            PropertyName="Name" 
+            Placeholder="Search a bin..." 
+            OnChanged=@(SearchBin) /> 
+        </div>
+    </div>
+</div>
+
+
+<Accordion @ref="gatewayAccordion" >
+    @foreach (var gateway in gateways)
+    {
+        <AccordionItem Id=@gateway.Id.ToString()>
+            <TitleTemplate>
+                <Icon Name="IconName.Router" Size="IconSize.x5" class="me-2" />
+                <span class="fs-6">Gateway: @gateway.IpAddress</span>
+            </TitleTemplate>
+            <Content>
+                <Accordion @ref="binAccordion">
+                    @foreach (var bin in gateway.AssignedBins)
+                    {
+                        <AccordionItem>
+                            <TitleTemplate>
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <div class="d-flex align-items-center">
+                                        <Icon Name="IconName.DeviceSsd" Size="IconSize.x4" class="me-3" />
+                                        <div class="d-flex flex-column">
+                                            <div class="fs-6">@bin.Name</div>
+                                            <small class="text-muted">@bin.MacAddress</small>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-sm btn-primary me-2"
+                                            @onclick="() => OpenAssignItemModal(bin)">
+                                        <i class="bi bi-plus-circle me-1"></i>Assign Item
+                                    </button>
+                                </div>
+                            </TitleTemplate>
+                            <Content>
+                                <div class="mb-3">
+                                    <BinConfiguration Bin="bin" OnSave="SaveBin" />
+                                </div>
+                                <AuthorizeView Policy="AtLeastSystemAdministrator"> 
+                                    <div class="mb-3">
+                                        <BinReassignment Bin="bin" CurrentGatewayId="gateway.Id" Gateways="gateways" OnConfirmAssignment="HandleReassignment" />
+                                    </div>
+                                </AuthorizeView> 
+                            </Content>
+                        </AccordionItem>
+                    }
+                </Accordion>
+            </Content>
+        </AccordionItem>
+    }
+</Accordion>
+
+<AssignInventoryItemModal @ref="assignItemModal"
+OnAssign="HandleItemAssignment" />
+
+
+@code {
+    private Accordion gatewayAccordion = default!;
+    private Accordion binAccordion = default!;
+    private string editedName = string.Empty;
+    private string editedMacAddress = string.Empty;
+    private string binSearchQuery = string.Empty;
+    private string? binNameQuery;
+    private IList<GatewayResponse> gateways = [];
+    private AssignInventoryItemModal? assignItemModal;
+
+    private BinResponse? binToAssign;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGateways();
+        await base.OnInitializedAsync();
+    }
+
+    private Task<AutoCompleteDataProviderResult<BinResponse>> BinDataProvider(AutoCompleteDataProviderRequest<BinResponse> request)
+    {
+        return  Task.FromResult(request.ApplyTo(gateways.SelectMany(g => g.AssignedBins).OrderBy(s => s.Name)));
+    }
+
+    private async Task OpenAssignItemModal(BinResponse bin)
+    {
+        binToAssign = bin;
+        await assignItemModal!.Show();
+    }
+
+    private async Task HandleItemAssignment(Assignment assignment)
+    {
+        var command = new AssignInventoryItemCommand(binToAssign!.Id, assignment.Item.InventoryItemId, assignment.Treshold, assignment.Capacity);
+        var result = await Sender.Send(command);
+
+        if(result.IsSuccess)
+        {
+            ToastService.ShowSuccess("Inventory item has been assigned.");
+        }
+        else
+        {
+            ToastService.ShowError($"Inventory item could not be assigned. {result.Error}");
+        }
+    }
+
+    private void SearchBin(BinResponse? bin)
+    {
+        if(bin is null)
+        {
+            return;
+        }
+        for (var i = 0; i < gateways.Count; i++)
+        {
+            var index = gateways[i].AssignedBins.FindIndex(s => s.Id == bin.Id);
+            if (index >= 0)
+            {
+                gatewayAccordion.ShowAccordionItemByIndexAsync(i);
+                binAccordion.ShowAccordionItemByIndexAsync(index);
+            }
+        }
+    }
+
+    private async Task SaveBin(BinConfigurationType configuration)
+    {
+        if (Guid.TryParse(configuration.BinId, out var id))
+        {
+            var command = new ConfigureBinCommand(
+               id,
+               configuration.Name,
+               configuration.UpdateInterval,
+               configuration.HeartbeatInterval
+            );
+            var result = await Sender.Send(command);
+            if(result.IsSuccess)
+            {
+                ToastService.ShowSuccess("Configuration was changed successfully.");
+            }
+            else
+            {
+                if (result.Error is ValidationError validationError)
+                {
+                    ToastService.ShowError($"Configuration could not be changed beacause of following validation errors:");
+                    foreach(var error in validationError.Errors)
+                    {
+                        ToastService.ShowError(error.ToString());
+                    }
+                }
+                else
+                {
+                    ToastService.ShowError($"Configuration could not be changed. {result.Error}");
+                }
+
+            }
+        }
+        else
+        {
+            ToastService.ShowError($"Invalid bin id, id must be of type Guid. [{configuration.BinId}]");
+        }
+
+    }
+    
+    private async Task HandleReassignment((BinResponse Bin, Guid TargetId) reassignment)
+    {
+        var gateway = gateways.FirstOrDefault(g => g.Id == reassignment.TargetId);
+
+        var command = new AssignBinCommand(reassignment.Bin.Id, reassignment.TargetId);
+        var result = await Sender.Send(command);
+        if(result.IsSuccess)
+        {
+            ToastService.ShowSuccess($"Bin: {reassignment.Bin.Name} has been assinged to gateway with IP address {gateway!.IpAddress} ");
+            await GetGateways();
+            StateHasChanged();
+        }
+        else
+        {
+            ToastService.ShowError($"Bin: {reassignment.Bin.Name} could not be assinged to gateway with IP address {gateway!.IpAddress} ");
+        }
+
+    }
+
+    private async Task GetGateways()
+    {
+        var query = new GetGatewaysQuery();
+
+        var response = await Sender.Send(query);
+        if (response.IsFailure)
+        {
+            ToastService.ShowError("Gateways could not be fetched from the API");
+        }
+        else
+        {
+            gateways = response.Value;
+        }
+    }
+
+}

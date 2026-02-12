@@ -1,0 +1,55 @@
+﻿@using Backend.Application.Bins.GetStatus
+@using MediatR
+@using Microsoft.AspNetCore.Authorization
+
+@inject ISender Sender
+@inject IToastService ToastService
+@inject ILogger<BinsStatusPage> Logger
+@attribute [Authorize(Policy = "AtLeastManager")]
+@page "/bins/availability"
+
+<h2 class="mt-4 mb-3">Bins</h2>
+
+@if (isLoading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <BinsStatusList Bins="@bins" />
+}
+
+@code {
+    private IReadOnlyList<BinStatusResponse> bins = [];
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+
+        try
+        {
+            var result = await Sender.Send(new GetBinsStatusQuery());
+            if (result.IsFailure)
+            {
+
+                ToastService.ShowError(result.Error.ToString());
+            }
+            else
+            {
+                bins = result.Value;
+            }
+        }
+        catch(Exception ex)
+        {
+            Logger.LogError(ex, "Unexpected error occured while fetching bin statuses.");
+            ToastService.ShowError("Unexpected error occured while fetching bin statuses");
+        }
+
+        isLoading = false;
+    }
+}

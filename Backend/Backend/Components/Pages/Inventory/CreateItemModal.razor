@@ -1,0 +1,83 @@
+@using Backend.Application.Inventories.GetInventoryItems
+@using Backend.Domain.Inventories
+
+<Modal @ref="modalRef" Size="ModalSize.Large" Title="New Inventory Item">
+    <BodyTemplate>
+        <EditForm Model="@Request" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="col-md-6">
+                <label class="form-label">Item Name</label>
+                <InputText class="form-control" @bind-Value="Request.ItemName" />
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Item Number</label>
+                    <InputText class="form-control" @bind-Value="Request.ItemNumber" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Item Weight (g)</label>
+                    <InputNumber class="form-control" @bind-Value="Request.ItemWeight" step="1.0" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Threshold</label>
+                    <div class="input-group">
+                        <InputNumber class="form-control"
+                                     @bind-Value="Request.Treshold"
+                                     step="1.0)" />
+                        <span class="input-group-text ">@GetStockUnit()</span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Stock Indicator</label>
+                    <InputSelect class="form-select" @bind-Value="Request.Indicator">
+                        <option value="@StockIndicator.Quantity">Quantity</option>
+                        <option value="@StockIndicator.Percent">Percent</option>
+                    </InputSelect>
+                </div>
+            </div>
+
+            <div class="mt-4 text-end">
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-check-circle me-2"></i>Create Item
+                </button>
+            </div>
+        </EditForm>
+    </BodyTemplate>
+</Modal>
+
+@code
+{
+    [Parameter]
+    public EventCallback<InventoryItemRequest> OnCreate { get; set; }
+
+    private InventoryItemRequest Request = new();
+    private Modal? modalRef;
+
+    private async Task HandleValidSubmit()
+    {
+        if(OnCreate.HasDelegate)
+        {
+            await OnCreate.InvokeAsync(Request);
+            await modalRef!.HideAsync();
+        }
+    }
+
+    public async Task OnShow()
+    {
+        await modalRef!.ShowAsync();
+    }
+    public async Task OnHide()
+    {
+        await modalRef!.HideAsync();
+    }
+    private string GetStockUnit()
+    {
+       return Request.Indicator == StockIndicator.Percent ? "%" : "pcs";
+    }
+
+}

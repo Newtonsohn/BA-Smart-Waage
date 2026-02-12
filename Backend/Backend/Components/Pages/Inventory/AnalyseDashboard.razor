@@ -1,0 +1,181 @@
+﻿@page "/inventory/dashboard"
+@using Backend.Application.Inventories.GetInventoryHistoryByItemNumber
+@using Backend.Application.Inventories.GetInventoryItemById
+@using Backend.Application.Inventories.GetInventoryItems
+@using Backend.Domain.Kernel
+@using BlazorBootstrap
+@using MediatR
+@using Microsoft.AspNetCore.Authorization
+
+@inject IJSRuntime JS
+@inject ISender Sender
+@inject IToastService ToastService
+@attribute [Authorize(Policy = "AtLeastManager")]
+
+<h3 class="mb-4">Inventory Analysis Dashboard</h3>
+
+<InventoryItemSearchAsYourTypeComponent OnItemSelected="OnItemSelected" />
+
+<div class="row mt-3">
+    <div class="col-md-3">
+        <label>From Date</label>
+        <DateInput TValue="DateOnly?" class="form-control" @bind-Value="fromDate" />
+    </div>
+    <div class="col-md-3">
+        <label>To Date</label>
+        <DateInput TValue="DateOnly?" class="form-control" @bind-Value="toDate" />
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <Button Color="ButtonColor.Primary" @onclick="LoadData">Show Data</Button>
+    </div>
+</div>
+
+@if (selectedInventoryItem != null)
+{
+    <div class="mt-4 row">
+        <div class="col-12">
+            <Card>
+                <CardHeader>Item Metadata</CardHeader>
+                <CardBody>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Item Number:</strong> @selectedInventoryItem.ItemNumber</p>
+                            <p><strong>Name:</strong> @selectedInventoryItem.ItemName</p>
+                            <p><strong>Weight:</strong> @selectedInventoryItem.ItemWeight g</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Threshold:</strong> @selectedInventoryItem.Treshold</p>
+                            <p><strong>Stock Indicator:</strong> @selectedInventoryItem.StockIndicator</p>
+                        </div>
+                    </div>
+                </CardBody>
+            </Card>
+        </div>
+    </div>
+}
+
+<div class="row mt-4">
+    <div class="col-12">
+        <Card>
+            <CardHeader>Stock History</CardHeader>
+            <CardBody>
+                <LineChart @ref="lineChart" style="width: 100%;" />
+            </CardBody>
+        </Card>
+    </div>
+</div>
+
+@code {
+    private List<InventoryItemResponse> allItems = new(); 
+    private List<InventoryItemResponse> filteredItems = new();
+    private InventoryItemResponse? selectedItem;
+    private Backend.Application.Inventories.Contracts.InventoryItemResponse? selectedInventoryItem;
+    private string searchText = string.Empty;
+    private DateOnly? fromDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-30));
+    private DateOnly? toDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+    private LineChart lineChart = default!;
+    private ChartData chartData = new();
+    private LineChartOptions chartOptions = new()
+    {
+        Responsive = true,
+        Interaction = new Interaction { Mode = InteractionMode.Index, Intersect = false },
+    };
+
+    private void OnItemSelected(InventoryItemResponse? item)
+    {
+        selectedItem = item;
+    }
+
+    private async Task LoadData()
+    {
+        if (selectedItem is not null)
+        {
+
+            if (!fromDate.HasValue || !toDate.HasValue)
+            {
+                ToastService.ShowInfo("Please set a valid date for From: and To:");
+                return;
+            }
+
+            var inventoryItemResult = await FetchInventoryItemAsync(selectedItem.InventoryItemId);
+            await inventoryItemResult.MatchAsync(
+                onSuccess: async (inventoryItem) =>
+                {
+                    selectedInventoryItem = inventoryItem;
+
+                    var result = await LoadItemHistoryAsync(selectedItem);
+                    await result.MatchAsync(
+                        onSuccess: async (history) =>
+                        {
+                            await UpdateLineChartAsync(history.Entries);
+                        },
+                         onFailure: (error) =>
+                        {
+                            ToastService.ShowError($"History for item number: {selectedItem.ItemNumber} could not be fetched from the backend.");
+                            return Task.CompletedTask;
+                        }); 
+                },
+                onFailure: (error) =>
+                {
+                    ToastService.ShowError($"Inventory item could not be fetched from the backend.");
+                    return Task.CompletedTask;
+                }
+            );
+        }
+        else
+        {
+            ToastService.ShowInfo($"Please select an item.");
+        }
+    }
+
+    private async Task<Result<Backend.Application.Inventories.Contracts.InventoryItemResponse>> FetchInventoryItemAsync(Guid id)
+    {
+        var query = new GetInventoryItemByIdQuery(id);
+        return await Sender.Send(query);
+
+    }
+
+    private async Task UpdateLineChartAsync(IReadOnlyList<InventoryItemHistoryEntry> history)
+    {
+
+        TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Berlin"); 
+        var labels = history.Select(h =>
+            TimeZoneInfo.ConvertTimeFromUtc(h.Timestamp, tz).ToString("dd/MM/yyyy HH:mm")
+        ).ToList();
+
+        var data = history.Select(h => (double?)h.PartCount).ToList();
+
+        var dataset = new LineChartDataset
+        {
+            Label = "Stock over Time",
+            Data = data,
+            BorderColor = "rgb(75, 192, 192)",
+            BackgroundColor = "rgba(75, 192, 192, 0.2)",
+            Fill = true
+        };
+
+        chartData = new ChartData
+        {
+            Labels = labels,
+            Datasets = new List<IChartDataset> { dataset }
+        };
+
+        if(lineChart is null)
+            return;
+
+        await lineChart.InitializeAsync(chartData, chartOptions);
+    }
+
+    private async Task<Result<InventoryItemHistoryEntryResponse>> LoadItemHistoryAsync(InventoryItemResponse inventoryItem)
+    {
+        var FromDateTime = fromDate!.Value.ToDateTime(TimeOnly.MinValue);
+        var ToDateTime = toDate!.Value.ToDateTime(TimeOnly.MaxValue);
+
+        var query = new GetInventoryHistoryByItemNumberQuery(
+               inventoryItem.ItemNumber,
+               FromDateTime,
+               ToDateTime);
+        return await Sender.Send(query);
+    }
+}

@@ -1,0 +1,128 @@
+services:
+  backend-api:
+    build:
+      context: .
+      dockerfile: ./Backend/Dockerfile
+    ports:
+      - "7093:7093"
+      - "5001:5001"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:5001;https://+:7093"
+      ASPNETCORE_HTTPS_PORTS: 7093
+      ASPNETCORE_HTTP_PORTS: 5001
+      ConnectionStrings__IndustrialScaleNetDb: "Host=postgres;Port=5432;Database=IndustrialScaleNet;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      Authentication__ClientId: ${KEYCLOAK_CLIENTID}
+      Authentication__ClientSecret: ${KEYCLOAK_CLIENTSECRET}
+      Authentication__Audience: ${KEYCLOAK_AUDIENCE}
+      Authentication__MetadataAddress:  "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration"
+      Authentication__Issuer: "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}"
+      Authentication__Authority: "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://backend.dashboard:18889
+      OTEL_SERVICE_NAME: Backend
+      DOTNET_DiagnosticPort__ConnectionMode: Listen
+      DOTNET_DiagnosticPort__EndpointName: /diag/aspnet-app
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/industrialscalenetserver.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: ${CERTIFICATE_PASSWORD}
+    volumes:
+      - ./industrialscalenetserver.pfx:/https/industrialscalenetserver.pfx:ro
+    networks:
+      - IndustrialScaleNet
+      - otel
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak-healthcheck:
+        condition: service_healthy
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: start-dev --import-realm --hostname-strict=false
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "9000:9000"
+    environment:
+      KC_HEALTH_ENABLED: true
+      KC_HOSTNAME: ${IP_ADDRESS}
+      KC_HOSTNAME_PORT: 8080
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KC_METRICS_ENABLED: true
+    volumes:
+      - keycloakdata:/opt/keycloak/data
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    depends_on:
+      - postgres
+    networks:
+      - IndustrialScaleNet
+
+  keycloak-healthcheck:
+    image: curlimages/curl:latest
+    container_name: keycloak-healthcheck
+    depends_on:
+      - keycloak
+    command: >
+      sh -c "
+        echo 'Waiting for Keycloak to become ready...';
+        until curl --head -fsS http://keycloak:9000/health/ready; do
+          sleep 3;
+        done;
+        echo 'Keycloak is ready.' && tail -f /dev/null
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "curl --head -fsS http://keycloak:9000/health/ready || exit 1"]
+      interval: 7s
+      timeout: 3s
+      retries: 20
+    networks:
+      - IndustrialScaleNet
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: IndustrialScaleNet
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - IndustrialScaleNet 
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "myuser"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    
+  pgadmin:
+    image: dpage/pgadmin4:8.14
+    ports:
+      - "53853:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    depends_on:
+      - postgres
+    networks:
+      - IndustrialScaleNet
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+  backend.dashboard:
+    image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
+    container_name: dashboard
+    ports:
+      - "18888-18888"
+    networks:
+      - otel
+
+networks:
+  IndustrialScaleNet:
+  otel:
+
+volumes:
+  pgdata:
+  pgadmin:
+  keycloakdata:
