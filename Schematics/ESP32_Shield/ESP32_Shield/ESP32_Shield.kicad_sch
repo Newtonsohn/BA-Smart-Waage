@@ -3135,8 +3135,8 @@
 		(uuid 883c398f-60f3-4eb0-b217-ddca28bc8e80)
 	)
 	(rectangle
-		(start 16.51 129.54)
-		(end 49.53 180.34)
+		(start 16.51 134.62)
+		(end 54.61 185.42)
 		(stroke
 			(width 0)
 			(type default)
@@ -3208,7 +3208,7 @@
 	)
 	(text "Si2319 weil tiefer R_DS"
 		(exclude_from_sim no)
-		(at 202.438 162.56 0)
+		(at 203.454 161.798 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3218,7 +3218,7 @@
 	)
 	(text "-Verzerrung Spannungsteiler durch ADC Innenwiderstanding -> Widerstand verkleinen wenn nötig\n-Anti Aliasing -> Für DC?\n-Bestehende IC anschauen -> Nicht verfolgt.\n-wofür pullup\n-0.150s ladezeit überprüfen\n\n"
 		(exclude_from_sim no)
-		(at 17.018 187.198 0)
+		(at 16.002 193.294 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3313,7 +3313,7 @@
 		(at 31.75 149.86)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "904ce6f4-af39-43eb-9ef8-dbe60f22132f")
+		(uuid "93ec4faf-d96f-4537-90ce-49348f2441cd")
 	)
 	(junction
 		(at 241.3 81.28)
@@ -3338,6 +3338,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "cabb6909-940a-4579-a69b-2769379afa10")
+	)
+	(junction
+		(at 190.5 68.58)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e2e2c9ef-e1ab-4184-a46a-0b72c85e014b")
 	)
 	(junction
 		(at 29.21 165.1)
@@ -3649,16 +3655,6 @@
 	)
 	(wire
 		(pts
-			(xy 189.865 69.215) (xy 189.865 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "419c978c-dbc9-427e-aefe-971427d94d48")
-	)
-	(wire
-		(pts
 			(xy 207.01 99.06) (xy 217.17 99.06)
 		)
 		(stroke
@@ -3909,6 +3905,16 @@
 	)
 	(wire
 		(pts
+			(xy 200.66 58.42) (xy 200.66 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b4e1ec58-e69c-4ba6-b200-ca1581116b7e")
+	)
+	(wire
+		(pts
 			(xy 34.29 74.93) (xy 34.29 72.39)
 		)
 		(stroke
@@ -3959,6 +3965,16 @@
 	)
 	(wire
 		(pts
+			(xy 190.5 68.58) (xy 193.04 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c54695a8-37b1-4a70-b52d-ede57c2d583d")
+	)
+	(wire
+		(pts
 			(xy 209.55 140.97) (xy 209.55 129.54)
 		)
 		(stroke
@@ -4006,6 +4022,16 @@
 			(type default)
 		)
 		(uuid "cff5250d-fa8f-4518-a927-911fa215d21b")
+	)
+	(wire
+		(pts
+			(xy 190.5 66.04) (xy 190.5 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d7dc3bc0-cc38-49bc-a591-915153bc54c1")
 	)
 	(wire
 		(pts
@@ -4079,7 +4105,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.865 68.58) (xy 193.04 68.58)
+			(xy 189.23 68.58) (xy 190.5 68.58)
 		)
 		(stroke
 			(width 0)
@@ -4279,28 +4305,6 @@
 			)
 		)
 	)
-	(global_label "SCLK"
-		(shape input)
-		(at 115.57 77.47 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "3a71c043-3864-4d30-bd6e-20bfadc38f96")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 123.3328 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "SPI_CLK"
 		(shape input)
 		(at 85.09 87.63 180)
@@ -4369,7 +4373,7 @@
 	)
 	(global_label "!EN_DMS"
 		(shape input)
-		(at 189.865 69.215 180)
+		(at 189.23 68.58 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4379,7 +4383,7 @@
 		)
 		(uuid "5bf6c1b5-2b54-4351-a53c-4848cb446d27")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 178.897 69.215 0)
+			(at 178.262 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4477,6 +4481,28 @@
 			)
 		)
 	)
+	(global_label "SCLK"
+		(shape input)
+		(at 115.57 92.71 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a22bdb9d-ced5-4c3b-bf2a-d9e8b23955d4")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 123.3328 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "SCL"
 		(shape input)
 		(at 44.45 82.55 0)
@@ -4561,28 +4587,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SCLK"
-		(shape input)
-		(at 115.57 92.71 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "ea169fcd-4836-458c-aab8-ab7b3b3245d7")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 123.3328 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 				(hide yes)
 			)
 		)
@@ -4915,16 +4919,17 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
-		(at 200.66 63.5 0)
+		(lib_id "power:-BATT")
+		(at 39.37 173.99 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "1a40c1df-d9cf-4cb0-9dff-5285f4eb396f")
-		(property "Reference" "#PWR046"
-			(at 200.66 67.31 0)
+		(fields_autoplaced yes)
+		(uuid "1a2cdfbb-b810-4810-a980-65e84766ec1d")
+		(property "Reference" "#PWR06"
+			(at 39.37 170.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4932,16 +4937,17 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3.3V"
-			(at 200.66 58.42 90)
+		(property "Value" "-BATT"
+			(at 39.3699 177.8 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" ""
-			(at 200.66 63.5 0)
+			(at 39.37 173.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4950,7 +4956,72 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 200.66 63.5 0)
+			(at 39.37 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"-BATT\""
+			(at 39.37 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9b31973e-19ca-4726-948b-16138a6eb7c1")
+		)
+		(instances
+			(project "ESP32_Shield"
+				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
+					(reference "#PWR06")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 200.66 58.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1a40c1df-d9cf-4cb0-9dff-5285f4eb396f")
+		(property "Reference" "#PWR046"
+			(at 200.66 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 200.66 53.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 200.66 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 200.66 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4959,7 +5030,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 200.66 63.5 0)
+			(at 200.66 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4974,6 +5045,76 @@
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
 					(reference "#PWR046")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 190.5 62.23 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1b7b8491-03ba-43fc-aebe-695a4e671671")
+		(property "Reference" "R22"
+			(at 193.04 60.9599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "100k"
+			(at 193.04 63.4999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 192.278 62.23 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 190.5 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 190.5 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "5bdda5ee-9461-46f7-b9bf-8efd1b519b42")
+		)
+		(pin "1"
+			(uuid "025872f3-e47e-411e-828f-e426e81aeaf5")
+		)
+		(instances
+			(project "ESP32_Shield"
+				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
+					(reference "R22")
 					(unit 1)
 				)
 			)
@@ -5326,7 +5467,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "510k"
+		(property "Value" "100k"
 			(at 41.91 161.2899 0)
 			(effects
 				(font
@@ -5810,15 +5951,15 @@
 	(symbol
 		(lib_id "Transistor_FET:Si2319CDS")
 		(at 36.83 149.86 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "813c0bf4-258f-44c1-bcac-082bf14a063f")
 		(property "Reference" "Q3"
-			(at 43.18 148.5899 0)
+			(at 43.18 151.1301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5827,7 +5968,7 @@
 			)
 		)
 		(property "Value" "Si2319CDS"
-			(at 43.18 151.1299 0)
+			(at 43.18 148.5901 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5836,7 +5977,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 41.91 151.765 0)
+			(at 41.91 147.955 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5847,7 +5988,7 @@
 			)
 		)
 		(property "Datasheet" "http://www.vishay.com/docs/66709/si2319cd.pdf"
-			(at 41.91 153.67 0)
+			(at 41.91 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6181,72 +6322,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 39.37 173.99 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "905281aa-f685-41a0-b820-9b9644bac7d6")
-		(property "Reference" "#PWR034"
-			(at 39.37 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 39.37 179.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 39.37 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 39.37 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 39.37 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "48d90cff-038b-426c-b022-05e1ca03bb5d")
-		)
-		(instances
-			(project "ESP32_Shield"
-				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "#PWR034")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
 		(at 76.2 26.67 270)
 		(mirror x)
@@ -6510,6 +6585,73 @@
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
 					(reference "#PWR052")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:-BATT")
+		(at 29.21 173.99 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9e5010e1-a84f-4110-830f-55dfd4eca251")
+		(property "Reference" "#PWR07"
+			(at 29.21 170.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "-BATT"
+			(at 29.2099 177.8 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 29.21 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 29.21 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"-BATT\""
+			(at 29.21 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "87f8c2e2-4e87-488c-9008-2319c924cee4")
+		)
+		(instances
+			(project "ESP32_Shield"
+				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
@@ -6798,7 +6940,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "100k"
 			(at 34.29 144.7799 0)
 			(effects
 				(font
@@ -7277,6 +7419,71 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3.3V")
+		(at 190.5 58.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e30faf50-eadd-44d1-8e2d-b4da775b0938")
+		(property "Reference" "#PWR050"
+			(at 190.5 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 190.5 53.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 190.5 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5d18d82e-acf1-4c24-94b3-855814c16f55")
+		)
+		(instances
+			(project "ESP32_Shield"
+				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
+					(reference "#PWR050")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
 		(at 110.49 26.67 90)
 		(unit 1)
@@ -7347,72 +7554,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 29.21 173.99 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "f64cff11-e75b-4e96-9119-c7b0f0f9cd6e")
-		(property "Reference" "#PWR021"
-			(at 29.21 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 29.21 179.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 29.21 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 29.21 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 29.21 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "af4387f9-8dde-416d-8ad8-ef7b345d4272")
-		)
-		(instances
-			(project "ESP32_Shield"
-				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "#PWR021")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 39.37 170.18 180)
 		(unit 1)
@@ -7431,7 +7572,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "510k"
+		(property "Value" "100k"
 			(at 41.91 171.4499 0)
 			(effects
 				(font

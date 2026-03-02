@@ -1,0 +1,29 @@
+Besteller:	linortho
+Datum:		02.03.2026
+
+
+Lieferant:	Mouser
+
+Stück	Artikel			Bezeichnung					Gruppe
+===============================================================================================
+2	SI2323CDS-T1-BE3	MOSFETs SOT23 P-CH 20V 4.6A			BA_FS26_brnn_241
+1	SHT30-DIS-B2.5kS	Feuchtigkeitssensoren für Plattenmontage	
+3	855-M7682-05		Sockel & Kabelgehäuse 14mm JUMPER SOCKET W/HNDL BLACK
+2	474-PRT-16279		Sockel & Kabelgehäuse Arduino Nano Stackable Header Kit
+3	538-22-28-4026		Sockel & Kabelgehäuse 2.54MM VERT 2P HDR
+2	855-M20-9731045		Sockel & Kabelgehäuse 10 SIL VERTICAL PIN HEADER GOLD HT
+1	595-ADS1234IPWR		Analog-in-Digital-Wandler - ADC 24-Bit Ultra Low-Noi se A 595-ADS1234IPW A 595-ADS1234IPW
+2	CES-115-02-G-S-RA	Sockel & Kabelgehäuse .100" Closed Entry Low Profile Socket Strip
+10	603-CC603KRX7R8BB104	Kondensator aus mehreren Keramikschichten MLCC - SMD/SMT 25 V 0.1uF X7R 0603 10%
+10	667-ERA-3AEB103V	Thin Film Resistors 0603 1/10W 10Kohms 0.1% 25ppm	
+10	667-ERA-3AEB104V	Thin Film Resistors 0603 1/10W 100Kohms
+
+
+
+	
+
+
+
+
+
+
