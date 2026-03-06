@@ -66,9 +66,9 @@ services:
       "
     healthcheck:
       test: ["CMD-SHELL", "curl --head -fsS http://keycloak:9000/health/ready || exit 1"]
-      interval: 7s
-      timeout: 3s
-      retries: 20
+      interval: 10s
+      timeout: 5s
+      retries: 30
     networks:
       - IndustrialScaleNet
 
