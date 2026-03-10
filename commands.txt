@@ -1,0 +1,16 @@
+1. Kill anything on port 5000 (if needed):
+
+
+sudo kill $(sudo lsof -t -i :5000) 2>/dev/null; true
+2. Clear BLE cache and start gateway:
+
+
+sudo systemctl restart bluetooth && sleep 5 && bluetoothctl devices | awk '{print $2}' | xargs -I{} bluetoothctl remove {} && sudo docker run --rm -it --privileged --net=host \
+  --env DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
+  --env Network__Interface=wlan0 \
+  --env Backend__IpAddress=http://192.168.1.15:5001 \
+  --env Keycloak__EndpointUrl=http://192.168.1.15:8080 \
+  --env Keycloak__ClientId=smart-bin \
+  --env Keycloak__ClientSecret=w33NR8TZYMjFMmMqFKpRxAAXTo1zACbA \
+  -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
+  gateway

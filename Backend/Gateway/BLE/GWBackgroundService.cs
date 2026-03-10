@@ -25,6 +25,7 @@ namespace EdgeDevice.BLE
 
             while(!stoppingToken.IsCancellationRequested)
             {
+                await Task.Delay(1000, stoppingToken);
                 foreach (string targetAddress in _assignedDevices)
                 {
                     await EnsureDiscoveryIsActiveAsync(adapter);
@@ -50,7 +51,7 @@ namespace EdgeDevice.BLE
                         catch(Exception ex)
                         {
                             _logger.LogError(ex, "Unexcepeceted error occured");
-                            break;
+                            continue;
                         }
                     }
                 }
