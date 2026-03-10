@@ -6448,7 +6448,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "74013d8c-2d7f-48d4-8cb4-9ec8076a113d")
-		(property "Reference" "PWR_ESP32"
+		(property "Reference" "ESP32"
 			(at 68.834 89.916 90)
 			(effects
 				(font
@@ -6503,7 +6503,7 @@
 		(instances
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "PWR_ESP32")
+					(reference "ESP32")
 					(unit 1)
 				)
 			)
@@ -6661,7 +6661,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "836d544d-de6d-4e36-94c2-6e3db90778b0")
-		(property "Reference" "PWR_ESP3"
+		(property "Reference" "DMS1"
 			(at 176.276 71.374 90)
 			(effects
 				(font
@@ -6716,7 +6716,7 @@
 		(instances
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "PWR_ESP3")
+					(reference "DMS1")
 					(unit 1)
 				)
 			)
@@ -6897,7 +6897,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8da826d8-62da-43fa-b663-4831e3025e5b")
-		(property "Reference" "PWR_ESP1"
+		(property "Reference" "THRM1"
 			(at 23.876 56.134 90)
 			(effects
 				(font
@@ -6952,7 +6952,7 @@
 		(instances
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "PWR_ESP1")
+					(reference "THRM1")
 					(unit 1)
 				)
 			)
@@ -7033,7 +7033,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "90970c94-e2bb-44cb-9653-1ff28335adf3")
-		(property "Reference" "PWR1"
+		(property "Reference" "V_IN1"
 			(at 75.946 24.384 90)
 			(effects
 				(font
@@ -7088,7 +7088,7 @@
 		(instances
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "PWR1")
+					(reference "V_IN1")
 					(unit 1)
 				)
 			)
@@ -7385,7 +7385,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-323_SC-70"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 44.45 153.035 0)
 			(effects
 				(font
@@ -7863,8 +7863,8 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b75965db-2420-4143-90d5-5f6bc558a6e5")
-		(property "Reference" "PWR_MON1"
-			(at 95.504 23.876 90)
+		(property "Reference" "PWR1"
+			(at 93.98 23.876 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7918,7 +7918,7 @@
 		(instances
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "PWR_MON1")
+					(reference "PWR1")
 					(unit 1)
 				)
 			)
@@ -7934,7 +7934,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c1864e1c-66cb-4a1e-a81a-54592d933270")
-		(property "Reference" "PWR_ESP2"
+		(property "Reference" "ADC1"
 			(at 228.346 71.374 90)
 			(effects
 				(font
@@ -7989,7 +7989,7 @@
 		(instances
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "PWR_ESP2")
+					(reference "ADC1")
 					(unit 1)
 				)
 			)
@@ -8275,7 +8275,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e62652cd-75f8-40de-8084-d5f294779f3a")
-		(property "Reference" "BAT_VOLT1"
+		(property "Reference" "BAT1"
 			(at 108.204 24.13 90)
 			(effects
 				(font
@@ -8330,7 +8330,7 @@
 		(instances
 			(project "ESP32_Shield"
 				(path "/c333fcdd-d440-492d-a150-3b6c46d7ec2c"
-					(reference "BAT_VOLT1")
+					(reference "BAT1")
 					(unit 1)
 				)
 			)
