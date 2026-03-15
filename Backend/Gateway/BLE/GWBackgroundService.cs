@@ -1,7 +1,10 @@
-﻿using Backend.Domain.Kernel;
+﻿using Backend.Application.Bins.UpdateWeight;
+using Backend.Domain.Kernel;
 using EdgeDevice.Network;
 using Linux.Bluetooth;
 using Linux.Bluetooth.Extensions;
+using System.Text;
+using System.Text.Json;
 namespace EdgeDevice.BLE
 {
     public class GWBackgroundService(ILogger<GWBackgroundService> _logger, IHttpClientFactory _httpClientFactory, IServiceProvider _serviceProvider) : BackgroundService, IBLEService
@@ -73,15 +76,38 @@ namespace EdgeDevice.BLE
         private async Task HandleDevice(Adapter adapter, Device dev, string addr)
         {
             _logger.LogInformation("Targetdevice found: {Device}", dev.ObjectPath.ToString());
-            _logger.LogInformation($"Stop discovering");
             await adapter.StopDiscoveryAsync();
-            await Task.Delay(10);
-            _logger.LogInformation("found device {Address}", addr);
+
+            // Check for advertisement mode (timer wake-up): manufacturer data contains weight
+            var manufacturerData = await dev.GetManufacturerDataAsync();
+            if (manufacturerData != null && manufacturerData.Count > 0)
+            {
+                var payload = manufacturerData.Values.First() as byte[];
+                if (payload != null && payload.Length >= 6)
+                {
+                    float weight = BitConverter.ToSingle(payload, 2);
+                    _logger.LogInformation("Advertisement weight received: {Weight:F2} g from {Address}", weight, addr);
+
+                    using var client = _httpClientFactory.CreateClient("BackendClient");
+                    var command = new UpdateBinWeightCommand(weight, addr);
+                    var content = new StringContent(JsonSerializer.Serialize(command), Encoding.UTF8, "application/json");
+                    var response = await client.PutAsync("/bins/currentweight", content);
+                    if (!response.IsSuccessStatusCode)
+                        _logger.LogError("Failed to update weight for {Address}: {StatusCode}", addr, response.StatusCode);
+                    else
+                        _logger.LogInformation("Weight updated for {Address}: {Weight:F2} g", addr, weight);
+
+                    _consecutiveFailures = 0;
+                }
+                return; // Do not connect in advertisement mode
+            }
+
+            // GATT mode (power-cycle): connect for configuration
+            _logger.LogInformation("found device {Address}, connecting for configuration...", addr);
             var bleDevice = _serviceProvider.GetService<BleDevice>();
             var alias = await dev.GetAliasAsync();
 
             bleDevice!.Setup(addr, alias);
-
             bleDevice.OnDeviceFound(dev);
 
             dev.Connected += DeviceConnectedAsync;
@@ -89,11 +115,6 @@ namespace EdgeDevice.BLE
 
             _logger.LogInformation($"Connecting to {addr}...");
             _deviceIsDeisconected = new TaskCompletionSource<bool>();
-            if (dev is null)
-            {
-                _logger.LogError("Device is null");
-                return;
-            }
             await Task.Delay(1000);
             await dev.ConnectAsync();
             _consecutiveFailures = 0;
