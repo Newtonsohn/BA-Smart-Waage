@@ -9,6 +9,9 @@ namespace EdgeDevice.BLE
         private ISet<string> _assignedDevices = new HashSet<string>();
         private TaskCompletionSource<bool> _adapterIsPoweredOn = new TaskCompletionSource<bool>();
         private TaskCompletionSource<bool> _deviceIsDeisconected = new TaskCompletionSource<bool>();
+        private int _consecutiveFailures = 0;
+        private const int MaxConsecutiveFailures = 3;
+        private const int CooldownAfterFailureMs = 10000;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -51,6 +54,14 @@ namespace EdgeDevice.BLE
                         catch(Exception ex)
                         {
                             _logger.LogError(ex, "Unexcepeceted error occured");
+                            _consecutiveFailures++;
+                            if (_consecutiveFailures >= MaxConsecutiveFailures)
+                            {
+                                _logger.LogWarning("Too many consecutive BLE failures ({Count}), cooling down for {Ms}ms", _consecutiveFailures, CooldownAfterFailureMs);
+                                await adapter.StopDiscoveryAsync().ConfigureAwait(false);
+                                await Task.Delay(CooldownAfterFailureMs, stoppingToken);
+                                _consecutiveFailures = 0;
+                            }
                             continue;
                         }
                     }
@@ -83,8 +94,9 @@ namespace EdgeDevice.BLE
                 _logger.LogError("Device is null");
                 return;
             }
-            await Task.Delay(100);
+            await Task.Delay(1000);
             await dev.ConnectAsync();
+            _consecutiveFailures = 0;
             _logger.LogInformation("Wait for disconnecting");
             await _deviceIsDeisconected.Task;
         }

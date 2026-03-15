@@ -2,6 +2,7 @@
 
 
 sudo kill $(sudo lsof -t -i :5000) 2>/dev/null; true
+
 2. Clear BLE cache and start gateway:
 
 
@@ -14,3 +15,8 @@ sudo systemctl restart bluetooth && sleep 5 && bluetoothctl devices | awk '{prin
   --env Keycloak__ClientSecret=w33NR8TZYMjFMmMqFKpRxAAXTo1zACbA \
   -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
   gateway
+
+
+
+
+ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS="http://+:5003" ./Gateway
