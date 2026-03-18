@@ -17,7 +17,7 @@ const int DISPLAY_BUSY_PIN = 4;
 
 // Settings
 int connectionTimeout = 180;  //Connection timeout in seconds
-int tareTime = 10;           //Tare time in seconds
+int tareTime = 1;           //Tare time in seconds
 bool loggingEnabled = true;
 
 const char* BACKEND_URL = "https://192.168.2.100:7093/bins/integration?mac=";

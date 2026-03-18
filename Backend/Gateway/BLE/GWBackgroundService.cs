@@ -44,7 +44,13 @@ namespace EdgeDevice.BLE
                             if (device is null)
                                 continue;
 
-                            var address = await device.GetAddressAsync();
+                            // After RemoveDeviceAsync the D-Bus object is gone but the device
+                            // can still appear in GetDevicesAsync for a brief moment. Calling
+                            // GetAddressAsync on it throws UnknownObject. Skip silently — this
+                            // is transient noise, not a real failure worth counting.
+                            string? address;
+                            try { address = await device.GetAddressAsync(); }
+                            catch { continue; }
                             if (address == null)
                                 continue;
 
@@ -61,7 +67,9 @@ namespace EdgeDevice.BLE
                             if (_consecutiveFailures >= MaxConsecutiveFailures)
                             {
                                 _logger.LogWarning("Too many consecutive BLE failures ({Count}), cooling down for {Ms}ms", _consecutiveFailures, CooldownAfterFailureMs);
-                                await adapter.StopDiscoveryAsync().ConfigureAwait(false);
+                                // StopDiscoveryAsync may throw if discovery was already stopped
+                                // (e.g. HandleDevice stopped it before the exception propagated)
+                                try { await adapter.StopDiscoveryAsync().ConfigureAwait(false); } catch { }
                                 await Task.Delay(CooldownAfterFailureMs, stoppingToken);
                                 _consecutiveFailures = 0;
                             }
@@ -76,16 +84,26 @@ namespace EdgeDevice.BLE
         private async Task HandleDevice(Adapter adapter, Device dev, string addr)
         {
             _logger.LogInformation("Targetdevice found: {Device}", dev.ObjectPath.ToString());
-            await adapter.StopDiscoveryAsync();
+            // Do NOT stop discovery here — only stop it in GATT mode just before connecting.
+            // Stopping it for advertisement mode causes a ~1s scan gap on every detection,
+            // which creates a timing race where every other ESP32 wake-up is missed.
 
-            // Check for advertisement mode (timer wake-up): manufacturer data contains weight
-            var manufacturerData = await dev.GetManufacturerDataAsync();
+            // Check for advertisement mode (timer wake-up): manufacturer data contains weight.
+            // BlueZ only exposes the ManufacturerData D-Bus property when the device actually
+            // advertised manufacturer-specific data. If it's absent (GATT/power-cycle mode or
+            // old firmware), the library throws a DBusException instead of returning null —
+            // so we catch it and treat it as "no manufacturer data → fall through to GATT mode".
+            IDictionary<ushort, object>? manufacturerData = null;
+            try { manufacturerData = await dev.GetManufacturerDataAsync(); } catch { }
             if (manufacturerData != null && manufacturerData.Count > 0)
             {
                 var payload = manufacturerData.Values.First() as byte[];
-                if (payload != null && payload.Length >= 6)
+                // BlueZ strips the 2-byte company ID from manufacturer data and uses it as the
+                // dictionary key. The value contains only the remaining bytes — in our case the
+                // 4-byte float. So check >= 4 and read at offset 0, not >= 6 at offset 2.
+                if (payload != null && payload.Length >= 4)
                 {
-                    float weight = BitConverter.ToSingle(payload, 2);
+                    float weight = BitConverter.ToSingle(payload, 0);
                     _logger.LogInformation("Advertisement weight received: {Weight:F2} g from {Address}", weight, addr);
 
                     using var client = _httpClientFactory.CreateClient("BackendClient");
@@ -99,10 +117,18 @@ namespace EdgeDevice.BLE
 
                     _consecutiveFailures = 0;
                 }
+
+                // Remove from BlueZ cache so the next discovery gets fresh scan data.
+                // Without this, BlueZ keeps the stale manufacturer data even after the ESP32
+                // reboots into GATT mode — causing the gateway to loop forever thinking it's
+                // still in advertisement mode.
+                try { await adapter.RemoveDeviceAsync(dev.ObjectPath); } catch { }
                 return; // Do not connect in advertisement mode
             }
 
-            // GATT mode (power-cycle): connect for configuration
+            // GATT mode (power-cycle): stop discovery before connecting
+            await adapter.StopDiscoveryAsync();
+
             _logger.LogInformation("found device {Address}, connecting for configuration...", addr);
             var bleDevice = _serviceProvider.GetService<BleDevice>();
             var alias = await dev.GetAliasAsync();
@@ -116,7 +142,29 @@ namespace EdgeDevice.BLE
             _logger.LogInformation($"Connecting to {addr}...");
             _deviceIsDeisconected = new TaskCompletionSource<bool>();
             await Task.Delay(1000);
-            await dev.ConnectAsync();
+            try
+            {
+                await dev.ConnectAsync();
+            }
+            catch (Exception ex) when (ex.Message.Contains("le-connection-abort-by-local"))
+            {
+                // The RPi BCM43438 chip (shared WiFi/BT) aborted the connection internally.
+                // Power-cycling the adapter via BlueZ clears the stuck HCI state so the
+                // next attempt starts clean instead of failing immediately again.
+                _logger.LogWarning("BLE connection aborted by local chip, resetting adapter...");
+                try
+                {
+                    await adapter.SetPoweredAsync(false);
+                    await Task.Delay(2000);
+                    await adapter.SetPoweredAsync(true);
+                    await Task.Delay(2000);
+                }
+                catch (Exception resetEx)
+                {
+                    _logger.LogError(resetEx, "Failed to reset adapter after le-connection-abort");
+                }
+                throw; // re-throw so the outer catch handles the failure count
+            }
             _consecutiveFailures = 0;
             _logger.LogInformation("Wait for disconnecting");
             await _deviceIsDeisconected.Task;
@@ -126,6 +174,20 @@ namespace EdgeDevice.BLE
         {
             if (!await adapter.GetDiscoveringAsync())
             {
+                // DuplicateData=true disables BlueZ's per-session dedup filter.
+                // Without this, BlueZ only reports a given MAC address once per scan session —
+                // so after we RemoveDevice and the ESP32 advertises again in the same session,
+                // BlueZ silently drops it. With DuplicateData=true every advertisement is reported.
+                // Filter to only our ESP32 service UUID so BlueZ ignores all other BLE devices
+                // (phones, etc.) in range. Without this, DuplicateData=true floods the system
+                // with D-Bus events for every nearby device, overloading bluetoothd on the RPi
+                // BCM43438 chip and causing WiFi drops / SSH loss.
+                await adapter.SetDiscoveryFilterAsync(new Dictionary<string, object>
+                {
+                    { "Transport", "le" },
+                    { "DuplicateData", true },
+                    { "UUIDs", new string[] { "f0cbd08a-41a1-4b14-b66f-420e6c7f6d1f" } }
+                });
                 await adapter.StartDiscoveryAsync();
                 _logger.LogInformation("Starting Discovery...");
             }

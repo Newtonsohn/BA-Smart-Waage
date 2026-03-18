@@ -23,7 +23,8 @@ void SendDataState::enter() {
 
 void SendDataState::update() {
   if (Properties::wakeUpCauseIsTimer) {
-    return;  // Advertisement mode: nothing to do, weight is in adv data
+    delay(500);  // Nothing to do, just yield while advertising
+    return;
   }
 
   if (!sendDataSuccess) {
@@ -52,7 +53,9 @@ StateType SendDataState::nextState() {
   unsigned long elapsedTime = millis() - startTime;
 
   if (Properties::wakeUpCauseIsTimer) {
-    if (elapsedTime >= (unsigned long)Properties::connectionTimeout * MILLISECONDS_PER_SECOND) {
+    // Advertise for a short window so the gateway has time to scan and receive the
+    // advertisement, then go straight to deep sleep. No connection needed.
+    if (elapsedTime >= 0.3 * MILLISECONDS_PER_SECOND) {
       return StateType::DEEP_SLEEP;
     }
     return StateType::SEND_DATA;
