@@ -23,7 +23,7 @@ void SendDataState::enter() {
 
 void SendDataState::update() {
   if (Properties::wakeUpCauseIsTimer) {
-    delay(500);  // Nothing to do, just yield while advertising
+    delay(50);  // Nothing to do, just yield while advertising
     return;
   }
 
@@ -45,7 +45,7 @@ void SendDataState::exit() {
   Logger::log("Exit Send Data State");
   if (Properties::wakeUpCauseIsTimer) {
     BLEDevice::getAdvertising()->stop();
-    BLEDevice::deinit(true);
+    //BLEDevice::deinit(true);
   }
 }
 
@@ -55,10 +55,10 @@ StateType SendDataState::nextState() {
   if (Properties::wakeUpCauseIsTimer) {
     // Advertise for a short window so the gateway has time to scan and receive the
     // advertisement, then go straight to deep sleep. No connection needed.
-    if (elapsedTime >= 0.3 * MILLISECONDS_PER_SECOND) {
+    //if (elapsedTime >= 0.5 * MILLISECONDS_PER_SECOND) {
       return StateType::DEEP_SLEEP;
-    }
-    return StateType::SEND_DATA;
+    //}
+    //return StateType::SEND_DATA;
   }
 
   if (elapsedTime >= Properties::connectionTimeout * MILLISECONDS_PER_SECOND) {

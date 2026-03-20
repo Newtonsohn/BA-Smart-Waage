@@ -15,6 +15,13 @@ namespace EdgeDevice.BLE
         private int _consecutiveFailures = 0;
         private const int MaxConsecutiveFailures = 3;
         private const int CooldownAfterFailureMs = 10000;
+        private uint _lastAdvertisementCounter = 0;
+        private bool _counterInitialized = false;
+        private int _totalReceived = 0;
+        private int _totalMissed = 0;
+        private readonly Queue<bool> _recentWindow = new(); // true=received, false=missed
+        private int _windowMissedCount = 0;
+        private const int WindowSize = 100;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -104,6 +111,48 @@ namespace EdgeDevice.BLE
                 if (payload != null && payload.Length >= 4)
                 {
                     float weight = BitConverter.ToSingle(payload, 0);
+
+                    // Counter is in bytes 4-5 (uint16). Track received/missed using a rolling
+                    // window so we can report what fraction of recent advertisements were caught.
+                    if (payload.Length >= 6)
+                    {
+                        ushort counter = BitConverter.ToUInt16(payload, 4);
+                        if (!_counterInitialized)
+                        {
+                            _counterInitialized = true;
+                            AddToWindow(received: true);
+                            _totalReceived++;
+                            _logger.LogInformation(
+                                "First advertisement received (ESP32 counter={Counter}). Window: {WR}/{WT} received. Total: {TR} received, {TM} missed.",
+                                counter, _recentWindow.Count - _windowMissedCount, _recentWindow.Count, _totalReceived, _totalMissed);
+                        }
+                        else if (counter == (ushort)_lastAdvertisementCounter)
+                        {
+                            // Duplicate: BlueZ re-reported cached data before RemoveDeviceAsync cleared it.
+                            _logger.LogDebug("Duplicate advertisement #{Counter} ignored", counter);
+                            try { await adapter.RemoveDeviceAsync(dev.ObjectPath); } catch { }
+                            return;
+                        }
+                        else
+                        {
+                            ushort missed = (ushort)(counter - (ushort)_lastAdvertisementCounter - 1);
+                            for (int m = 0; m < missed; m++) { AddToWindow(received: false); _totalMissed++; }
+                            AddToWindow(received: true);
+                            _totalReceived++;
+
+                            int windowReceived = _recentWindow.Count - _windowMissedCount;
+                            if (missed > 0)
+                                _logger.LogWarning(
+                                    "Advertisement #{Counter} received — {Missed} MISSED before it. Window: {WR}/{WT} received ({WM} missed). Total: {TR} received, {TM} missed.",
+                                    counter, missed, windowReceived, _recentWindow.Count, _windowMissedCount, _totalReceived, _totalMissed);
+                            else
+                                _logger.LogInformation(
+                                    "Advertisement #{Counter} received. Window: {WR}/{WT} received ({WM} missed). Total: {TR} received, {TM} missed.",
+                                    counter, windowReceived, _recentWindow.Count, _windowMissedCount, _totalReceived, _totalMissed);
+                        }
+                        _lastAdvertisementCounter = counter;
+                    }
+
                     _logger.LogInformation("Advertisement weight received: {Weight:F2} g from {Address}", weight, addr);
 
                     using var client = _httpClientFactory.CreateClient("BackendClient");
@@ -141,7 +190,7 @@ namespace EdgeDevice.BLE
 
             _logger.LogInformation($"Connecting to {addr}...");
             _deviceIsDeisconected = new TaskCompletionSource<bool>();
-            await Task.Delay(1000);
+            await Task.Delay(3000); // Give BCM43438 time to fully transition from scan to connect mode
             try
             {
                 await dev.ConnectAsync();
@@ -166,8 +215,50 @@ namespace EdgeDevice.BLE
                 throw; // re-throw so the outer catch handles the failure count
             }
             _consecutiveFailures = 0;
+
+            // Poll for GATT service resolution as a fallback to the ServicesResolved event.
+            // The D-Bus PropertiesChanged signal can be missed if it fires during ConnectAsync
+            // before the Linux.Bluetooth event subscription processes it. Polling ensures we
+            // always handle service resolution regardless of event timing.
+            _logger.LogInformation("Polling for GATT service resolution...");
+            bool servicesResolved = false;
+            for (int i = 0; i < 40; i++) // up to 20 seconds
+            {
+                try
+                {
+                    if (await dev.GetServicesResolvedAsync())
+                    {
+                        servicesResolved = true;
+                        break;
+                    }
+                }
+                catch { break; } // device likely disconnected
+                await Task.Delay(500);
+            }
+
+            if (servicesResolved)
+            {
+                _logger.LogInformation("GATT services resolved, handling configuration...");
+                await bleDevice.HandleServicesResolvedAsync(dev);
+            }
+            else
+            {
+                _logger.LogWarning("GATT services did not resolve — device may have disconnected early.");
+            }
+
             _logger.LogInformation("Wait for disconnecting");
             await _deviceIsDeisconected.Task;
+        }
+
+        private void AddToWindow(bool received)
+        {
+            if (_recentWindow.Count == WindowSize)
+            {
+                bool removed = _recentWindow.Dequeue();
+                if (!removed) _windowMissedCount--;
+            }
+            _recentWindow.Enqueue(received);
+            if (!received) _windowMissedCount++;
         }
 
         private async Task EnsureDiscoveryIsActiveAsync(Adapter adapter)

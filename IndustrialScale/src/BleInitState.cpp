@@ -18,6 +18,10 @@
 #define COMPANY_ID_LOW 0xFF
 #define COMPANY_ID_HIGH 0xFF
 
+// Persists across deep sleeps, resets on power cycle — used to detect missed advertisements.
+// uint16 (max 65535) saves 2 bytes vs uint32, keeping the advertisement packet at exactly 31 bytes.
+RTC_DATA_ATTR static uint16_t s_advertisementCounter = 0;
+
 // ----------------------------- Callbacks -----------------------------
 // Callback-Klasse for BLE-Server
 class ServerCallbacks : public BLEServerCallbacks {
@@ -96,15 +100,23 @@ void BleInitState::enter() {
   memcpy(Properties::bleMacAddress, BLEDevice::getAddress().getNative(), MAC_ADDRESS_LENGTH);
 
   if (Properties::wakeUpCauseIsTimer) {
-    // Timer wake-up: advertise weight in manufacturer data, no connection needed
-    uint8_t mfgPayload[6];
+    // Timer wake-up: advertise weight + counter in manufacturer data, no connection needed
+    s_advertisementCounter++;
+    Logger::log(("Advertisement #" + String(s_advertisementCounter) + "  weight: " + String(Properties::currentWeight) + " g").c_str());
+
+    // Payload layout (8 bytes; after BlueZ strips 2-byte company ID, gateway sees 6 bytes):
+    //   bytes 0-3: float   currentWeight
+    //   bytes 4-5: uint16  s_advertisementCounter
+    // Packet budget: flags(3) + mfg_data(8+2=10) + UUID(18) = 31 bytes — exactly at the limit.
+    uint8_t mfgPayload[8];
     mfgPayload[0] = COMPANY_ID_LOW;
     mfgPayload[1] = COMPANY_ID_HIGH;
     memcpy(&mfgPayload[2], &Properties::currentWeight, sizeof(float));
+    memcpy(&mfgPayload[6], &s_advertisementCounter, sizeof(uint16_t));
 
     BLEAdvertisementData advData;
     advData.setFlags(BLE_ADV_FLAGS);
-    advData.setManufacturerData(std::string((char*)mfgPayload, sizeof(mfgPayload)));
+    advData.setManufacturerData(std::string((char*)mfgPayload, 8));
     advData.setCompleteServices(BLEUUID(Properties::SERVICE_UUID));
 
     hw->bleAdvertising = BLEDevice::getAdvertising();

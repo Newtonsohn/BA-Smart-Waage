@@ -16,7 +16,7 @@ const int DISPLAY_RESET_PIN = 17;
 const int DISPLAY_BUSY_PIN = 4;
 
 // Settings
-int connectionTimeout = 180;  //Connection timeout in seconds
+int connectionTimeout = 1800;  //Connection timeout in seconds
 int tareTime = 1;           //Tare time in seconds
 bool loggingEnabled = true;
 
@@ -30,7 +30,7 @@ uint8_t bleMacAddress[MAC_ADDRESS_LENGTH] = { 0, 0, 0, 0, 0, 0 };
 
 // Scale
 const int SCALE_READING_SAMPLE_COUNT = 20;
-const int SCALE_READING_SAMPLE_DELAY = 50;
+const int SCALE_READING_SAMPLE_DELAY = 5;
 float zeroOffset = 0;
 float calFactor = 1;
 float currentWeight = 0.0f;  //Current weight in grams
