@@ -13880,6 +13880,71 @@
 			)
 		)
 	)
+	(gr_text "RX2"
+		(at 138.2 88.35 0)
+		(layer "User.1")
+		(uuid "2b39fb5b-c8ae-4f14-863f-73c041370215")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "TX2, IO17"
+		(at 138.25 86.15 0)
+		(layer "User.1")
+		(uuid "ec167a36-1947-4621-a5bf-3d50cd511f63")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "D4"
+		(at 138.2 90.85 0)
+		(layer "User.1")
+		(uuid "efe73f68-6f2d-4da0-b347-11d76f1c9787")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "D2"
+		(at 138.3 93.5 0)
+		(layer "User.1")
+		(uuid "f82377ac-dac8-4de7-b65a-c0fb5afad59c")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "D15"
+		(at 138.2 96.35 0)
+		(layer "User.1")
+		(uuid "ffbc6626-9fe0-483f-9a5f-6df09b1d3aae")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
 	(segment
 		(start 126.1375 120.1375)
 		(end 126.1375 120.1)

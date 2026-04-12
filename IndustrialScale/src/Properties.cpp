@@ -17,7 +17,7 @@ const int DISPLAY_BUSY_PIN = 4;
 
 // Settings
 int connectionTimeout = 1800;  //Connection timeout in seconds
-int tareTime = 1;           //Tare time in seconds
+int tareTime = 10;           //Tare time in seconds
 bool loggingEnabled = true;
 
 const char* BACKEND_URL = "https://192.168.2.100:7093/bins/integration?mac=";
@@ -30,7 +30,7 @@ uint8_t bleMacAddress[MAC_ADDRESS_LENGTH] = { 0, 0, 0, 0, 0, 0 };
 
 // Scale
 const int SCALE_READING_SAMPLE_COUNT = 20;
-const int SCALE_READING_SAMPLE_DELAY = 5;
+const int SCALE_READING_SAMPLE_DELAY = 50;
 float zeroOffset = 0;
 float calFactor = 1;
 float currentWeight = 0.0f;  //Current weight in grams
