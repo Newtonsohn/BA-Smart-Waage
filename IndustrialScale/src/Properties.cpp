@@ -16,7 +16,7 @@ const int DISPLAY_RESET_PIN = 17;
 const int DISPLAY_BUSY_PIN = 4;
 
 // Settings
-int connectionTimeout = 180;  //Connection timeout in seconds
+int connectionTimeout = 1800;  //Connection timeout in seconds
 int tareTime = 10;           //Tare time in seconds
 bool loggingEnabled = true;
 

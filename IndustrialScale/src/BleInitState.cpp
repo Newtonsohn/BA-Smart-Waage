@@ -15,6 +15,12 @@
 #define BLE_CONN_PARAMS 0x00
 
 #define MAC_ADDRESS_LENGTH 6
+#define COMPANY_ID_LOW 0xFF
+#define COMPANY_ID_HIGH 0xFF
+
+// Persists across deep sleeps, resets on power cycle — used to detect missed advertisements.
+// uint16 (max 65535) saves 2 bytes vs uint32, keeping the advertisement packet at exactly 31 bytes.
+RTC_DATA_ATTR static uint16_t s_advertisementCounter = 0;
 
 // ----------------------------- Callbacks -----------------------------
 // Callback-Klasse for BLE-Server
@@ -89,55 +95,74 @@ void BleInitState::enter() {
 
   hw = HwContext::get();
 
-  // Init BLE
   BLEDevice::init("IndustryScale");
 
-  // Get the Bluetooth MAC address
   memcpy(Properties::bleMacAddress, BLEDevice::getAddress().getNative(), MAC_ADDRESS_LENGTH);
 
-  // Create BLE-Server
-  hw->bleServer = BLEDevice::createServer();
-  hw->bleServer->setCallbacks(new ServerCallbacks());
+  if (Properties::wakeUpCauseIsTimer) {
+    // Timer wake-up: advertise weight + counter in manufacturer data, no connection needed
+    s_advertisementCounter++;
+    Logger::log(("Advertisement #" + String(s_advertisementCounter) + "  weight: " + String(Properties::currentWeight) + " g").c_str());
 
-  // Create BLE-Service
-  hw->bleService = hw->bleServer->createService(Properties::SERVICE_UUID);
+    // Payload layout (8 bytes; after BlueZ strips 2-byte company ID, gateway sees 6 bytes):
+    //   bytes 0-3: float   currentWeight
+    //   bytes 4-5: uint16  s_advertisementCounter
+    // Packet budget: flags(3) + mfg_data(8+2=10) + UUID(18) = 31 bytes — exactly at the limit.
+    uint8_t mfgPayload[8];
+    mfgPayload[0] = COMPANY_ID_LOW;
+    mfgPayload[1] = COMPANY_ID_HIGH;
+    memcpy(&mfgPayload[2], &Properties::currentWeight, sizeof(float));
+    memcpy(&mfgPayload[6], &s_advertisementCounter, sizeof(uint16_t));
 
-  // Create configuration characteristics
-  hw->bleConfigCharacteristic = hw->bleService->createCharacteristic(
-    Properties::CHARACTERISTIC_CONFIG_UUID,
-    BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    BLEAdvertisementData advData;
+    advData.setFlags(BLE_ADV_FLAGS);
+    advData.setManufacturerData(std::string((char*)mfgPayload, 8));
+    advData.setCompleteServices(BLEUUID(Properties::SERVICE_UUID));
 
-  // Create measure characteristics
-  hw->bleMeasureCharacteristic = hw->bleService->createCharacteristic(
-    Properties::CHARACTERISTIC_MEASURE_UUID,
-    BLECharacteristic::PROPERTY_INDICATE);
+    hw->bleAdvertising = BLEDevice::getAdvertising();
+    hw->bleAdvertising->setScanResponse(false);
+    hw->bleAdvertising->setAdvertisementData(advData);
+    hw->bleAdvertising->start();
 
-  // Register callbacks
-  hw->bleConfigCharacteristic->setCallbacks(new ConfigCharacteristicCallbacks());
+    Logger::log("Started BLE advertisement with weight data");
+  } else {
+    // Power-cycle: full GATT server for configuration
+    hw->bleServer = BLEDevice::createServer();
+    hw->bleServer->setCallbacks(new ServerCallbacks());
 
-  // Add Descriptor -> Required to check if gateway subscribed
-  BLE2902* cccd = new BLE2902();
-  cccd->setCallbacks(new MeasureCharacteristicCallbacks());
-  hw->bleMeasureCharacteristic->addDescriptor(cccd);
+    hw->bleService = hw->bleServer->createService(Properties::SERVICE_UUID);
 
-  // Start service
-  hw->bleService->start();
+    hw->bleConfigCharacteristic = hw->bleService->createCharacteristic(
+      Properties::CHARACTERISTIC_CONFIG_UUID,
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 
-  // Prepare advertising
-  BLEAdvertisementData advData;
-  advData.setCompleteServices(BLEUUID(Properties::SERVICE_UUID));
-  advData.setFlags(BLE_ADV_FLAGS);  // BLE General discoverable mode (bit 1: 0x02) and BLE only (bit 2: 0x04)
-  advData.setName("IndustryScale");
+    hw->bleMeasureCharacteristic = hw->bleService->createCharacteristic(
+      Properties::CHARACTERISTIC_MEASURE_UUID,
+      BLECharacteristic::PROPERTY_INDICATE);
 
-  hw->bleAdvertising = BLEDevice::getAdvertising();
-  hw->bleAdvertising->addServiceUUID(Properties::SERVICE_UUID);
-  hw->bleAdvertising->setScanResponse(false);
-  hw->bleAdvertising->setAdvertisementData(advData);
-  hw->bleAdvertising->setMinPreferred(BLE_CONN_PARAMS);  // All parameters disabled
-  hw->bleAdvertising->setMaxPreferred(BLE_CONN_PARAMS);  // All parameters disabled
-  hw->bleAdvertising->start();
+    hw->bleConfigCharacteristic->setCallbacks(new ConfigCharacteristicCallbacks());
 
-  Logger::log("Started BLE advertising");
+    BLE2902* cccd = new BLE2902();
+    cccd->setCallbacks(new MeasureCharacteristicCallbacks());
+    hw->bleMeasureCharacteristic->addDescriptor(cccd);
+
+    hw->bleService->start();
+
+    BLEAdvertisementData advData;
+    advData.setCompleteServices(BLEUUID(Properties::SERVICE_UUID));
+    advData.setFlags(BLE_ADV_FLAGS);
+    advData.setName("IndustryScale");
+
+    hw->bleAdvertising = BLEDevice::getAdvertising();
+    hw->bleAdvertising->addServiceUUID(Properties::SERVICE_UUID);
+    hw->bleAdvertising->setScanResponse(false);
+    hw->bleAdvertising->setAdvertisementData(advData);
+    hw->bleAdvertising->setMinPreferred(BLE_CONN_PARAMS);
+    hw->bleAdvertising->setMaxPreferred(BLE_CONN_PARAMS);
+    hw->bleAdvertising->start();
+
+    Logger::log("Started BLE advertising (GATT server for configuration)");
+  }
 }
 
 void BleInitState::update() {}

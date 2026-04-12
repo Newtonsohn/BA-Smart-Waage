@@ -2,8 +2,9 @@
 #include "Properties.h"
 #include "StateType.h"
 
-#define ADC_CHECK_DELAY_MS 500
-#define ADC_STABILIZATION_DELAY 1000
+#define ADC_CHECK_DELAY_MS 100
+#define ADC_STABILIZATION_DELAY_COLD 500   // power-cycle: HX711 needs time to settle
+#define ADC_STABILIZATION_DELAY_WARM 100   // timer wake-up: HX711 was already running
 
 AdcInitState::AdcInitState() {}
 
@@ -19,7 +20,6 @@ void AdcInitState::enter() {
 void AdcInitState::update() {
   hw = HwContext::get();
 
-  // Check if ADC is ready
   if (hw->scale->is_ready()) {
     Logger::log("ADC ready");
     adcIsReady = true;
@@ -27,12 +27,11 @@ void AdcInitState::update() {
     Logger::log("Waiting for ADC...");
     delay(ADC_CHECK_DELAY_MS);
   }
-
-  delay(ADC_STABILIZATION_DELAY);
 }
 
 void AdcInitState::exit() {
   Logger::log("Exit ADC initialization State");
+  delay(Properties::wakeUpCauseIsTimer ? ADC_STABILIZATION_DELAY_WARM : ADC_STABILIZATION_DELAY_COLD);
 }
 
 StateType AdcInitState::nextState() {
