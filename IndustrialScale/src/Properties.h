@@ -11,9 +11,14 @@
  * @brief Stores gloabal configuration (constants and dynamic stat variables)
  */
 namespace Properties {
-// HX711 Pins
-extern const int ADC_DT;
-extern const int ADC_SCK;
+// ADS1234 Pins
+extern const int ADS1234_DRDY_DOUT;  // DRDY + DOUT combined, active low
+extern const int ADS1234_SCLK;
+extern const int ADS1234_PDWN;       // active low: LOW=power-down, HIGH=run
+extern const int ADS1234_DMS_PWR;    // MOSFET DMS power, active low
+
+// Button Pins
+extern const int BUTTON_CALIBRATION_PIN;
 
 // Display Pins
 extern const int DISPLAY_CS_PIN;

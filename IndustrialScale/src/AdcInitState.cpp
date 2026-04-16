@@ -1,10 +1,10 @@
 #include "AdcInitState.h"
 #include "Properties.h"
 #include "StateType.h"
+#include <Arduino.h>
 
-#define ADC_CHECK_DELAY_MS 100
-#define ADC_STABILIZATION_DELAY_COLD 500   // power-cycle: HX711 needs time to settle
-#define ADC_STABILIZATION_DELAY_WARM 100   // timer wake-up: HX711 was already running
+#define DRDY_POLL_DELAY_MS    10
+#define DRDY_TIMEOUT_MS       3000
 
 AdcInitState::AdcInitState() {}
 
@@ -13,25 +13,39 @@ void AdcInitState::enter() {
 
   hw = HwContext::get();
 
-  hw->scale = std::make_shared<HX711>();
-  hw->scale->begin(Properties::ADC_DT, Properties::ADC_SCK);
+  // Configure ADS1234 GPIO pins
+  pinMode(Properties::ADS1234_SCLK,      OUTPUT);
+  digitalWrite(Properties::ADS1234_SCLK, LOW);
+
+  pinMode(Properties::ADS1234_DMS_PWR,   OUTPUT);
+  digitalWrite(Properties::ADS1234_DMS_PWR, HIGH);  // MOSFET off initially
+
+  pinMode(Properties::ADS1234_PDWN,      OUTPUT);
+  digitalWrite(Properties::ADS1234_PDWN, HIGH);     // running state initially
+
+  pinMode(Properties::ADS1234_DRDY_DOUT, INPUT);
+
+  // Power-on sequence (datasheet Section 7.4.5):
+  // Enable load cell power, then toggle PDWN low→high to start conversions
+  digitalWrite(Properties::ADS1234_DMS_PWR, LOW);   // enable DMS power (active low)
+  delay(100);
+  digitalWrite(Properties::ADS1234_PDWN, LOW);      // assert power-down briefly
+  delay(10);
+  digitalWrite(Properties::ADS1234_PDWN, HIGH);     // release → chip starts converting
 }
 
 void AdcInitState::update() {
-  hw = HwContext::get();
-
-  if (hw->scale->is_ready()) {
+  // Wait for first DRDY falling edge (first conversion ready)
+  if (digitalRead(Properties::ADS1234_DRDY_DOUT) == LOW) {
     Logger::log("ADC ready");
     adcIsReady = true;
   } else {
-    Logger::log("Waiting for ADC...");
-    delay(ADC_CHECK_DELAY_MS);
+    delay(DRDY_POLL_DELAY_MS);
   }
 }
 
 void AdcInitState::exit() {
   Logger::log("Exit ADC initialization State");
-  delay(Properties::wakeUpCauseIsTimer ? ADC_STABILIZATION_DELAY_WARM : ADC_STABILIZATION_DELAY_COLD);
 }
 
 StateType AdcInitState::nextState() {
@@ -43,6 +57,6 @@ StateType AdcInitState::nextState() {
   if (Properties::wakeUpCauseIsTimer) {
     return StateType::MEASURE;
   } else {
-    return StateType::TARE;
+    return StateType::CALIBRATION_CHECK;
   }
 }
