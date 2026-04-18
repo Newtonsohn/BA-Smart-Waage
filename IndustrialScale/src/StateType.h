@@ -7,6 +7,8 @@
 enum class StateType {
   DISPLAY_INIT,
   ADC_INIT,
+  CALIBRATION_CHECK,
+  CALIBRATION,
   TARE,
   MEASURE,
   BLE_INIT,

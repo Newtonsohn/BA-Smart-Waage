@@ -5,9 +5,14 @@
 #define MAC_ADDRESS_LENGTH 6
 
 namespace Properties {
-// HX711 Pins
-const int ADC_DT = 26;
-const int ADC_SCK = 22;
+// ADS1234 Pins
+const int ADS1234_DRDY_DOUT = 2;   // DRDY + DOUT combined, active low
+const int ADS1234_SCLK      = 15;
+const int ADS1234_PDWN      = 26;  // active low: LOW=power-down, HIGH=run
+const int ADS1234_DMS_PWR   = 17;  // MOSFET DMS power, active low
+
+// Button Pins
+const int BUTTON_CALIBRATION_PIN = 32;
 
 // Display Pins
 const int DISPLAY_CS_PIN = 5;
