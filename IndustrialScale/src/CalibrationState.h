@@ -27,9 +27,8 @@ private:
 
   std::shared_ptr<HwContext> hw;
   Step currentStep = Step::REMOVE_WEIGHT;
+  unsigned long lastAdcPrintTime = 0;
 
   bool waitForButtonPress();
-  void showStep1();
-  void showStep2();
-  void showDone();
+  void printAdcEverySecond();
 };

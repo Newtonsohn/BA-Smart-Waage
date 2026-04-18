@@ -1,13 +1,7 @@
 #include "CalibrationCheckState.h"
 #include "Properties.h"
-#include <Fonts/FreeSans9pt7b.h>
-#include <Fonts/FreeSansBold12pt7b.h>
 
-#define CALIBRATION_WINDOW_MS   5000
-#define DISPLAY_X_MARGIN        10
-#define DISPLAY_Y_TITLE         25
-#define DISPLAY_Y_INSTRUCTION   60
-#define DISPLAY_Y_COUNTDOWN     100
+#define CALIBRATION_WINDOW_MS  5000
 
 CalibrationCheckState::CalibrationCheckState() {}
 
@@ -20,25 +14,30 @@ void CalibrationCheckState::enter() {
 
   startTime = millis();
 
-  hw->display->fillScreen(GxEPD_WHITE);
-  hw->display->setFont(&FreeSansBold12pt7b);
-  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
-  hw->display->print("Calibration");
-
-  hw->display->setFont(&FreeSans9pt7b);
-  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_INSTRUCTION);
-  hw->display->print("Press IO32 within 5s");
-  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_COUNTDOWN);
-  hw->display->print("to start calibration");
-  hw->display->display(true);
+  // Button is INPUT_PULLUP → pull IO32 to GND to trigger
+  Logger::log("--- Calibration window open ---");
+  Logger::log("Pull IO32 to GND within 5s to start calibration.");
+  Logger::log("5...");
 }
 
 void CalibrationCheckState::update() {
+  // Print countdown once per second
+  unsigned long elapsed = millis() - startTime;
+  int secondsLeft = (CALIBRATION_WINDOW_MS - (int)elapsed) / 1000;
+  if (secondsLeft < 0) secondsLeft = 0;
+
+  if (secondsLeft != lastCountdownPrinted) {
+    lastCountdownPrinted = secondsLeft;
+    if (secondsLeft > 0) {
+      Logger::log((std::to_string(secondsLeft) + "...").c_str());
+    }
+  }
+
+  // Check for button press (active LOW with INPUT_PULLUP)
   if (digitalRead(Properties::BUTTON_CALIBRATION_PIN) == LOW) {
     delay(50);  // debounce
     if (digitalRead(Properties::BUTTON_CALIBRATION_PIN) == LOW) {
       calibrationRequested = true;
-      // Wait for release before leaving
       while (digitalRead(Properties::BUTTON_CALIBRATION_PIN) == LOW) {
         delay(10);
       }
@@ -47,6 +46,11 @@ void CalibrationCheckState::update() {
 }
 
 void CalibrationCheckState::exit() {
+  if (calibrationRequested) {
+    Logger::log("Calibration requested — entering calibration.");
+  } else {
+    Logger::log("No input — skipping calibration.");
+  }
   Logger::log("Exit CalibrationCheck State");
 }
 

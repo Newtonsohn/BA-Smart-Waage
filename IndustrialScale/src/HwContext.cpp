@@ -9,9 +9,7 @@ std::shared_ptr<HwContext> HwContext::get() {
 
 int32_t HwContext::readADS1234() {
   // Wait for DRDY to go LOW (conversion ready)
-  while (digitalRead(Properties::ADS1234_DRDY_DOUT) == HIGH) {
-    delayMicroseconds(100);
-  }
+  while (digitalRead(Properties::ADS1234_DRDY_DOUT) == HIGH) {}
 
   // ADS1234 prefixes 2 channel-ID bits (A1, A0) before the 24-bit data.
   // With 24 clocks we capture [A1, A0, bit23..bit2]. Shift left 2 to align.

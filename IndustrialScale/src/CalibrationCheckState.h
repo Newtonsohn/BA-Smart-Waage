@@ -26,4 +26,5 @@ private:
 
   unsigned long startTime = 0;
   bool calibrationRequested = false;
+  int lastCountdownPrinted = -1;
 };
