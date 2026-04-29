@@ -11,9 +11,9 @@
 #define CAL_SAMPLES    5        // samples per channel (~2s per channel at 10SPS)
 
 static float zeroOffset[4];
-static float scaleFactor;       // grams per (sum of sign-corrected counts)
-static int   channelSign[4];    // +1 or -1 polarity correction per channel
-static bool calibrated = false;
+static float spanFactor[4];     // signed per-channel gain (g/count), encodes polarity
+static int   channelSign[4];    // +1 or -1 polarity per channel (used during calibration)
+static bool  calibrated = false;
 
 // ── ADS1234 low-level ─────────────────────────────────────────────────────────
 
@@ -83,16 +83,20 @@ void waitForSerial(const char* msg) {
 
 void runCalibration() {
     int estimatedSeconds = (int)(CAL_SAMPLES * 4 * 0.4f);
+    char buf[100];
 
-    waitForSerial("\n[Step 1/2] Remove ALL weight from scale.\nPress any key when ready...");
+    // Step 1: zero offset
+    waitForSerial("\n[Step 1/3] Remove ALL weight from scale.\nPress any key when ready...");
     Serial.printf("Measuring zero offset (~%ds)...\n", estimatedSeconds);
     for (int ch = 1; ch <= 4; ch++) {
         zeroOffset[ch - 1] = readAverage(ch, CAL_SAMPLES);
         Serial.printf("  CH%d: %.0f\n", ch, zeroOffset[ch - 1]);
     }
 
-    waitForSerial("\n[Step 2/2] Place calibration weight (%.0fg) on scale.\nPress any key when ready...");
-    Serial.printf("Measuring %.0fg (~%ds)...\n", CAL_WEIGHT_G, estimatedSeconds);
+    // Step 2: centered calibration — all channels get equal initial span factor
+    snprintf(buf, sizeof(buf), "\n[Step 2/3] Place %.0fg weight CENTERED on scale.\nPress any key when ready...", CAL_WEIGHT_G);
+    waitForSerial(buf);
+    Serial.printf("Measuring %.0fg centered (~%ds)...\n", CAL_WEIGHT_G, estimatedSeconds);
 
     float deflection[4];
     float totalAbsDeflection = 0;
@@ -108,13 +112,56 @@ void runCalibration() {
 
     if (totalAbsDeflection < 10000) {
         Serial.println("ERROR: Deflection too small — check load cell wiring.");
-        Serial.println("Falling back to raw ADC mode.");
         return;
     }
 
-    scaleFactor = CAL_WEIGHT_G / totalAbsDeflection;
+    float initScale = CAL_WEIGHT_G / totalAbsDeflection;
+    for (int i = 0; i < 4; i++) {
+        spanFactor[i] = channelSign[i] * initScale;
+    }
     calibrated = true;
-    Serial.printf("\nCalibration done!  Scale factor: %.6f g/count\n\n", scaleFactor);
+    Serial.printf("Initial scale factor: %.6f g/count\n", initScale);
+
+    // Step 3: corner trimming
+    // Place weight over each load cell corner in turn.
+    // The most-deflected channel at each corner gets its span factor adjusted
+    // so the total reads exactly CAL_WEIGHT_G. One pass is sufficient for
+    // typical DMS mismatches (<5%).
+    Serial.println("\n[Step 3/3] Corner trim: place weight over each load cell one at a time.");
+    for (int k = 1; k <= 4; k++) {
+        snprintf(buf, sizeof(buf), "  Corner %d/4: place %.0fg over corner %d, press any key...", k, CAL_WEIGHT_G, k);
+        waitForSerial(buf);
+
+        float delta[4];
+        int domCh = 0;
+        float maxAbsDelta = 0;
+        for (int ch = 1; ch <= 4; ch++) {
+            float val = readAverage(ch, CAL_SAMPLES);
+            delta[ch - 1] = val - zeroOffset[ch - 1];
+            if (fabsf(delta[ch - 1]) > maxAbsDelta) {
+                maxAbsDelta = fabsf(delta[ch - 1]);
+                domCh = ch - 1;
+            }
+        }
+
+        float measured = 0;
+        for (int i = 0; i < 4; i++) {
+            measured += spanFactor[i] * delta[i];
+        }
+        Serial.printf("  Reading: %.1f g  (dominant CH%d)\n", measured, domCh + 1);
+
+        if (maxAbsDelta > 1000) {
+            // Solve exactly for the dominant channel's span factor so that
+            // sum_other + spanFactor[domCh] * delta[domCh] = CAL_WEIGHT_G
+            float sumOther = measured - spanFactor[domCh] * delta[domCh];
+            spanFactor[domCh] = (CAL_WEIGHT_G - sumOther) / delta[domCh];
+            Serial.printf("  CH%d span adjusted to %.6f g/count\n", domCh + 1, spanFactor[domCh]);
+        } else {
+            Serial.printf("  CH%d: deflection too small, skipped.\n", domCh + 1);
+        }
+    }
+
+    Serial.println("\nCalibration complete!\n");
 }
 
 // ── Setup ─────────────────────────────────────────────────────────────────────
@@ -177,11 +224,11 @@ void loop() {
     }
 
     if (calibrated) {
-        float totalCounts = 0;
+        float weight = 0;
         for (int ch = 0; ch < 4; ch++) {
-            totalCounts += channelSign[ch] * (values[ch] - zeroOffset[ch]);
+            weight += spanFactor[ch] * (values[ch] - zeroOffset[ch]);
         }
-        Serial.printf("%.1f g\n", totalCounts * scaleFactor);
+        Serial.printf("%.1f g\n", weight);
     } else {
         Serial.printf("CH1:%d CH2:%d CH3:%d CH4:%d\n",
                       values[0], values[1], values[2], values[3]);
