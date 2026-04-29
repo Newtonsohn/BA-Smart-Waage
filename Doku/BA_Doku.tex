@@ -1,0 +1,342 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{verbatim}
+
+\title{Bachelorarbeit: Low-Power IoT-Skala}
+\author{Thomas Rocheteau}
+\date{Februar 2026}
+
+\begin{document}
+
+	\maketitle
+
+	\tableofcontents
+	\newpage
+
+	% ============================================================
+	\section{Einleitung}
+	% ============================================================
+
+	\subsection{Ausgangslage}
+	% Hier Text einfügen
+
+	\subsection{Zielsetzung}
+	% Hier Text einfügen
+
+	\subsection{Meilensteine}
+
+	\begin{enumerate}
+		\item \textbf{Hardware-Entwicklung:} Custom ESP32 Low-Power Board vs. kommerzielle Lösungen.
+		\item \textbf{Quality of Life Improvements:} Implementierung von Bedienelementen (Taster) sowie Software-Funktionen (Tara, Kalibrierung).
+		\item \textbf{Kommunikationsprotokolle:} Evaluation von ESP-NOW vs. BLE.
+	\end{enumerate}
+
+	% ============================================================
+	\section{Requirements Engineering}
+	% ============================================================
+	% Hier Text einfügen
+
+	% ============================================================
+	\section{Technische Ausgangslage}
+	% ============================================================
+
+	\subsection{Design Space Exploration}
+
+	\subsubsection{MCU-Auswahl: ESP32-S3 vs. ESP32-C3}
+	\begin{itemize}
+		\item \textbf{ESP32-S3:} Verfügt über einen Ultra-Low-Power (ULP) Co-Prozessor. Ermöglicht präzises Abtasten und Detektion von Gewichtsänderungen im Tiefschlaf . Datasheet sagt 8uA\cite{rnt_supermini}\cite{s3_datasheet}.
+		\item \textbf{ESP32-C3:} Intervall-basiertes Abtasten (z. B. alle 5 Minuten) durch periodisches Aufwachen des Hauptprozessors. Datasheet sagt 5uA \cite{c3_datasheet}
+		- ESP32-C3 integrates two 12-bit SAR ADCs.
+	\end{itemize}
+
+	\subsubsection{Evaluation kommerzieller Boards}
+	\begin{itemize}
+		\item \textbf{ESP32-C3 Super Mini:} Spezifiziert mit einem Low-Power-Stromverbrauch von ca. $43\,\mu A$ (im Deep Sleep).
+	\end{itemize}
+
+	\subsubsection{Kommunikationsstrategie}
+	Untersuchung der Vor- und Nachteile von \textbf{ESP-NOW} gegenüber \textbf{BLE} (Bluetooth Low Energy).
+
+	% ============================================================
+	\section{Implementation Hardware}
+	% ============================================================
+
+	\subsection{Dimensionierung der Spannungsversorgung (Buck-Boost)}
+	Für die Systemspannung wurde der hocheffiziente Buck-Boost-Konverter \textit{TPS63802} gewählt. Dieser ermöglicht es, die schwankende Spannung der 18650-Lithium-Ionen-Zelle ($3,0\text{V}$ bis $4,2\text{V}$) stabil auf das Zielniveau zu wandeln.
+
+	\subsubsection{Berechnung des Feedback-Netzwerks}
+	Die Ausgangsspannung $V_{OUT}$ wird über einen externen Spannungsteiler am Feedback-Pin (FB) eingestellt. Die interne Referenzspannung beträgt beim TPS63802 konstant $V_{FB} = 500\text{mV}$. Die Berechnung erfolgt nach der Formel:
+
+	\begin{equation}
+		V_{OUT} = V_{FB} \cdot \left(1 + \frac{R_1}{R_2}\right)
+	\end{equation} \cite{TPS63802}
+
+	In der Testphase werden zwei Konfigurationen evaluiert, um das Optimum zwischen Energieeffizienz und Signalqualität der Wägezelle zu ermitteln:
+
+	\begin{table}[h]
+		\centering
+		\caption{Widerstandswerte für unterschiedliche Ausgangsspannungen}
+
+		\begin{tabular}{@{}llll@{}}
+			\toprule
+			Zielspannung $V_{OUT}$ & $R_1$ (E96-Reihe) & $R_2$ (Standard) & Berechnetes $V_{OUT}$ \\ \midrule
+			$3,3\text{V}$ & $511\,\text{k}\Omega$ & $91\,\text{k}\Omega$ & $3,307\text{V}$ \\
+			$3,0\text{V}$ & $500\,\text{k}\Omega$ & $100\,\text{k}\Omega$ & $3,000\text{V}$ \\ \bottomrule
+		\end{tabular}
+	\end{table}
+
+	\subsubsection{Optimierung der Peripheriebeschaltung}
+	Auf die Implementierung des \textit{Power-Good} (PG) Indikators des TPS63802 wurde bewusst verzichtet:
+
+	\begin{itemize}
+		\item \textbf{Reduktion der Komplexität:} Da der ESP32-C3 über interne Brown-out-Detektoren verfügt, ist eine externe Überwachung der Spannungsstabilität über den PG-Pin redundant.
+		\item \textbf{Minimierung des Ruhestroms:} Der Verzicht auf den erforderlichen Pull-up-Widerstand am Open-Drain-Ausgang des PG-Pins eliminiert potenzielle Leckströme im Fehlerfall oder während der Startphase.
+		\item \textbf{Platzbedarf:} Die Einsparung dieses Schaltungsteils erlaubt ein kompakteres Routing der sensiblen Feedback-Leitungen, was die EMV-Eigenschaften des Buck-Boost-Konverters verbessert.
+	\end{itemize}
+
+	\subsubsection{Versuchsaufbau: $3,3\text{V}$ vs. $3,0\text{V}$}
+	Im Rahmen der Validierung wird untersucht, ob eine Absenkung der Systemspannung auf $3,0\text{V}$ signifikante Vorteile bringt. Folgende Hypothesen werden geprüft:
+
+	\begin{enumerate}
+		\item \textbf{Energieeinsparung:} Da die Leistungsaufnahme vieler Komponenten quadratisch mit der Spannung korreliert ($P = U^2 / R$), könnte $3,0\text{V}$ die Batterielaufzeit verlängern.
+		\item \textbf{Stabilität des Mikrocontrollers:} Es wird verifiziert, ob der ESP32-C3 bei Stromspitzen während der WiFi-Übertragung unter $3,0\text{V}$ stabil arbeitet.
+		\item \textbf{Signal-Rausch-Verhältnis (SNR):} Eine geringere Versorgungsspannung am HX711-Verstärker reduziert die Erregerspannung der Wägezelle. Es ist zu klären, ob dies die Messgenauigkeit der Waage negativ beeinflusst.
+	\end{enumerate}
+
+	Zur Minimierung des Ruhestroms wurden bewusst hochohmige Widerstände im Megaohm-Bereich gewählt, um den Querstrom des Teilers unter $5\mu\text{A}$ zu halten.
+
+	\subsection{Energieversorgung (Power Supply)}
+	Die Dimensionierung der Energieversorgung basiert auf folgendem Setup:
+	\begin{itemize}
+		\item Konfiguration: $3 \times 18650$ Akkumulatoren
+		\item Kapazität: $3 \times 3000\,mAh = 9000\,mAh$
+		\item Energiegehalt: $11,1\,Wh$
+	\end{itemize}
+
+	\subsection{Einfluss der Entladekurve auf die Effizienz}
+
+	Ein kritischer Aspekt beim Vergleich zwischen Linearreglern (LDO) und Schaltreglern (Buck-Boost) ist das Verhalten über den gesamten Spannungsverlauf der Batterie. Während der Buck-Boost-Converter theoretisch eine nahezu konstant hohe Effizienz bietet, ist die Effizienz des LDO direkt an das Spannungsgefälle zwischen Eingangs- und Ausgangsspannung gekoppelt.
+
+	\subsubsection{Die LDO-Effizienz-Kurve}
+	Die Effizienz $\eta_{LDO}$ berechnet sich näherungsweise aus dem Verhältnis von Ausgangsspannung $U_{out}$ zu Eingangsspannung $U_{in}$:
+
+	\begin{equation}
+		\eta_{LDO} \approx \frac{U_{out}}{U_{in}}
+	\end{equation}
+
+	Daraus ergeben sich für eine Li-Ion-Zelle (Typ 18650) bei einer geregelten Ausgangsspannung von $3,3\,V$ folgende Werte:
+
+	\begin{itemize}
+		\item \textbf{Bei voller Batterie ($4,2\,V$):} $\eta \approx 78,5\,\%$
+		\item \textbf{Bei Nominalspannung ($3,7\,V$):} $\eta \approx 89,1\,\%$
+		\item \textbf{Kurz vor Entladeschluss ($3,4\,V$):} $\eta \approx 97,0\,\%$
+	\end{itemize}
+
+	\subsubsection{Dynamik des Break-Even-Punkts}
+	Da die Effizienz des LDO mit sinkender Batteriespannung steigt, verschiebt sich auch der Break-Even-Punkt zuungunsten des Buck-Boost-Converters.
+
+	\begin{enumerate}
+		\item \textbf{Frühphase ($4,2\,V$):} Der Buck-Boost spart ca. $15\,mA$ im Aktiv-Modus. Der Break-Even-Punkt liegt bei ca. $54$ Minuten.
+		\item \textbf{Mittlere Phase ($3,7\,V$):} Die Differenz $\Delta I_{active}$ sinkt auf ca. $8\,mA$. Der resultierende Break-Even-Punkt verschiebt sich wie folgt:
+	\end{enumerate}
+
+	\begin{equation}
+		t_{sleep} = \frac{8.000\,\mu As \cdot 2\,s}{9\,\mu A} \approx 1.777\,s \approx \mathbf{29,6\,Minuten}
+	\end{equation}
+
+	\textbf{Interpretation:} Je weiter die Batterie entladen wird, desto kürzer müssten die Intervalle zwischen den Aktivphasen sein, damit sich der Einsatz eines Buck-Boost-Converters energetisch amortisiert. Da das System aufgrund der geringen Solarleistung von $19\,\mu A$ vorwiegend im mittleren oder unteren Spannungsbereich operieren wird, schwindet der theoretische Vorteil des Schaltreglers in der praktischen Anwendung nahezu vollständig.
+
+	\subsubsection{Zusammenfassende Bewertung für die Hardwarewahl}
+	Die Wahl fiel auf den \textbf{RT9080-33GJ5}, da dieser in der Gesamtbetrachtung drei wesentliche Vorteile für das spezifische Lastprofil vereint:
+
+	\begin{itemize}
+		\item \textbf{Minimaler statischer Verlust:} Mit einem Ruhestrom $I_q$ von nur $2\,\mu A$ wird die begrenzte Solar-Energieernte minimal belastet.
+		\item \textbf{Dynamische Effizienz:} Im wahrscheinlichen Spannungsfenster ($3,4\,V$ bis $3,8\,V$) arbeitet der LDO mit einer Effizienz von über $85\,\%$, was unter Berücksichtigung der Komplexität vergleichbar mit einem Schaltregler bei geringen Lasten ist.
+		\item \textbf{Optimiertes Dropout-Verhalten:} Die extrem niedrige Dropout-Spannung ermöglicht den stabilen Betrieb der $3,3\,V$-Elektronik bis zu einer Batteriespannung von ca. $3,35\,V$. Dies maximiert die nutzbare Kapazität der 18650-Zelle.
+	\end{itemize}
+
+	\subsection{Sensorik: Wägezellen und ADC}
+
+	\subsubsection{Wägezellen (YZC-133)}
+
+	Als Kraftsensoren kommen vier Wägezellen des Typs YZC-133 zum Einsatz \cite{yzc133_datasheet}.
+	Jede Zelle ist für eine Nennlast von \SI{1}{\kilogram} ausgelegt und enthält intern eine vollständige Wheatstone-Brücke aus vier Dehnungsmessstreifen (DMS).
+	Die relevanten elektrischen Kenngrössen sind in Tabelle~\ref{tab:yzc133} zusammengefasst.
+
+	\begin{table}[h]
+		\centering
+		\caption{Elektrische Spezifikation YZC-133}
+		\label{tab:yzc133}
+		\begin{tabular}{@{}ll@{}}
+			\toprule
+			Parameter & Wert \\ \midrule
+			Nennlast                & \SI{1}{\kilogram} \\
+			Nennkennwert (Empfindlichkeit) & $1{,}0 \pm 0{,}15\,\text{mV/V}$ \\
+			Nullpunktsignal         & $\pm 0{,}1\,\text{mV/V}$ \\
+			Kriechfehler            & $0{,}03\,\%\,\text{F.S.} / \SI{30}{\minute}$ \\
+			Eingangsimpedanz        & $1066 \pm 20\,\Omega$ \\
+			Ausgangsimpedanz        & $1000 \pm 5\,\Omega$ \\ \bottomrule
+		\end{tabular}
+	\end{table}
+
+	Bei \SI{3{,}3}{\volt} Erregerspannung liegen beide Ausgangspins der Brücke auf einem Gleichtaktpotenzial von ca.\ \SI{1{,}65}{\volt} ($V_{\text{ex}}/2$).
+	Das Nutzsignal ist die \emph{Differenz} zwischen diesen beiden Pins: bei Vollast nominell $1{,}0\,\text{mV/V} \times 3{,}3\,\text{V} = \SI{3{,}3}{\milli\volt}$.
+	Der differentielle Eingang des ADS1234 erfasst genau diese Differenz und unterdrückt das Gleichtaktsignal durch seine hohe Gleichtaktunterdrückung (CMRR).
+	Die vier Zellen sind in X-Formation an den Ecken der Waagplattform montiert.
+
+	\subsubsection{ADS1234 -- 4-Kanal-24-Bit-ADC}
+
+	Für die Signalerfassung wird der ADS1234 von Texas Instruments eingesetzt \cite{ads1234_datasheet}.
+	Der Chip ist ein 24-Bit-Sigma-Delta-ADC mit vier differenziellen Eingangskanälen und einem integrierten programmierbaren Verstärker (PGA) mit den Verstärkungsfaktoren 1, 2, 64 und 128.
+	Mit PGA-Gain 128 ergibt sich für das \SI{3{,}3}{\milli\volt}-Signal der YZC-133 ein verstärktes Differenzsignal von ca. \SI{422}{\milli\volt}, das den Eingangsbereich des ADC gut ausnutzt.
+	Die wählbare Ausgabedatenrate beträgt 10~SPS oder 80~SPS; im vorliegenden System wird 10~SPS verwendet, da dies das Eingangsrauschen durch die längere Integrationszeit maximally reduziert.
+
+	\subsubsection{Von einem auf vier ADC-Kanäle}
+
+	In der Vorarbeit zu dieser Bachelorarbeit waren alle vier Wägezellen in einer gemeinsamen Wheatstone-Brücke zusammengeschaltet und lieferten ihr summiertes Signal an einen einzigen ADC-Kanal.
+	In dieser Arbeit wird jede Wägezelle einzeln an einen eigenen Eingangskanal des ADS1234 geführt.
+	Dieser Wechsel bringt zwei wesentliche Vorteile:
+
+	\paragraph{Ecklastkompensation}
+	Mit einem einzigen Summensignal ist keine positionsabhängige Korrektur möglich: Das System kann nicht unterscheiden, ob eine Abweichung durch einen exzentrischen Lastangriffspunkt oder durch eine tatsächliche Massenänderung entsteht.
+	Durch die individuellen Kanäle lässt sich jede Wägezelle separat kalibrieren und der dominante Sensor pro Lastposition gezielt korrigieren (siehe Abschnitt~\ref{sec:kalibrierung}).
+
+	\paragraph{Rauschverhalten und individuelle Kalibrierung}
+	Die Empfindlichkeit der YZC-133 streut mit $\pm 15\,\%$ zwischen den Exemplaren.
+	In der Einzelkanal-Lösung mittelte sich diese Streuung über die parallele Zusammenschaltung heraus, konnte aber nicht pro Sensor korrigiert werden.
+	Mit vier separaten Kanälen wird die Empfindlichkeitsdifferenz jeder Wägezelle durch den individuell bestimmten Skalierungsfaktor (\texttt{spanFactor}) in der Software exakt kompensiert.
+	Zusätzlich verbessert die digitale Summation vier statistisch unkorrelierter ADC-Messungen das Signal-Rausch-Verhältnis gegenüber einer einzigen Messung um den Faktor $\sqrt{4} = 2$ ($+6\,\text{dB}$), da sich das Rauschen der Kanäle inkohärent addiert, während sich die Nutzsignale kohärent addieren.
+
+	% ============================================================
+	\section{Implementation Software}
+	% ============================================================
+
+	\subsection{ADS1234 -- Ansteuerung und Kalibrierung}
+	\label{sec:kalibrierung}
+
+	\subsubsection{Überblick}
+
+	Der ADS1234 ist ein 24-Bit-Sigma-Delta-ADC von Texas Instruments, der speziell für den Einsatz mit Brückensensoren wie Dehnungsmessstreifen (DMS) ausgelegt ist \cite{ads1234_datasheet}.
+	Er stellt vier unabhängige Eingangskanäle bereit, die über zwei digitale Adressleitungen (\texttt{A0}, \texttt{A1}) ausgewählt werden.
+	Die Kommunikation mit dem Mikrocontroller erfolgt über ein synchrones serielles Protokoll mit den Leitungen \texttt{DRDY/DOUT} (kombiniertes Datenbereit- und Datensignal), \texttt{SCLK} (Takt) sowie \texttt{PDWN} (Power-Down/Reset).
+
+	\begin{table}[h]
+		\centering
+		\caption{Pin-Belegung ADS1234 -- ESP32}
+		\begin{tabular}{@{}lll@{}}
+			\toprule
+			Signal & GPIO & Funktion \\ \midrule
+			\texttt{DRDY/DOUT} & 2  & Datenbereit-Anzeige und serieller Datenausgang \\
+			\texttt{SCLK}      & 15 & Serieller Takt (Master-Ausgang) \\
+			\texttt{PDWN}      & 26 & Power-Down / Reset \\
+			\texttt{DMS\_PWR}  & 17 & Versorgung der Wägezellen (schaltbar) \\
+			\texttt{A0}        & 32 & Kanal-Adresse Bit 0 \\
+			\texttt{A1}        & 4  & Kanal-Adresse Bit 1 \\ \bottomrule
+		\end{tabular}
+	\end{table}
+
+	\subsubsection{Serielles Leseprotokoll}
+
+	Der ADS1234 signalisiert eine abgeschlossene Wandlung, indem er die \texttt{DRDY}-Leitung auf \texttt{LOW} zieht.
+	Die Software wartet aktiv auf diesen Zustand und liest anschliessend 24 Bit MSB-first aus, indem für jedes Bit ein \texttt{SCLK}-Impuls erzeugt und der Pegel von \texttt{DOUT} abgetastet wird.
+	Nach dem 24. Bit wird gemäss Datenblatt (Figure~7-10) ein 25.~Taktimpuls gesendet, der \texttt{DRDY} wieder auf \texttt{HIGH} zwingt und damit den ADC für die nächste Wandlung freigibt.
+	Da der ADS1234 ein Zweierkomplement-Format mit 24~Bit Breite verwendet, wird der Rohwert abschliessend vorzeichenrichtig auf 32~Bit erweitert:
+
+	\begin{verbatim}
+	if (raw & 0x800000) raw |= 0xFF000000;
+	return (int32_t)raw;
+	\end{verbatim}
+
+	\subsubsection{Kanalwechsel CH4 $\rightarrow$ CH1: PDWN-Workaround}
+
+	Der ADS1234 kodiert den aktiven Kanal über die beiden Adressleitungen als 2-Bit-Binärzahl: Kanal~1 entspricht \texttt{A0=0, A1=0}, Kanal~4 entspricht \texttt{A0=1, A1=1}.
+	Der Chip erkennt einen Kanalwechsel intern anhand steigender Flanken auf \texttt{A0} oder \texttt{A1}.
+	Beim Wechsel von Kanal~4 nach Kanal~1 fallen jedoch \emph{beide} Adressleitungen von \texttt{HIGH} auf \texttt{LOW} -- es entsteht keine einzige steigende Flanke.
+	Der ADS1234 erkennt diesen Wechsel daher nicht als Kanalumschaltung und setzt \texttt{DRDY} nicht zurück.
+	Die Leitung bleibt \texttt{LOW}, was der Software fälschlicherweise signalisiert, dass bereits ein gültiger Messwert des neuen Kanals vorliegt, obwohl noch der alte Kanal aktiv ist.
+
+	Als Lösung wird nach dem Setzen der Adressleitungen auf Kanal~1 geprüft, ob \texttt{DRDY} bereits \texttt{LOW} ist.
+	Trifft dies zu, wird ein \texttt{PDWN}-Puls von \SI{500}{\micro\second} ausgelöst, der den ADC in den Power-Down-Zustand versetzt und anschliessend neu startet.
+	Dieser Reset zwingt den Chip, den ausgewählten Kanal neu zu initialisieren und eine frische Wandlung durchzuführen, bevor \texttt{DRDY} das nächste Mal \texttt{LOW} wird.
+
+	\begin{verbatim}
+	int32_t readChannel(int ch) {
+	    setChannel(ch);
+	    if (ch == 1 && digitalRead(PIN_DRDY_DOUT) == LOW) {
+	        digitalWrite(PIN_PDWN, LOW);
+	        delayMicroseconds(500);
+	        digitalWrite(PIN_PDWN, HIGH);
+	    }
+	    return readADS1234();
+	}
+	\end{verbatim}
+
+	\subsubsection{Kalibrierung}
+
+	Die Kalibrierung läuft in drei aufeinanderfolgenden Schritten ab und wird einmalig beim Start der Firmware über die serielle Schnittstelle ausgelöst.
+	Alle Messwerte sind Mittelwerte aus \texttt{CAL\_SAMPLES}~=~5 Wandlungen pro Kanal, was bei 10~SPS einer Messzeit von rund 0,4~Sekunden pro Kanal entspricht.
+
+	\paragraph{Schritt 1 -- Nullpunkt (Zero Offset)}
+	Die Waage wird vollständig entlastet und für jeden der vier Kanäle ein gemittelter Rohwert erfasst, der als Nullpunkt \texttt{zeroOffset[ch]} gespeichert wird.
+	Dieser Wert kompensiert thermische und mechanische Vorlast der Wägezellen sowie Offset-Fehler des ADC.
+
+	\paragraph{Schritt 2 -- Empfindlichkeit (Span)}
+	Ein bekanntes Kalibriergewicht von \SI{3000}{\gram} wird mittig auf die Waagplattform gelegt.
+	Für jeden Kanal wird die Abweichung vom Nullpunkt berechnet:
+	\begin{equation}
+		\Delta_i = \overline{x}_i - \text{zeroOffset}_i
+	\end{equation}
+	Die vier Wägezellen sind in X-Formation an den Ecken der Plattform angebracht.
+	Bei dieser Anordnung werden die zwei diagonal gegenüberliegenden Zellen beim Belasten auf Zug, die anderen zwei auf Druck beansprucht, was zu einem mechanisch bedingten Vorzeichenwechsel im ADC-Signal führt.
+	Das Vorzeichen von $\Delta_i$ wird daher pro Kanal automatisch erfasst und als \texttt{channelSign} gespeichert.
+	Der initiale Skalierungsfaktor ergibt sich aus der Gesamtauslenkung über alle vier Kanäle:
+	\begin{equation}
+		s_{\text{init}} = \frac{m_{\text{cal}}}{\sum_{i=1}^{4} |\Delta_i|}
+		\qquad \Rightarrow \qquad
+		\text{spanFactor}_i = \text{channelSign}_i \cdot s_{\text{init}}
+	\end{equation}
+	Damit trägt jeder Kanal anteilig zur Gesamtmasse bei, wobei die Polarität korrekt berücksichtigt wird.
+
+	\paragraph{Schritt 3 -- Ecklastkompensation (Corner Trim)}
+	Bei einer Plattformwaage mit vier Wägezellen in den Ecken führen fertigungsbedingte Toleranzen der Sensoren dazu, dass ein exzentrisch aufgelegtes Gewicht -- je nach Position -- unterschiedliche Gesamtmassen anzeigt.
+	Um dies zu kompensieren, wird das Kalibriergewicht nacheinander über jede der vier Ecken gestellt.
+
+	Bei jeder Eckenbelastung ermittelt die Software denjenigen Kanal mit der grössten absoluten Auslenkung (\emph{dominanter Kanal}), da dieser am stärksten von der Lastposition beeinflusst wird.
+	Die aktuelle Gesamtanzeige $m_{\text{meas}}$ ergibt sich aus den Beiträgen aller vier Kanäle:
+	\begin{equation}
+		m_{\text{meas}} = \sum_{i=1}^{4} \text{spanFactor}_i \cdot \Delta_i
+	\end{equation}
+	Der Skalierungsfaktor des dominanten Kanals~$d$ wird anschliessend so angepasst, dass die Anzeige exakt dem Kalibriergewicht entspricht, während die Faktoren der übrigen Kanäle unverändert bleiben:
+	\begin{equation}
+		\text{spanFactor}_d = \frac{m_{\text{cal}} - \sum_{i \neq d} \text{spanFactor}_i \cdot \Delta_i}{\Delta_d}
+	\end{equation}
+	Ein einziger Durchlauf über alle vier Ecken ist für typische DMS-Toleranzen von unter 5\,\% ausreichend.
+
+	\paragraph{Gewichtsberechnung im Betrieb}
+	Nach abgeschlossener Kalibrierung berechnet sich die angezeigte Masse in jedem Messtakt als:
+	\begin{equation}
+		m = \sum_{i=1}^{4} \text{spanFactor}_i \cdot \bigl(\text{raw}_i - \text{zeroOffset}_i\bigr)
+	\end{equation}
+
+	% ============================================================
+	\section{Tests und Validierung}
+	% ============================================================
+	% Hier Text einfügen
+
+	% ============================================================
+	\section{Fazit, Diskussion und Ausblick}
+	% ============================================================
+	% Hier Text einfügen
+
+	\bibliographystyle{plain}
+	\bibliography{quellen}
+
+\end{document}

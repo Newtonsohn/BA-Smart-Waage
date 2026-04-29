@@ -1,0 +1,38 @@
+\begin{thebibliography}{1}
+
+\bibitem{c3_datasheet}
+esp32-c3-wroom-02 datasheet.
+\newblock
+  \url{https://documentation.espressif.com/esp32-c3-wroom-02_datasheet_en.pdf/}.
+\newblock Online; aufgerufen 01.02.2026.
+
+\bibitem{s3_datasheet}
+esp32-s3-wroom-02 datasheet.
+\newblock
+  \url{https://documentation.espressif.com/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf/}.
+\newblock Online; aufgerufen 01.02.2026.
+
+\bibitem{rnt_supermini}
+Getting started with esp32-c3 super mini.
+\newblock
+  \url{https://randomnerdtutorials.com/getting-started-esp32-c3-super-mini/}.
+\newblock Online; aufgerufen 01.02.2026.
+
+\bibitem{yzc133_datasheet}
+Kraftsensor 0\ldots1\,kg, yzc-133.
+\newblock
+  \url{https://www.reichelt.com/ch/de/shop/produkt/kraftsensor_0_1_kg_yzc-133-282443}.
+\newblock Online; aufgerufen 29.04.2026.
+
+\bibitem{TPS63802}
+Tps63802 datasheet.
+\newblock \url{https://www.ti.com/lit/ds/symlink/tps63802.pdf}.
+\newblock Online; aufgerufen 02.02.2026.
+
+\bibitem{ads1234_datasheet}
+{Texas Instruments}.
+\newblock {ADS1234} product datasheet.
+\newblock \url{https://www.ti.com/lit/ds/symlink/ads1234.pdf}.
+\newblock Online; aufgerufen 29.04.2026.
+
+\end{thebibliography}

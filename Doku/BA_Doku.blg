@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: BA_Doku.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: plain.bst
+Reallocating 'name_of_file' (item size: 1) to 8 items.
+Database file #1: quellen.bib
+Warning--to sort, need author or key in rnt_supermini
+Warning--to sort, need author or key in s3_datasheet
+Warning--to sort, need author or key in c3_datasheet
+Warning--to sort, need author or key in TPS63802
+Warning--to sort, need author or key in yzc133_datasheet
+You've used 6 entries,
+            2118 wiz_defined-function locations,
+            520 strings with 4780 characters,
+and the built_in function-call counts, 1073 in all, are:
+= -- 106
+> -- 12
+< -- 0
++ -- 8
+- -- 2
+* -- 32
+:= -- 140
+add.period$ -- 19
+call.type$ -- 6
+change.case$ -- 19
+chr.to.int$ -- 0
+cite$ -- 11
+duplicate$ -- 42
+empty$ -- 138
+format.name$ -- 2
+if$ -- 258
+int.to.chr$ -- 0
+int.to.str$ -- 6
+missing$ -- 0
+newline$ -- 34
+num.names$ -- 2
+pop$ -- 60
+preamble$ -- 1
+purify$ -- 13
+quote$ -- 0
+skip$ -- 30
+stack$ -- 0
+substring$ -- 30
+swap$ -- 6
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 24
+warning$ -- 5
+while$ -- 2
+width$ -- 7
+write$ -- 58
+(There were 5 warnings)
