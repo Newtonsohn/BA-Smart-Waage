@@ -5,30 +5,23 @@
 #include "State.h"
 #include "Logger.h"
 
-/**
- * @class CalibrationState
- * @brief Two-step calibration: zero (empty scale) then known weight.
- *
- * Step 1 — Remove all weight, press IO32  → captures zeroOffset
- * Step 2 — Place 1.0 kg,      press IO32  → captures calFactor
- * Results are saved to NVS immediately.
- */
 class CalibrationState : public State {
 public:
   CalibrationState();
 
-  void enter() override;
+  void enter() override;  // blocking — runs full calibration sequence
   void update() override;
   void exit() override;
   StateType nextState() override;
 
 private:
-  enum class Step { REMOVE_WEIGHT, PLACE_WEIGHT, DONE };
-
   std::shared_ptr<HwContext> hw;
-  Step currentStep = Step::REMOVE_WEIGHT;
-  unsigned long lastAdcPrintTime = 0;
 
-  bool waitForButtonPress();
-  void printAdcEverySecond();
+  // Block until any byte is received on Serial. Prints live ADC while waiting.
+  void waitForSerial(const char* msg);
+
+  // Print current raw ADC value for all 4 channels.
+  void printAllChannels();
+
+  void runCalibration();
 };

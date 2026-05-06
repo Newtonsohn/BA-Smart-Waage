@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\roche\\\\OneDrive\\\\Dokumente\\\\ZHAW\\\\Sem 6\\\\PM4\\\\BA-Smart-Waage\\\\ADC DBG - Ecklastkompensation\" -Recurse -File | Where-Object { $_.Extension -match \"\\\\.\\(cpp|h|ino|py|txt|ini\\)\" } | Select-Object FullName)"
+    ]
+  }
+}

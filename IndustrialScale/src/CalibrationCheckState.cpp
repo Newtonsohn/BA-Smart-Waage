@@ -8,15 +8,12 @@ CalibrationCheckState::CalibrationCheckState() {}
 void CalibrationCheckState::enter() {
   Logger::log("Enter CalibrationCheck State");
 
-  hw = HwContext::get();
-
-  pinMode(Properties::BUTTON_CALIBRATION_PIN, INPUT_PULLUP);
-
   startTime = millis();
 
-  // Button is INPUT_PULLUP → pull IO32 to GND to trigger
+  while (Serial.available()) Serial.read();  // flush any pending bytes
+
   Logger::log("--- Calibration window open ---");
-  Logger::log("Pull IO32 to GND within 5s to start calibration.");
+  Logger::log("Send any key via Serial within 5s to start calibration.");
   Logger::log("5...");
 }
 
@@ -33,15 +30,9 @@ void CalibrationCheckState::update() {
     }
   }
 
-  // Check for button press (active LOW with INPUT_PULLUP)
-  if (digitalRead(Properties::BUTTON_CALIBRATION_PIN) == LOW) {
-    delay(50);  // debounce
-    if (digitalRead(Properties::BUTTON_CALIBRATION_PIN) == LOW) {
-      calibrationRequested = true;
-      while (digitalRead(Properties::BUTTON_CALIBRATION_PIN) == LOW) {
-        delay(10);
-      }
-    }
+  if (Serial.available()) {
+    while (Serial.available()) Serial.read();  // consume
+    calibrationRequested = true;
   }
 }
 

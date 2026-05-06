@@ -5,15 +5,8 @@
 #include <BLECharacteristic.h>
 #include <GxEPD2_BW.h>
 
-// Define the display type once for reuse.
 using DisplayType = GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT>;
 
-/**
- * @class HwContext
- * @brief Hardware context that holds shared pointers to all hardware components.
- *
- * Singleton-like container for BLE, Display and ADS1234 ADC access.
- */
 class HwContext {
 public:
   // Bluetooth
@@ -26,13 +19,23 @@ public:
   // Display
   std::shared_ptr<DisplayType> display;
 
-  // Get the singleton instance
   static std::shared_ptr<HwContext> get();
 
-  // Read one 24-bit two's-complement sample from the ADS1234.
-  // Blocks until DRDY goes LOW (conversion ready).
+  // Low-level: select ADS1234 channel (1–4) via A0/A1 pins.
+  void setChannel(int ch);
+
+  // Read one sample from the currently selected channel.
+  // Blocks until DRDY goes LOW. Includes 25th SCLK pulse to reset DRDY.
   int32_t readADS1234();
 
-  // Average multiple ADS1234 readings.
-  long averageScaleReading();
+  // Switch to channel ch, then read one sample.
+  // Applies PDWN workaround for CH4→CH1 transition where DRDY doesn't reset.
+  int32_t readChannel(int ch);
+
+  // Average n samples from channel ch with light sleep between samples.
+  float readAverage(int ch, int n);
+
+  // Calibrated weight in grams: sum of spanFactor[i] * (avg_ch[i] - zeroOffset[i]).
+  // Returns 0 if calibrationValid is false.
+  float measureWeight();
 };

@@ -10,19 +10,18 @@ const int ADS1234_DRDY_DOUT = 2;   // DRDY + DOUT combined, active low
 const int ADS1234_SCLK      = 15;
 const int ADS1234_PDWN      = 26;  // active low: LOW=power-down, HIGH=run
 const int ADS1234_DMS_PWR   = 17;  // MOSFET DMS power, active low
-
-// Button Pins
-const int BUTTON_CALIBRATION_PIN = 32;
+const int ADS1234_A0        = 32;  // channel select bit 0
+const int ADS1234_A1        = 4;   // channel select bit 1
 
 // Display Pins
-const int DISPLAY_CS_PIN = 5;
-const int DISPLAY_DC_PIN = 16;
+const int DISPLAY_CS_PIN    = 5;
+const int DISPLAY_DC_PIN    = 16;
 const int DISPLAY_RESET_PIN = 17;
-const int DISPLAY_BUSY_PIN = 4;
+const int DISPLAY_BUSY_PIN  = 4;
 
 // Settings
-int connectionTimeout = 1800;  //Connection timeout in seconds
-int tareTime = 10;           //Tare time in seconds
+int connectionTimeout = 1800;
+int tareTime = 10;
 bool loggingEnabled = true;
 
 const char* BACKEND_URL = "https://192.168.2.100:7093/bins/integration?mac=";
@@ -34,32 +33,30 @@ const char* CHARACTERISTIC_MEASURE_UUID = "a03cfc2e-370e-4c34-9d8e-9d75f6e93e88"
 uint8_t bleMacAddress[MAC_ADDRESS_LENGTH] = { 0, 0, 0, 0, 0, 0 };
 
 // Scale
-const int SCALE_READING_SAMPLE_COUNT = 20;
-const int SCALE_READING_SAMPLE_DELAY = 50;
-float zeroOffset = 0;
-float calFactor = 1;
-float currentWeight = 0.0f;  //Current weight in grams
-float prevWeight = 0.0f;     //Previous weight in grams
+float zeroOffset[4]  = {0, 0, 0, 0};
+float spanFactor[4]  = {0, 0, 0, 0};
+bool  calibrationValid = false;
+float currentWeight  = 0.0f;
+float prevWeight     = 0.0f;
 
 // Configuration
 char deviceName[MAX_STRING_LENGTH_64] = "SmartScale";
-char itemName[MAX_STRING_LENGTH_64] = "No Product";
+char itemName[MAX_STRING_LENGTH_64]   = "No Product";
 char itemNumber[MAX_STRING_LENGTH_64] = "No Product";
 int heartbeatTrigger = 0;
-int updateInterval = 300;  //Update interval in seconds
-float itemWeight = 5000.0f;
+int updateInterval   = 300;
+float itemWeight     = 5000.0f;
 
 // States
-bool deviceConnected = false;
-bool gwSubscribed = false;
+bool deviceConnected      = false;
+bool gwSubscribed         = false;
 bool configurationReceived = false;
 String configurationString = "";
-bool sendDataFailed = false;
-int heartbeatCounter = 0;
-bool wakeUpCauseIsTimer = false;
+bool sendDataFailed       = false;
+int heartbeatCounter      = 0;
+bool wakeUpCauseIsTimer   = false;
 char failureMessage[MAX_STRING_LENGTH_64] = "";
 
-//Save to Non Volatile Storage - needed for deep sleep
 esp_err_t saveConfigToNVS() {
   nvs_handle_t nvs_handle;
   esp_err_t err = nvs_open("storage", NVS_READWRITE, &nvs_handle);
@@ -74,19 +71,20 @@ esp_err_t saveConfigToNVS() {
   nvs_set_i32(nvs_handle, "updateIntv", updateInterval);
 
   nvs_set_blob(nvs_handle, "ble_mac", bleMacAddress, 6);
-
   nvs_set_blob(nvs_handle, "itemWeight", &itemWeight, sizeof(itemWeight));
-  nvs_set_blob(nvs_handle, "zeroOffset", &zeroOffset, sizeof(zeroOffset));
-  nvs_set_blob(nvs_handle, "calFactor", &calFactor, sizeof(calFactor));
   nvs_set_blob(nvs_handle, "prevWeight", &prevWeight, sizeof(prevWeight));
+
+  // 4-channel calibration data
+  nvs_set_blob(nvs_handle, "zeroOffset", zeroOffset, sizeof(zeroOffset));
+  nvs_set_blob(nvs_handle, "spanFactor", spanFactor, sizeof(spanFactor));
+  uint8_t calByte = calibrationValid ? 0xAB : 0x00;
+  nvs_set_u8(nvs_handle, "calValid", calByte);
 
   err = nvs_commit(nvs_handle);
   nvs_close(nvs_handle);
-
   return err;
 }
 
-//Load from Non Volatile Storage - needed for deep sleep
 esp_err_t loadConfigFromNVS() {
   nvs_handle_t nvs_handle;
   esp_err_t err = nvs_open("storage", NVS_READONLY, &nvs_handle);
@@ -99,21 +97,29 @@ esp_err_t loadConfigFromNVS() {
   len = sizeof(itemNumber);
   nvs_get_str(nvs_handle, "itemNumber", itemNumber, &len);
 
-  nvs_get_i32(nvs_handle, "heartbeat", reinterpret_cast<int32_t*>(&heartbeatTrigger));
+  nvs_get_i32(nvs_handle, "heartbeat",  reinterpret_cast<int32_t*>(&heartbeatTrigger));
   nvs_get_i32(nvs_handle, "heartbeatC", reinterpret_cast<int32_t*>(&heartbeatCounter));
   nvs_get_i32(nvs_handle, "updateIntv", reinterpret_cast<int32_t*>(&updateInterval));
 
-  size_t sizeOfMacAddress = 6;
-  nvs_get_blob(nvs_handle, "ble_mac", bleMacAddress, &sizeOfMacAddress);
+  size_t sizeOfMac = 6;
+  nvs_get_blob(nvs_handle, "ble_mac", bleMacAddress, &sizeOfMac);
 
   size_t sizeOfFloat = sizeof(float);
   nvs_get_blob(nvs_handle, "itemWeight", &itemWeight, &sizeOfFloat);
-  nvs_get_blob(nvs_handle, "zeroOffset", &zeroOffset, &sizeOfFloat);
-  nvs_get_blob(nvs_handle, "calFactor", &calFactor, &sizeOfFloat);
   nvs_get_blob(nvs_handle, "prevWeight", &prevWeight, &sizeOfFloat);
 
-  nvs_close(nvs_handle);
+  // 4-channel calibration data
+  size_t sizeOf4Floats = sizeof(zeroOffset);
+  nvs_get_blob(nvs_handle, "zeroOffset", zeroOffset, &sizeOf4Floats);
+  sizeOf4Floats = sizeof(spanFactor);
+  nvs_get_blob(nvs_handle, "spanFactor", spanFactor, &sizeOf4Floats);
+  uint8_t calByte = 0x00;
+  nvs_get_u8(nvs_handle, "calValid", &calByte);
+  calibrationValid = (calByte == 0xAB);
 
+  if (updateInterval <= 0) updateInterval = 300;
+
+  nvs_close(nvs_handle);
   return ESP_OK;
 }
 }

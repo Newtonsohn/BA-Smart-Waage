@@ -6,19 +6,14 @@
 #define MAX_STRING_LENGTH_64 64
 #define MAC_ADDRESS_LENGTH 6
 
-/**
- * @namepsace Properties
- * @brief Stores gloabal configuration (constants and dynamic stat variables)
- */
 namespace Properties {
 // ADS1234 Pins
 extern const int ADS1234_DRDY_DOUT;  // DRDY + DOUT combined, active low
 extern const int ADS1234_SCLK;
 extern const int ADS1234_PDWN;       // active low: LOW=power-down, HIGH=run
 extern const int ADS1234_DMS_PWR;    // MOSFET DMS power, active low
-
-// Button Pins
-extern const int BUTTON_CALIBRATION_PIN;
+extern const int ADS1234_A0;         // channel select bit 0
+extern const int ADS1234_A1;         // channel select bit 1
 
 // Display Pins
 extern const int DISPLAY_CS_PIN;
@@ -38,15 +33,12 @@ extern const char* CHARACTERISTIC_CONFIG_UUID;
 extern const char* CHARACTERISTIC_MEASURE_UUID;
 extern uint8_t bleMacAddress[MAC_ADDRESS_LENGTH];
 
-// Scale
-extern const int SCALE_READING_SAMPLE_COUNT;
-extern const int SCALE_READING_SAMPLE_DELAY;
-extern float zeroOffset;
-extern float calFactor;
+// Scale — 4-channel corner-load compensation
+extern float zeroOffset[4];   // raw ADC zero per channel
+extern float spanFactor[4];   // g/count per channel (encodes polarity)
+extern bool  calibrationValid;
 extern float currentWeight;
 extern float prevWeight;
-
-
 
 // Configuration
 extern char deviceName[MAX_STRING_LENGTH_64];
@@ -66,15 +58,6 @@ extern int heartbeatCounter;
 extern bool wakeUpCauseIsTimer;
 extern char failureMessage[MAX_STRING_LENGTH_64];
 
-/**
- * @brief Saves configuration from NVS (non-volatile storage).
- * @return ESP_OK if successfull, esp_err_t error code.
- */
 extern esp_err_t saveConfigToNVS();
-
-/**
- * @brief Loads configuration from NVS (non-volatile storage).
- * @return ESP_OK if successfull, esp_err_t error code.
- */
 extern esp_err_t loadConfigFromNVS();
 }

@@ -5,13 +5,6 @@
 #include "State.h"
 #include "Logger.h"
 
-/**
- * @class CalibrationCheckState
- * @brief Gives a 5-second window on cold boot to enter calibration mode.
- *
- * If IO32 is pressed within 5 seconds, transitions to CalibrationState.
- * Otherwise transitions directly to BleInitState.
- */
 class CalibrationCheckState : public State {
 public:
   CalibrationCheckState();
@@ -22,8 +15,6 @@ public:
   StateType nextState() override;
 
 private:
-  std::shared_ptr<HwContext> hw;
-
   unsigned long startTime = 0;
   bool calibrationRequested = false;
   int lastCountdownPrinted = -1;

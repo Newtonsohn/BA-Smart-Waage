@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Preferences.h>
 
 #define PIN_DRDY_DOUT  2
 #define PIN_SCLK       15
@@ -7,13 +8,15 @@
 #define PIN_A0         32
 #define PIN_A1         4
 
-#define CAL_WEIGHT_G   3000.0f  // known calibration weight in grams
-#define CAL_SAMPLES    5        // samples per channel (~2s per channel at 10SPS)
+#define CAL_WEIGHT_G    3000.0f  // center calibration weight in grams
+#define CORNER_WEIGHT_G 1000.0f  // corner trimming weight in grams
+#define CAL_SAMPLES     10       // samples per channel (~2s per channel at 10SPS)
 
-static float zeroOffset[4];
-static float spanFactor[4];     // signed per-channel gain (g/count), encodes polarity
-static int   channelSign[4];    // +1 or -1 polarity per channel (used during calibration)
-static bool  calibrated = false;
+static float       zeroOffset[4];
+static float       spanFactor[4];   // signed per-channel gain (g/count), encodes polarity
+static int         channelSign[4];  // +1 or -1 polarity per channel (used during calibration)
+static bool        calibrated = false;
+static Preferences prefs;
 
 // ── ADS1234 low-level ─────────────────────────────────────────────────────────
 
@@ -79,6 +82,54 @@ void waitForSerial(const char* msg) {
     while (Serial.available()) Serial.read();  // consume input
 }
 
+// ── NVS persistence ───────────────────────────────────────────────────────────
+
+void saveCalibration() {
+    prefs.begin("scale", false);
+    char key[8];
+    for (int i = 0; i < 4; i++) {
+        snprintf(key, sizeof(key), "zero%d", i);
+        prefs.putFloat(key, zeroOffset[i]);
+        snprintf(key, sizeof(key), "span%d", i);
+        prefs.putFloat(key, spanFactor[i]);
+        snprintf(key, sizeof(key), "sign%d", i);
+        prefs.putInt(key, channelSign[i]);
+    }
+    prefs.putUChar("valid", 0xAB);
+    prefs.end();
+    Serial.println("Calibration saved to NVS.");
+}
+
+// Returns true if valid calibration data was found and loaded.
+bool loadCalibration() {
+    prefs.begin("scale", true);
+    bool ok = (prefs.getUChar("valid", 0x00) == 0xAB);
+    if (ok) {
+        char key[8];
+        for (int i = 0; i < 4; i++) {
+            snprintf(key, sizeof(key), "zero%d", i);
+            zeroOffset[i] = prefs.getFloat(key, 0.0f);
+            snprintf(key, sizeof(key), "span%d", i);
+            spanFactor[i] = prefs.getFloat(key, 0.0f);
+            snprintf(key, sizeof(key), "sign%d", i);
+            channelSign[i] = prefs.getInt(key, 1);
+        }
+        calibrated = true;
+    }
+    prefs.end();
+    return ok;
+}
+
+void printCalibrationValues() {
+    Serial.println("\n=== Calibration values (NVS) ===");
+    Serial.println("  Ch  zeroOffset      spanFactor      sign");
+    for (int i = 0; i < 4; i++) {
+        Serial.printf("  %d   %12.2f    %14.8f    %+d\n",
+                      i + 1, zeroOffset[i], spanFactor[i], channelSign[i]);
+    }
+    Serial.println("================================\n");
+}
+
 // ── Calibration ───────────────────────────────────────────────────────────────
 
 void runCalibration() {
@@ -129,7 +180,7 @@ void runCalibration() {
     // typical DMS mismatches (<5%).
     Serial.println("\n[Step 3/3] Corner trim: place weight over each load cell one at a time.");
     for (int k = 1; k <= 4; k++) {
-        snprintf(buf, sizeof(buf), "  Corner %d/4: place %.0fg over corner %d, press any key...", k, CAL_WEIGHT_G, k);
+        snprintf(buf, sizeof(buf), "  Corner %d/4: place %.0fg over corner %d, press any key...", k, CORNER_WEIGHT_G, k);
         waitForSerial(buf);
 
         float delta[4];
@@ -154,14 +205,16 @@ void runCalibration() {
             // Solve exactly for the dominant channel's span factor so that
             // sum_other + spanFactor[domCh] * delta[domCh] = CAL_WEIGHT_G
             float sumOther = measured - spanFactor[domCh] * delta[domCh];
-            spanFactor[domCh] = (CAL_WEIGHT_G - sumOther) / delta[domCh];
-            Serial.printf("  CH%d span adjusted to %.6f g/count\n", domCh + 1, spanFactor[domCh]);
+            spanFactor[domCh] = (CORNER_WEIGHT_G - sumOther) / delta[domCh];
+            Serial.printf("  CH%d span adjusted to %.8f g/count\n", domCh + 1, spanFactor[domCh]);
         } else {
             Serial.printf("  CH%d: deflection too small, skipped.\n", domCh + 1);
         }
     }
 
-    Serial.println("\nCalibration complete!\n");
+    saveCalibration();
+    printCalibrationValues();
+    Serial.println("Calibration complete — starting measurement.\n");
 }
 
 // ── Setup ─────────────────────────────────────────────────────────────────────
@@ -178,13 +231,22 @@ void setup() {
     setChannel(1);
 
     Serial.println("\n=== Smart Scale ===");
-    Serial.println("  r  =  raw ADC output");
-    Serial.println("  c  =  calibrate then show weight");
+
+    bool hasNVS = loadCalibration();
+    if (hasNVS) {
+        Serial.println("  m  =  measure (stored calibration)");
+        Serial.println("  c  =  recalibrate");
+        Serial.println("  r  =  raw ADC output");
+    } else {
+        Serial.println("  c  =  calibrate then measure");
+        Serial.println("  r  =  raw ADC output");
+    }
     Serial.print("Choice: ");
 
     char mode = 0;
-    while (mode != 'r' && mode != 'c') {
+    while (mode != 'r' && mode != 'c' && mode != 'm') {
         if (Serial.available()) mode = Serial.read();
+        if (mode == 'm' && !hasNVS) mode = 0;  // 'm' only valid when NVS exists
         delay(50);
     }
     Serial.println(mode);
@@ -202,6 +264,9 @@ void setup() {
 
     if (mode == 'c') {
         runCalibration();
+    } else if (mode == 'm') {
+        printCalibrationValues();
+        Serial.println("Starting measurement with stored calibration.\n");
     }
 }
 
