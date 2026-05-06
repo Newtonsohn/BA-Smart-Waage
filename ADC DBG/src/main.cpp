@@ -2,6 +2,7 @@
 
 #define PIN_DRDY_DOUT  2
 #define PIN_SCLK       15
+<<<<<<< Updated upstream
 #define PIN_PDWN       26
 #define PIN_DMS_PWR    17
 #define PIN_A0         32
@@ -22,6 +23,22 @@ void setChannel(int ch) {
     int i = ch - 1;
     digitalWrite(PIN_A0, i & 0x01);
     digitalWrite(PIN_A1, (i >> 1) & 0x01);
+=======
+#define PIN_PDWN       26  // ADS1234 !PDWN, active low
+#define PIN_DMS_PWR    17  // MOSFET DMS power, active low
+#define PIN_A0         32  // ADS1234 channel select bit 0
+#define PIN_A1         4   // ADS1234 channel select bit 1
+
+static int currentChannel = 1;
+
+// Channel 1-4: A1A0 = 00, 01, 10, 11
+void setChannel(int ch) {
+    if (ch < 1 || ch > 4) return;
+    currentChannel = ch;
+    int idx = ch - 1;
+    digitalWrite(PIN_A0, idx & 0x01);
+    digitalWrite(PIN_A1, (idx >> 1) & 0x01);
+>>>>>>> Stashed changes
 }
 
 int32_t readADS1234() {
@@ -122,14 +139,30 @@ void runCalibration() {
 void setup() {
     Serial.begin(115200);
 
+<<<<<<< Updated upstream
     pinMode(PIN_SCLK, OUTPUT);    digitalWrite(PIN_SCLK, LOW);
     pinMode(PIN_DMS_PWR, OUTPUT); digitalWrite(PIN_DMS_PWR, HIGH);
     pinMode(PIN_PDWN, OUTPUT);    digitalWrite(PIN_PDWN, HIGH);
+=======
+    pinMode(PIN_SCLK, OUTPUT);
+    digitalWrite(PIN_SCLK, LOW);
+
+    pinMode(PIN_A0, OUTPUT);
+    pinMode(PIN_A1, OUTPUT);
+
+    pinMode(PIN_DMS_PWR, OUTPUT);
+    digitalWrite(PIN_DMS_PWR, HIGH); // MOSFET off initially
+
+    pinMode(PIN_PDWN, OUTPUT);
+    digitalWrite(PIN_PDWN, HIGH);    // default HIGH (running) until toggle below
+
+>>>>>>> Stashed changes
     pinMode(PIN_DRDY_DOUT, INPUT);
     pinMode(PIN_A0, OUTPUT);
     pinMode(PIN_A1, OUTPUT);
     setChannel(1);
 
+<<<<<<< Updated upstream
     Serial.println("\n=== Smart Scale ===");
     Serial.println("  r  =  raw ADC output");
     Serial.println("  c  =  calibrate then show weight");
@@ -144,18 +177,30 @@ void setup() {
 
     // Power-on sequence (after mode selected so DMS is fresh)
     digitalWrite(PIN_DMS_PWR, LOW);
+=======
+    setChannel(1); // start on channel 1
+
+    // Power-on sequence
+    digitalWrite(PIN_DMS_PWR, LOW);  // enable DMS power (active low)
+>>>>>>> Stashed changes
     delay(100);
     digitalWrite(PIN_PDWN, LOW);
     delay(10);
     digitalWrite(PIN_PDWN, HIGH);
     delay(500);
 
+<<<<<<< Updated upstream
     Serial.printf("ADC ready. DRDY: %s\n",
                   digitalRead(PIN_DRDY_DOUT) ? "HIGH (not ready)" : "LOW (ready)");
 
     if (mode == 'c') {
         runCalibration();
     }
+=======
+    Serial.printf("Init done. DRDY is currently: %s\n",
+                  digitalRead(PIN_DRDY_DOUT) ? "HIGH (not ready)" : "LOW (ready!)");
+    Serial.println("Send 1-4 to switch channel.");
+>>>>>>> Stashed changes
 }
 
 // ── Loop ──────────────────────────────────────────────────────────────────────
@@ -163,6 +208,7 @@ void setup() {
 void loop() {
     if (Serial.available()) {
         char c = Serial.read();
+<<<<<<< Updated upstream
         if (c == 'f') {
             digitalWrite(PIN_PDWN, LOW);
             digitalWrite(PIN_DMS_PWR, HIGH);
@@ -187,5 +233,20 @@ void loop() {
                       values[0], values[1], values[2], values[3]);
     }
 
+=======
+        if (c >= '1' && c <= '4') {
+            setChannel(c - '0');
+            Serial.printf(">> Switched to channel %d (A1=%d A0=%d)\n",
+                          currentChannel,
+                          (currentChannel - 1) >> 1,
+                          (currentChannel - 1) & 1);
+            idx = 0;
+        }
+    }
+
+    int32_t value = readADS1234();
+    Serial.printf("[CH%d | %4lu | %6lums] %d (0x%06lX)\n",
+                  currentChannel, idx++, millis(), value, (uint32_t)(value & 0xFFFFFF));
+>>>>>>> Stashed changes
     delay(500);
 }
