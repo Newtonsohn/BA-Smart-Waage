@@ -16,7 +16,17 @@ sudo systemctl restart bluetooth && sleep 5 && bluetoothctl devices | awk '{prin
   -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
   gateway
 
-
+-----------------------
+docker compose up -d
+tommypi@tommypi:~ $ kill $(lsof -t -i:5003) 2>/dev/null; ~/start-gateway.sh
 
 
 ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS="http://+:5003" ./Gateway
+
+---------------------------
+find out ip of RPI:
+	arp -a | findstr b8-27
+	nmap -sn 10.131.28.0/24
+
+ssh:
+	 ssh -L 8080:localhost:8080 -L 7093:localhost:7093 tommypi@10.95.229.200

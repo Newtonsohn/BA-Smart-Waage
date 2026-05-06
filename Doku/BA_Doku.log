@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  29 APR 2026 16:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  29 APR 2026 17:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -586,13 +586,27 @@ Overfull \hbox (2.04507pt too wide) in paragraph at lines 324--325
 -schlos-se-ner Ka-li-brie-rung be-
  []
 
-[11] (BA_Doku.bbl
+[11]
+Overfull \hbox (0.24458pt too wide) in paragraph at lines 340--342
+\OT1/cmr/m/n/12 Als Re-fe-renz dient die Mes-sung des un-kop-ti-mier-ten Sy-ste
+ms oh-ne Low-Power-
+ []
+
+<Images/Stromverbrauch/Stromverbrauch Ausgangslage.png, id=281, 455.45157pt x 2
+02.50656pt>
+File: Images/Stromverbrauch/Stromverbrauch Ausgangslage.png Graphic file (type 
+png)
+<use Images/Stromverbrauch/Stromverbrauch Ausgangslage.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch Ausgangslage.png 
+ used on input line 345.
+(pdftex.def)             Requested size: 331.50238pt x 147.39903pt.
+(BA_Doku.bbl
 Underfull \hbox (badness 3815) in paragraph at lines 4--8
 \OT1/cmtt/m/n/12 com / esp32-[]c3-[]wroom-[]02 _ datasheet _ en . pdf/$[]\OT1/c
 mr/m/n/12 .  On-li-ne; auf-ge-ru-fen
  []
 
-
+[12 <./Images/Stromverbrauch/Stromverbrauch Ausgangslage.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 16--20
 []\OT1/cmr/m/n/12 Getting star-ted with esp32-c3 su-per mi-
  []
@@ -621,19 +635,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 28--31
 ti . com / lit / ds / symlink /
  []
 
-) [12] (BA_Doku.aux)
+) [13] (BA_Doku.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `BA_Doku.out' has not changed.
-(rerunfilecheck)             Checksum: 99A282A9CF370852D888D351328326D7;6380.
+(rerunfilecheck)             Checksum: AC1E89EEF54F032714DD28E84E5B59EF;7357.
  ) 
 Here is how much of TeX's memory you used:
- 15353 strings out of 467871
- 306108 string characters out of 5418376
+ 15378 strings out of 467871
+ 307072 string characters out of 5418376
  700997 words of memory out of 5000000
- 43989 multiletter control sequences out of 15000+600000
+ 44008 multiletter control sequences out of 15000+600000
  638635 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,12n,79p,491b,1211s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -651,9 +665,9 @@ Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.
 pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
 m/cmti12.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/a
 msfonts/cm/cmtt12.pfb>
-Output written on BA_Doku.pdf (12 pages, 215481 bytes).
+Output written on BA_Doku.pdf (13 pages, 290834 bytes).
 PDF statistics:
- 349 PDF objects out of 1000 (max. 8388607)
- 78 named destinations out of 1000 (max. 500000)
- 257 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 380 PDF objects out of 1000 (max. 8388607)
+ 84 named destinations out of 1000 (max. 500000)
+ 294 words of extra memory for PDF output out of 10000 (max. 10000000)
 

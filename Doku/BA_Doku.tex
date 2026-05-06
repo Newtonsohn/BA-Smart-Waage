@@ -329,7 +329,60 @@
 	% ============================================================
 	\section{Tests und Validierung}
 	% ============================================================
-	% Hier Text einfügen
+
+	\subsection{Strommessungen und Low-Power-Optimierung}
+
+	Ein zentrales Ziel dieser Arbeit ist die Minimierung des Stromverbrauchs, um eine möglichst lange Batterielaufzeit zu erreichen.
+	Die folgenden Messungen dokumentieren den Verbrauch in verschiedenen Betriebszuständen und zeigen den Effekt der implementierten Optimierungen.
+
+	\subsubsection{Ausgangslage}
+
+	Als Referenz dient die Strommessung des nicht optimierten Systems.
+	Ein vollständiger Betriebszyklus -- vom Aufwachen aus dem Deep Sleep bis zum erneuten Eintreten in den Deep Sleep -- gliedert sich gemäss den seriellen Ausgaben der Firmware in folgende Phasen:
+
+	\begin{enumerate}
+		\item \textbf{Boot (0\,s):} Der ESP32 startet nach dem Deep Sleep neu. Die State Machine wird initialisiert.
+		\item \textbf{ADC-Initialisierung (0\,s):} Der ADS1234 wird eingeschaltet und auf Betriebsbereitschaft geprüft (\texttt{ADC ready}).
+		\item \textbf{Messung (1--2\,s):} Das Gewicht wird erfasst und auf Änderung geprüft (\texttt{Weight changed: true}).
+		\item \textbf{BLE-Initialisierung (2--3\,s):} Der BLE-Stack wird gestartet und Advertisement begonnen.
+		\item \textbf{Datenübertragung (3--10\,s):} Das System wartet auf die Verbindung des Gateways (~6\,s Wartezeit), überträgt den Messwert per Indication und beendet die Verbindung.
+		\item \textbf{Deep Sleep (ab 10\,s):} Das System tritt in den Deep Sleep ein und bleibt bis zum nächsten Messzyklus inaktiv.
+	\end{enumerate}
+
+	Die gesamte Aktivphase beträgt in der Ausgangslage ca.\ \textbf{10 Sekunden} pro Zyklus (Abbildung~\ref{fig:stromverbrauch-ausgangslage}).
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch Ausgangslage"}
+		\caption{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}
+		\label{fig:stromverbrauch-ausgangslage}
+	\end{figure}
+
+	\subsubsection{BLE-Optimierung: Connection vs. Advertisement}
+
+	% Hier Text einfügen (Screenshots BLE Connection vs. Advertisement)
+
+	Um die Aktivphase zu verkürzen, wurde untersucht, wie kurz das BLE-Advertisement gewählt werden kann, damit das Gateway die Pakete noch zuverlässig empfängt.
+	Tabelle~\ref{tab:ble-adv-duration} zeigt die Empfangsrate in Abhängigkeit der Advertisement-Dauer.
+
+	\begin{table}[h]
+		\centering
+		\caption{BLE-Advertisement-Dauer vs. Empfangsrate am Raspberry Pi Gateway}
+		\label{tab:ble-adv-duration}
+		\begin{tabular}{@{}cc@{}}
+			\toprule
+			Advertisement-Dauer [ms] & Empfangene Pakete [\%] \\ \midrule
+			% Hier Messwerte eintragen
+			 &  \\
+			 &  \\
+			 &  \\
+			 &  \\
+			 &  \\ \bottomrule
+		\end{tabular}
+	\end{table}
+
+	\subsubsection{Deep Sleep, Light Sleep und ADC-Sampling}
+	% Hier Text einfügen (Screenshots Sleep-Modi, ADC-Sample-Reduktion)
 
 	% ============================================================
 	\section{Fazit, Diskussion und Ausblick}
