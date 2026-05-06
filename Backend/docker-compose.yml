@@ -15,9 +15,9 @@ services:
       Authentication__ClientId: ${KEYCLOAK_CLIENTID}
       Authentication__ClientSecret: ${KEYCLOAK_CLIENTSECRET}
       Authentication__Audience: ${KEYCLOAK_AUDIENCE}
-      Authentication__MetadataAddress:  "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration"
-      Authentication__Issuer: "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}"
-      Authentication__Authority: "http://${IP_ADDRESS}:8080/realms/${KEYCLOAK_REALM}"
+      Authentication__MetadataAddress: "http://keycloak:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration"
+      Authentication__Issuer: "http://localhost:8080/realms/${KEYCLOAK_REALM}"
+      Authentication__Authority: "http://localhost:8080/realms/${KEYCLOAK_REALM}"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://backend.dashboard:18889
       OTEL_SERVICE_NAME: Backend
       DOTNET_DiagnosticPort__ConnectionMode: Listen
@@ -49,6 +49,7 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
       KC_METRICS_ENABLED: true
+      KC_HOSTNAME_BACKCHANNEL_URL: "http://keycloak:8080"
     volumes:
       - keycloakdata:/opt/keycloak/data
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
@@ -79,7 +80,7 @@ services:
       - IndustrialScaleNet
 
   postgres:
-    image: postgres:latest
+    image: postgres:16
     ports:
       - "5432:5432"
     environment:
