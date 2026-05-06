@@ -25,8 +25,6 @@ namespace EdgeDevice.BLE
         {
             MacAddress = macAddress;
             Alias = alias;
-            _servicesHandled = false;
-            _measurementCharacteristic = null;
         }
 
         public string MacAddress { get; private set; } = string.Empty;
@@ -57,13 +55,8 @@ namespace EdgeDevice.BLE
 
         }
         
-        private bool _servicesHandled = false;
-
-        public async Task HandleServicesResolvedAsync(Device device)
+        private async Task OnServiceResolved(Device device, BlueZEventArgs e)
         {
-            if (_servicesHandled) return;
-            _servicesHandled = true;
-
             var targetService = await device.GetServiceAsync(ServiceUUID);
             if (targetService == null)
             {
@@ -73,11 +66,6 @@ namespace EdgeDevice.BLE
 
             await CheckConfiguraiton(targetService);
             await RegisterMeasurement(targetService);
-        }
-
-        private async Task OnServiceResolved(Device device, BlueZEventArgs e)
-        {
-            await HandleServicesResolvedAsync(device);
         }
 
         private async Task RegisterMeasurement(IGattService1 targetService)
