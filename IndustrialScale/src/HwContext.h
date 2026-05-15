@@ -1,8 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <BLEServer.h>
-#include <BLECharacteristic.h>
+#include <NimBLEDevice.h>
 #include <GxEPD2_BW.h>
 
 using DisplayType = GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT>;
@@ -10,11 +9,11 @@ using DisplayType = GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT>;
 class HwContext {
 public:
   // Bluetooth
-  BLEServer* bleServer = nullptr;
-  BLEService* bleService = nullptr;
-  BLECharacteristic* bleConfigCharacteristic = nullptr;
-  BLECharacteristic* bleMeasureCharacteristic = nullptr;
-  BLEAdvertising* bleAdvertising = nullptr;
+  NimBLEServer* bleServer = nullptr;
+  NimBLEService* bleService = nullptr;
+  NimBLECharacteristic* bleConfigCharacteristic = nullptr;
+  NimBLECharacteristic* bleMeasureCharacteristic = nullptr;
+  NimBLEAdvertising* bleAdvertising = nullptr;
 
   // Display
   std::shared_ptr<DisplayType> display;

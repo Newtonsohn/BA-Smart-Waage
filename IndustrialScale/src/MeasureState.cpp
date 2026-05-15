@@ -20,9 +20,10 @@ void MeasureState::enter() {
 
   weightChanged = fabs(Properties::currentWeight - Properties::prevWeight) >= Properties::itemWeight * WEIGHT_CHANGE_THRESHOLD;
 
-  Logger::log(("Current weight: " + std::to_string(Properties::currentWeight)).c_str());
-  Logger::log(("Prev weight: " + std::to_string(Properties::prevWeight)).c_str());
-  Logger::log(("Weight changed: " + std::string(weightChanged ? "true" : "false")).c_str());
+  char buf[60];
+  snprintf(buf, sizeof(buf), "Weight: %.1f g  (prev: %.1f g  changed: %s)",
+           Properties::currentWeight, Properties::prevWeight, weightChanged ? "yes" : "no");
+  Logger::log(buf);
 }
 
 void MeasureState::update() {}

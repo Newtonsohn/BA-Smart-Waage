@@ -14,10 +14,10 @@ const int ADS1234_A0        = 32;  // channel select bit 0
 const int ADS1234_A1        = 4;   // channel select bit 1
 
 // Display Pins
-const int DISPLAY_CS_PIN    = 5;
-const int DISPLAY_DC_PIN    = 16;
-const int DISPLAY_RESET_PIN = 17;
-const int DISPLAY_BUSY_PIN  = 4;
+const int DISPLAY_CS_PIN    = 14;   // Blau
+const int DISPLAY_DC_PIN    = 5;   // Weiss
+const int DISPLAY_RESET_PIN = 19;   // Orange
+const int DISPLAY_BUSY_PIN  = 16;   // Violett
 
 // Settings
 int connectionTimeout = 1800;

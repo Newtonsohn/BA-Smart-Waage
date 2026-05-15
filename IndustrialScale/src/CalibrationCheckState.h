@@ -15,6 +15,7 @@ public:
   StateType nextState() override;
 
 private:
+  std::shared_ptr<HwContext> hw;
   unsigned long startTime = 0;
   bool calibrationRequested = false;
   int lastCountdownPrinted = -1;

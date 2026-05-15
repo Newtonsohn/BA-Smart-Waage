@@ -51,6 +51,10 @@ private:
   // Indicates if configuration was loaded successfully.
   bool configurationSuccess = false;
 
+  // Tracks last weight display refresh
+  unsigned long lastWeightUpdateMs = 0;
+  char cachedMac[18] = {};
+
   /**
    * @brief Displays the current loaded configuration on the attached E-ink Display.
    */

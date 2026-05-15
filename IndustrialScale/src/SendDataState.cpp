@@ -1,7 +1,8 @@
 #include "SendDataState.h"
 #include "Properties.h"
 #include "StateType.h"
-#include <BLEDevice.h>
+#include <NimBLEDevice.h>
+#include "DebugToggle.h"
 
 #define MILLISECONDS_PER_SECOND 1000
 
@@ -23,7 +24,9 @@ void SendDataState::enter() {
 
 void SendDataState::update() {
   if (Properties::wakeUpCauseIsTimer) {
-    delay(50);  // Nothing to do, just yield while advertising
+    delay(20);                                   // advertisement window
+    NimBLEDevice::getAdvertising()->stop();      // stop before marker so no BLE spikes during pulses
+    debugToggle();                               // MARKER 3: after advertisement
     return;
   }
 
@@ -43,10 +46,7 @@ void SendDataState::update() {
 
 void SendDataState::exit() {
   Logger::log("Exit Send Data State");
-  if (Properties::wakeUpCauseIsTimer) {
-    BLEDevice::getAdvertising()->stop();
-    //BLEDevice::deinit(true);
-  }
+  // timer path: advertising already stopped in update() before MARKER 3
 }
 
 StateType SendDataState::nextState() {
