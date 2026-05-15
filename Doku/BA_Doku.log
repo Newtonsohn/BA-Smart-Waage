@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  29 APR 2026 17:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  15 MAY 2026 11:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -419,6 +419,10 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (BA_Doku.aux
 Package babel Info: 'german' activates 'german' shorthands.
 (babel)             Reported on input line 8.
+
+
+LaTeX Warning: Label `fig:strom-bootup' multiply defined.
+
 )
 \openout1 = `BA_Doku.aux'.
 
@@ -586,27 +590,97 @@ Overfull \hbox (2.04507pt too wide) in paragraph at lines 324--325
 -schlos-se-ner Ka-li-brie-rung be-
  []
 
-[11]
-Overfull \hbox (0.24458pt too wide) in paragraph at lines 340--342
-\OT1/cmr/m/n/12 Als Re-fe-renz dient die Mes-sung des un-kop-ti-mier-ten Sy-ste
-ms oh-ne Low-Power-
+[11] [12]
+<Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage.png, i
+d=310, 455.45157pt x 202.50656pt>
+File: Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage.p
+ng Graphic file (type png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage.pn
+g>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/Stromverbr
+auch Ausgangslage.png  used on input line 358.
+(pdftex.def)             Requested size: 331.50238pt x 147.39903pt.
+
+Overfull \hbox (133.8021pt too wide) in paragraph at lines 378--388
+ [][] 
  []
 
-<Images/Stromverbrauch/Stromverbrauch Ausgangslage.png, id=281, 455.45157pt x 2
-02.50656pt>
-File: Images/Stromverbrauch/Stromverbrauch Ausgangslage.png Graphic file (type 
-png)
-<use Images/Stromverbrauch/Stromverbrauch Ausgangslage.png>
-Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch Ausgangslage.png 
- used on input line 345.
-(pdftex.def)             Requested size: 331.50238pt x 147.39903pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[13 <./Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage.
+png>]
+Overfull \hbox (40.97466pt too wide) in paragraph at lines 401--405
+\OT1/cmr/m/n/12 Diese Pha-se um-fasst den ESP32-Bootvorgang, die State-Machine-
+Initialisierung
+ []
+
+
+Overfull \hbox (8.11313pt too wide) in paragraph at lines 401--405
+\OT1/cmr/m/n/12 so-wie die ADS1234-Messung. Die Aus-gangs-la-ge ver-brauch-te \
+OT1/cmr/bx/n/12 0.123mAh\OT1/cmr/m/n/12 .
+ []
+
+<Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png, id=328, 2308.625pt 
+x 1146.2825pt>
+File: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png Graphic file (t
+ype png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.
+png  used on input line 409.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+
+Overfull \hbox (7.98979pt too wide) in paragraph at lines 414--417
+\OT1/cmr/m/n/12 sen-det. Durch den Wech-sel von der Standard-Bluedroid-Implemen
+tierung
+ []
+
+[14 <./Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png (PNG copy)>]
+Overfull \hbox (39.27194pt too wide) in paragraph at lines 438--440
+[]\OT1/cmr/m/n/12 In der Aus-gangs-la-ge blie-ben der ADS1234 und die W[]agezel
+len-Versorgungsleitung
+ []
+
+<Images/Stromverbrauch/Stromverbrauch vorher/bootup.png, id=341, 2308.625pt x 1
+146.2825pt>
+File: Images/Stromverbrauch/Stromverbrauch vorher/bootup.png Graphic file (type
+ png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/bootup.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/bootup.png
+  used on input line 458.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+File: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png Graphic file (t
+ype png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.
+png  used on input line 469.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[15]
+<Images/Stromverbrauch/Stromverbrauch vorher/subscription.png, id=353, 2308.625
+pt x 1146.2825pt>
+File: Images/Stromverbrauch/Stromverbrauch vorher/subscription.png Graphic file
+ (type png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/subscription.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/subscripti
+on.png  used on input line 503.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
 (BA_Doku.bbl
 Underfull \hbox (badness 3815) in paragraph at lines 4--8
 \OT1/cmtt/m/n/12 com / esp32-[]c3-[]wroom-[]02 _ datasheet _ en . pdf/$[]\OT1/c
 mr/m/n/12 .  On-li-ne; auf-ge-ru-fen
  []
 
-[12 <./Images/Stromverbrauch/Stromverbrauch Ausgangslage.png>]
+[16 <./Images/Stromverbrauch/Stromverbrauch vorher/bootup.png (PNG copy)>]
 Underfull \hbox (badness 10000) in paragraph at lines 16--20
 []\OT1/cmr/m/n/12 Getting star-ted with esp32-c3 su-per mi-
  []
@@ -635,20 +709,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 28--31
 ti . com / lit / ds / symlink /
  []
 
-) [13] (BA_Doku.aux)
+) [17 <./Images/Stromverbrauch/Stromverbrauch vorher/subscription.png (PNG copy
+)>] (BA_Doku.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `BA_Doku.out' has not changed.
-(rerunfilecheck)             Checksum: AC1E89EEF54F032714DD28E84E5B59EF;7357.
+(rerunfilecheck)             Checksum: CD127B13FEF3BE3F2E5826F66CB100C4;8003.
  ) 
 Here is how much of TeX's memory you used:
- 15378 strings out of 467871
- 307072 string characters out of 5418376
+ 15458 strings out of 467871
+ 310165 string characters out of 5418376
  700997 words of memory out of 5000000
- 44008 multiletter control sequences out of 15000+600000
- 638635 words of font info for 81 fonts, out of 8000000 for 9000
+ 44063 multiletter control sequences out of 15000+600000
+ 640491 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,12n,79p,491b,1211s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\roche\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
@@ -657,17 +736,18 @@ ts/cm/cmbx12.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/publ
 ic/amsfonts/cm/cmex10.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/t
 ype1/public/amsfonts/cm/cmmi12.pfb><C:/Users/roche/AppData/Local/Programs/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/roche/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/roche/AppData/Loca
-l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/roche/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/roc
-he/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/
-Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/roche/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/roche/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/ro
+che/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/U
+sers/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.
 pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmti12.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/a
-msfonts/cm/cmtt12.pfb>
-Output written on BA_Doku.pdf (13 pages, 290834 bytes).
+m/cmsy8.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmti12.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/
+public/amsfonts/cm/cmtt12.pfb>
+Output written on BA_Doku.pdf (17 pages, 1016452 bytes).
 PDF statistics:
- 380 PDF objects out of 1000 (max. 8388607)
- 84 named destinations out of 1000 (max. 500000)
- 294 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 454 PDF objects out of 1000 (max. 8388607)
+ 108 named destinations out of 1000 (max. 500000)
+ 341 words of extra memory for PDF output out of 10000 (max. 10000000)
 

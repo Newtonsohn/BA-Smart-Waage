@@ -1,6 +1,7 @@
 #include "AdcInitState.h"
 #include "Properties.h"
 #include "StateType.h"
+#include "DebugToggle.h"
 #include <Arduino.h>
 
 #define DRDY_POLL_DELAY_MS    10
@@ -12,6 +13,8 @@ void AdcInitState::enter() {
   Logger::log("Enter ADC initialization State");
 
   hw = HwContext::get();
+
+  debugToggleSetup();
 
   // Configure ADS1234 GPIO pins
   pinMode(Properties::ADS1234_SCLK,      OUTPUT);
@@ -61,6 +64,6 @@ StateType AdcInitState::nextState() {
   if (Properties::wakeUpCauseIsTimer) {
     return StateType::MEASURE;
   } else {
-    return StateType::CALIBRATION_CHECK;
+    return StateType::TARE;
   }
 }

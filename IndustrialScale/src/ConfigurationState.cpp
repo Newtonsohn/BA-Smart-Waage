@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "ConfigurationState.h"
 #include "Properties.h"
-#include <BLEDevice.h>
+#include <NimBLEDevice.h>
 #include <ArduinoJson.h>
 
 #include <Fonts/FreeSans9pt7b.h>
@@ -10,11 +10,15 @@
 #define JSON_BUFFER_SIZE 512
 
 #define DISPLAY_X_MARGIN 10
+#define DISPLAY_Y_TITLE 30
+#define DISPLAY_Y_MAC 60
+#define DISPLAY_Y_WEIGHT 90
 #define DISPLAY_Y_ITEM_NAME 30
 #define DISPLAY_Y_ITEM_NUMBER 55
 #define DISPLAY_Y_DEVICE_NAME 110
 #define DISPLAY_Y_STATUS 110
 #define DISPLAY_X_STATUS 170
+
 
 #define MILLISECONDS_PER_SECOND 1000
 #define DEFAULT_HEARTBEAT_TRIGGER 0
@@ -28,11 +32,47 @@ void ConfigurationState::enter() {
 
   hw = HwContext::get();
 
+  snprintf(cachedMac, sizeof(cachedMac), "%02X:%02X:%02X:%02X:%02X:%02X",
+    Properties::bleMacAddress[0], Properties::bleMacAddress[1],
+    Properties::bleMacAddress[2], Properties::bleMacAddress[3],
+    Properties::bleMacAddress[4], Properties::bleMacAddress[5]);
+
+  hw->display->fillScreen(GxEPD_WHITE);
+  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
+  hw->display->setFont(&FreeSansBold12pt7b);
+  hw->display->print("Waiting for GW");
+  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_MAC);
+  hw->display->setFont(&FreeSans9pt7b);
+  hw->display->print(cachedMac);
+  hw->display->display(true);
+
+  Logger::log(("BLE MAC: " + String(cachedMac)).c_str());
   Logger::log("waiting for configuration...");
+  lastWeightUpdateMs = millis();
 }
 
 void ConfigurationState::update() {
   if (!configurationSuccess) {
+    if (millis() - lastWeightUpdateMs >= 3000) {
+      lastWeightUpdateMs = millis();
+
+      float weight = hw->measureWeight();
+      char weightBuf[20];
+      snprintf(weightBuf, sizeof(weightBuf), "%.1f g", weight);
+      Logger::log(("Weight: " + String(weightBuf)).c_str());
+
+      hw->display->fillScreen(GxEPD_WHITE);
+      hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
+      hw->display->setFont(&FreeSansBold12pt7b);
+      hw->display->print("Waiting for GW");
+      hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_MAC);
+      hw->display->setFont(&FreeSans9pt7b);
+      hw->display->print(cachedMac);
+      hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_WEIGHT);
+      hw->display->print(weightBuf);
+      hw->display->display(true);
+    }
+
     if (Properties::configurationReceived) {
       bool parseConfigurationSuccess = parseConfiguration();
       if (parseConfigurationSuccess) {

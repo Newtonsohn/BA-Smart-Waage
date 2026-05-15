@@ -11,6 +11,10 @@ void DisplayInitState::enter() {
 
   hw = HwContext::get();
 
+#ifndef ENABLE_SERIAL_LOGGING
+  Serial.end();  // free IO1 (TX) and IO3 (RX) for display RESET and BUSY pins
+#endif
+
   // Setup of the display
   hw->display = std::make_shared<GxEPD2_BW<GxEPD2_290_BS, GxEPD2_290_BS::HEIGHT>>(
     GxEPD2_290_BS(Properties::DISPLAY_CS_PIN, Properties::DISPLAY_DC_PIN,

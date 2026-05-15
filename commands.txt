@@ -30,3 +30,16 @@ find out ip of RPI:
 
 ssh:
 	 ssh -L 8080:localhost:8080 -L 7093:localhost:7093 tommypi@10.95.229.200
+
+GitHUB Token für RPI:
+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
+
+
+
+
+https://10.131.28.200:7093/swagger
+https://10.248.164.200:7093/
+http://10.131.28.200:8080/admin
+
+Register new bins:
+https://10.248.164.200:7093/bins/integration?mac=0CDC7E5474D6

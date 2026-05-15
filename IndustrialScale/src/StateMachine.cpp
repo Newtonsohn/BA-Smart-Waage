@@ -30,6 +30,9 @@ StateMachine::StateMachine() {
     currentStateType = StateType::ADC_INIT;
     currentState = new AdcInitState();
   } else {
+    // Load calibration and config from NVS on cold boot
+    Properties::loadConfigFromNVS();
+
     // Since the hardware was powered on we start with display initialization
     currentStateType = StateType::DISPLAY_INIT;
     currentState = new DisplayInitState();

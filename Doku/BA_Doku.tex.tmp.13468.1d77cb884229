@@ -339,7 +339,7 @@
 	
 	\subsubsection{Setup}
 	Die Strommessungen wurden mit dem \textit{Nordic Semiconductor Power Profiler Kit~II} (PPK2) in Verbindung mit der Software \textit{nRF Connect for Desktop} (Power Profiler App) durchgeführt.
-	Das PPK2 wurde als Amperemeter in den Versorgungspfad des Zielsystems eingeschleift.
+	Das PPK2 wurde als Amperemeter in den Versorgungspfad des Zielsystems eingeschleift und versorgte die Schaltung gleichzeitig mit einer konfigurierten Spannung von $3{,}3\,\text{V}$.
 	Das Gerät erfasst den Strom mit einer Abtastrate von bis zu $100{,}000\,\text{Samples/s}$, was eine präzise zeitliche Auflösung auch kurzer Stromspitzen ermöglicht.
 
 	In der nRF Connect Power Profiler App lassen sich Zeitfenster (\emph{Selektionen}) manuell markieren, woraufhin die Software automatisch den mittleren Strom, die Dauer sowie den gesamten Ladungsverbrauch der Selektion in Millicoulomb (\si{mC}) und Milliampere-Stunden (\si{mAh}) berechnet.
@@ -403,14 +403,6 @@
 		Die Ausgangslage verbrauchte \textbf{0.123\,mAh}.
 		Optimierungspotenzial liegt unter anderem in der Reduktion der Boot-Zeit sowie in der Minimierung der ADC-Einschaltdauer.
 
-		\item \textbf{ADC} (Abschnitt~\ref{sec:ramp-up}): \\
-			\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC"}
-			\caption{Stromverlauf -- ADC (Ausgangslage)}
-			\label{fig:strom-bootup}
-		\end{figure}
-
 		\item \textbf{BLE-Initialisierung und Advertisement} (Abschnitt~\ref{sec:ble-init}): \\
 		Der NimBLE-Stack wird gestartet und das Advertisement-Paket ausgesendet.
 		Durch den Wechsel von der Standard-Bluedroid-Implementierung auf den schlanken NimBLE-Stack konnte der Speicherverbrauch und die Initialisierungszeit signifikant reduziert werden.
@@ -471,28 +463,12 @@
 		\label{fig:strom-adc}
 	\end{figure}
 
-	% TODO: Screenshot Ramp Up Optimiert einfügen
-	% \begin{figure}[h]
-	%     \centering
-	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/bootup"}
-	%     \caption{Stromverlauf -- Boot \& Initialisierung (Optimiert)}
-	%     \label{fig:strom-bootup-nachher}
-	% \end{figure}
-
-	% TODO: Screenshot ADC Optimiert einfügen
-	% \begin{figure}[h]
-	%     \centering
-	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/Strom ADC"}
-	%     \caption{Stromverlauf -- ADC-Messung (Optimiert)}
-	%     \label{fig:strom-adc-nachher}
-	% \end{figure}
+	% Hier Text einfügen (optimierte Messungen Ramp Up -- Screenshot nachher)
 
 	\subsubsection{BLE-Initialisierung und Advertisement}
-	\label{sec:ble-init}
 	% Hier Text einfügen (Screenshots BLE Init und Advertisement -- Ausgangslage und Optimiert)
 
 	\subsubsection{BLE-Verbindung und Datenübertragung}
-	\label{sec:ble-data}
 
 	In der Ausgangslage wurden BLE-Init, Advertisement, Verbindungsaufbau und Datenübertragung als zusammenhängende Phase gemessen.
 	Abbildung~\ref{fig:strom-ble} zeigt die gesamte BLE-Phase.
