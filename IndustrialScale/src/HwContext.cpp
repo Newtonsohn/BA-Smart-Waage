@@ -4,7 +4,7 @@
 #include "esp_sleep.h"
 #include "driver/gpio.h"
 
-#define MEASURE_SAMPLES_PER_CHANNEL 10
+#define MEASURE_SAMPLES_PER_CHANNEL 5
 
 std::shared_ptr<HwContext> HwContext::get() {
   static std::shared_ptr<HwContext> instance = std::make_shared<HwContext>();
@@ -52,8 +52,10 @@ float HwContext::readAverage(int ch, int n) {
   gpio_wakeup_enable((gpio_num_t)Properties::ADS1234_DRDY_DOUT, GPIO_INTR_LOW_LEVEL);
   esp_sleep_enable_gpio_wakeup();
 
-  long long sum = readChannel(ch);  // first read includes channel switch
-  for (int i = 1; i < n; i++) {
+  setChannel(ch);
+
+  long long sum = 0;
+  for (int i = 0; i < n; i++) {
     if (digitalRead(Properties::ADS1234_DRDY_DOUT) == HIGH) {
       esp_light_sleep_start();
     }

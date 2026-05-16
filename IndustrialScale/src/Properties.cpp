@@ -30,22 +30,22 @@ const char* BACKEND_URL = "https://192.168.2.100:7093/bins/integration?mac=";
 const char* SERVICE_UUID = "f0cbd08a-41a1-4b14-b66f-420e6c7f6d1f";
 const char* CHARACTERISTIC_CONFIG_UUID = "b4520837-7d4f-4e4a-96ff-8f9cd9e64577";
 const char* CHARACTERISTIC_MEASURE_UUID = "a03cfc2e-370e-4c34-9d8e-9d75f6e93e88";
-uint8_t bleMacAddress[MAC_ADDRESS_LENGTH] = { 0, 0, 0, 0, 0, 0 };
+RTC_DATA_ATTR uint8_t bleMacAddress[MAC_ADDRESS_LENGTH] = { 0, 0, 0, 0, 0, 0 };
 
 // Scale
-float zeroOffset[4]  = {0, 0, 0, 0};
-float spanFactor[4]  = {0, 0, 0, 0};
-bool  calibrationValid = false;
-float currentWeight  = 0.0f;
-float prevWeight     = 0.0f;
+RTC_DATA_ATTR float zeroOffset[4]  = {0, 0, 0, 0};
+RTC_DATA_ATTR float spanFactor[4]  = {0, 0, 0, 0};
+RTC_DATA_ATTR bool  calibrationValid = false;
+RTC_DATA_ATTR float currentWeight  = 0.0f;
+RTC_DATA_ATTR float prevWeight     = 0.0f;
 
 // Configuration
 char deviceName[MAX_STRING_LENGTH_64] = "SmartScale";
 char itemName[MAX_STRING_LENGTH_64]   = "No Product";
 char itemNumber[MAX_STRING_LENGTH_64] = "No Product";
-int heartbeatTrigger = 0;
-int updateInterval   = 300;
-float itemWeight     = 5000.0f;
+RTC_DATA_ATTR int heartbeatTrigger = 0;
+RTC_DATA_ATTR int updateInterval   = 300;
+RTC_DATA_ATTR float itemWeight     = 5000.0f;
 
 // States
 bool deviceConnected      = false;
@@ -53,7 +53,7 @@ bool gwSubscribed         = false;
 bool configurationReceived = false;
 String configurationString = "";
 bool sendDataFailed       = false;
-int heartbeatCounter      = 0;
+RTC_DATA_ATTR int heartbeatCounter = 0;
 bool wakeUpCauseIsTimer   = false;
 char failureMessage[MAX_STRING_LENGTH_64] = "";
 

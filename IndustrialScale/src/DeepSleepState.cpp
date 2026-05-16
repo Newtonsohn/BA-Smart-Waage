@@ -21,9 +21,6 @@ void DeepSleepState::enter() {
     Logger::log("BLE Disconnected");
   }
 
-  // Store values to NVS before going to deep sleep
-  Properties::saveConfigToNVS();
-
   uint32_t total = Properties::updateInterval;
   uint32_t elapsed = millis() / MILLISECONDS_PER_SECOND;
 
