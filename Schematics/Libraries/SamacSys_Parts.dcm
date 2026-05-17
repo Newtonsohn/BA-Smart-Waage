@@ -1,0 +1,15 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP NE555DR
+D Single Precision Timer
+K
+F http://www.ti.com/lit/ds/symlink/ne555.pdf
+$ENDCMP
+#
+$CMP TPS62842DGRR
+D Switching Voltage Regulators 60-nA IQ, 1.8-V to 6.5-VIN, high-efficiency 750-mA step-down converter 8-HVSSOP -40 to 125
+K
+F https://www.ti.com/lit/ds/symlink/tps62840.pdf
+$ENDCMP
+#
+#End Doc Library
