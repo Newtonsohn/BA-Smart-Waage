@@ -1,4 +1,4 @@
-24739163736340926
+24746166766005483
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -13,6 +13,20 @@ audio belton reverb
 0
 7
 7
+BH-18650-PC
+BAT_BH-18650-PC
+
+
+0
+2
+2
+BK-18650-PC4
+18650-PC4
+
+
+0
+4
+4
 Battery
 BatteryClip_Keystone_54_D16-19mm
 Battery clip for batteries with a diameter between 16-19 mm: https://www.keyelco.com/product.cfm/product_id/826
@@ -91195,6 +91209,13 @@ rotary encoder illuminated switch vertical
 0
 9
 8
+SMT-0827-S-HT-R
+XDCR_SMT-0827-S-HT-R
+
+
+0
+4
+4
 SamacSys_Parts
 NE555DR
 D (R-PDSO-G8)
@@ -92882,6 +92903,13 @@ Logo WEEE
 0
 0
 0
+TPS63802DLAR
+VREG_TPS63802DLAR
+
+
+0
+10
+10
 TerminalBlock
 TerminalBlock_Altech_AK300-2_P5.00mm
 Altech AK300 terminal block, pitch 5.0mm, 45 degree angled, see http://www.mouser.com/ds/2/16/PCBMETRC-24178.pdf
