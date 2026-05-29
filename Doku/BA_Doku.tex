@@ -9,6 +9,7 @@
 \usepackage{booktabs}
 \usepackage{siunitx}
 \usepackage{verbatim}
+\usepackage{float}
 
 \title{Bachelorarbeit: Low-Power IoT-Skala}
 \author{Thomas Rocheteau}
@@ -66,9 +67,159 @@
 	Untersuchung der Vor- und Nachteile von \textbf{ESP-NOW} gegenüber \textbf{BLE} (Bluetooth Low Energy).
 
 	% ============================================================
-	\section{Implementation Hardware}
+	\section{Low-Power Optimierung}
 	% ============================================================
+	\subsection{Strommessungen und Low-Power-Optimierung}
 
+Ein zentrales Ziel dieser Arbeit ist die Minimierung des Stromverbrauchs, um eine möglichst lange Batterielaufzeit zu erreichen.
+Die folgenden Messungen dokumentieren den Ladungsverbrauch in den einzelnen Betriebsphasen und quantifizieren den Effekt der implementierten Optimierungen.
+Tabelle~\ref{tab:strom-uebersicht} fasst die verbrauchte Ladung pro Phase zusammen -- jeweils vor und nach der Optimierung.
+
+
+\subsubsection{Setup}
+Die Strommessungen wurden mit dem \textit{Nordic Semiconductor Power Profiler Kit~II} (PPK2) in Verbindung mit der Software \textit{nRF Connect for Desktop} (Power Profiler App) durchgeführt.
+Das PPK2 wurde als Amperemeter in den Versorgungspfad des Zielsystems eingeschleift.
+Das Gerät erfasst den Strom mit einer Abtastrate von bis zu $100{,}000\,\text{Samples/s}$, was eine präzise zeitliche Auflösung auch kurzer Stromspitzen ermöglicht.
+
+In der nRF Connect Power Profiler App lassen sich Zeitfenster (\emph{Selektionen}) manuell markieren, woraufhin die Software automatisch den mittleren Strom, die Dauer sowie den gesamten Ladungsverbrauch der Selektion in Millicoulomb (\si{mC}) und Milliampere-Stunden (\si{mAh}) berechnet.
+Alle in dieser Arbeit angegebenen Ladungswerte basieren auf solchen Selektionen aus aufgezeichneten Stromprofilen.
+
+\subsubsection{Ausgangslage}
+Abbildung~\ref{fig:stromverbrauch-ausgangslage} zeigt den Stromverlauf eines vollständigen Messzyklus in der Ausgangslage, wie er direkt aus der Vorgängerarbeit übernommen wurde.
+In dieser Vorarbeit stand die funktionale Korrektheit im Vordergrund -- eine gezielte Optimierung des Stromverbrauchs hatte keine Priorität.
+
+Im Profil sind drei charakteristische Abschnitte erkennbar: ein kurzer initialer Peak während Boot und Initialisierung, ein ruhigeres Plateau während der ADC-Messung sowie ein erhöhter und zeitlich ausgedehnter Abschnitt während der BLE-Kommunikation.
+Die gesamte Aktivphase erstreckt sich über ca.\ \textbf{10\,s} mit einem Gesamtladungsverbrauch von \textbf{0.314\,mAh}, bevor das System in den Deep Sleep übergeht.
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage"}
+	\caption{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}
+	\label{fig:stromverbrauch-ausgangslage}
+\end{figure}
+
+\subsubsection{Übersicht des Zyklus der Waage}
+\begin{enumerate}
+	\item \textbf{Boot (0\,s):} Der ESP32 startet nach dem Deep Sleep neu. Die State Machine wird initialisiert.
+	\item \textbf{ADC-Initialisierung (0\,s):} Der ADS1234 wird eingeschaltet und auf Betriebsbereitschaft geprüft (\texttt{ADC ready}).
+	\item \textbf{Messung (1--2\,s):} Das Gewicht wird erfasst und auf Änderung geprüft (\texttt{Weight changed: true}).
+	\item \textbf{BLE-Initialisierung (2--3\,s):} Der BLE-Stack wird gestartet und Advertisement begonnen.
+	\item \textbf{Datenübertragung (3--10\,s):} Das System wartet auf die Verbindung des Gateways (~6\,s Wartezeit), überträgt den Messwert per Indication und beendet die Verbindung.
+	\item \textbf{Deep Sleep (ab 10\,s):} Das System tritt in den Deep Sleep ein und bleibt bis zum nächsten Messzyklus inaktiv.
+\end{enumerate}
+
+
+\begin{table}[H]
+	\centering
+	\caption{Ladungsverbrauch pro Betriebsphase: Ausgangslage vs.\ Optimiert}
+	\label{tab:strom-uebersicht}
+	\begin{tabular}{@{}lccc@{}}
+		\toprule
+		Betriebsphase & Ausgangslage [mAh] & Optimiert [mAh] & Einsparung [mAh] \\ \midrule
+		Deep Sleep                              & --    & --    & -- \\
+		Ramp Up (Boot, Init, ADC)               & 0.123 & --    & -- \\
+		BLE-Init \& Advertisement$^{*}$         & --    & --    & -- \\
+		BLE-Verbindung \& Datenübertragung$^{*}$& 0.194 & --    & -- \\
+		\midrule
+		Aktivphase gesamt                       & 0.314 & --    & -- \\ \bottomrule
+	\end{tabular}
+	\\[4pt]
+	\small $^{*}$In der Ausgangslage gemeinsam als eine Selektion gemessen (0.194\,mAh total).
+\end{table}
+
+Die gesamte Aktivphase beträgt in der Ausgangslage ca.\ \textbf{10 Sekunden} pro Zyklus mit einem Ladungsverbrauch von \textbf{0.314\,mAh} (Abbildung~\ref{fig:stromverbrauch-ausgangslage}).
+
+Die nachfolgenden Abschnitte beschreiben jede Betriebsphase im Detail -- mit Stromprofilen der Ausgangslage sowie der optimierten Version -- und erläutern, welche Massnahmen zur jeweiligen Einsparung geführt haben:
+
+\subsubsection{Deep Sleep}
+\label{sec:deep-sleep}
+
+Im Deep Sleep ist der ESP32 vollständig inaktiv; lediglich der RTC-Timer läuft weiter, um das System nach dem konfigurierten Intervall aufzuwecken.
+Der Ruhestrom setzt sich in dieser Phase aus dem Quiescent Current des LDO (RT9080: $2\,\mu\text{A}$), dem Deep-Sleep-Strom des ESP32-C3 sowie allfälligen Leckströmen durch externe Peripherie zusammen.
+
+% TODO: Screenshot Deep Sleep Ausgangslage einfügen
+% \begin{figure}[h]
+	%     \centering
+	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/DeepSleep"}
+	%     \caption{Stromverlauf -- Deep Sleep (Ausgangslage)}
+	%     \label{fig:strom-deepsleep-vorher}
+	% \end{figure}
+
+In der Ausgangslage blieben der ADS1234 und die Wägezellen-Versorgungsleitung (\texttt{DMS\_PWR}) beim Eintreten in den Deep Sleep aktiv, was zu einem erhöhten Sockellader führte.
+Durch das explizite Abschalten dieser Peripherie vor dem \texttt{esp\_deep\_sleep\_start()}-Aufruf konnte der Ruhestrom auf den spezifizierten Minimalwert abgesenkt werden.
+
+% TODO: Screenshot Deep Sleep Optimiert einfügen
+% \begin{figure}[h]
+	%     \centering
+	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/DeepSleep"}
+	%     \caption{Stromverlauf -- Deep Sleep (Optimiert)}
+	%     \label{fig:strom-deepsleep-nachher}
+	% \end{figure}
+
+\subsubsection{Ramp Up: Boot und Initialisierung}
+\label{sec:ramp-up}
+
+Nach dem Aufwachen aus dem Deep Sleep durchläuft das System zuerst die Boot- und Initialisierungsphase.
+Abbildung~\ref{fig:strom-bootup} zeigt den Stromverlauf dieser Phase in der Ausgangslage.
+Die Selektion umfasst \textbf{2.581\,s} mit einem Ladungsverbrauch von \textbf{253.78\,mC} (entspricht \textbf{0.070\,mAh}).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/bootup"}
+	\caption{Stromverlauf -- Boot \& Initialisierung (Ausgangslage)}
+	\label{fig:strom-bootup}
+\end{figure}
+
+\subsubsection{ADC}
+\label{sec:ADC}
+
+Im Anschluss erfolgt die ADC-Messung.
+Abbildung~\ref{fig:strom-adc} zeigt den Verlauf während des ADC-Samplings.
+Die Selektion umfasst \textbf{1.769\,s} mit einem Ladungsverbrauch von \textbf{189.97\,mC} (entspricht \textbf{0.053\,mAh}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC"}
+	\caption{Stromverlauf -- ADC-Messung (Ausgangslage)}
+	\label{fig:strom-adc}
+\end{figure}
+
+% TODO: Screenshot Ramp Up Optimiert einfügen
+% \begin{figure}[h]
+	%     \centering
+	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/bootup"}
+	%     \caption{Stromverlauf -- Boot \& Initialisierung (Optimiert)}
+	%     \label{fig:strom-bootup-nachher}
+	% \end{figure}
+
+% TODO: Screenshot ADC Optimiert einfügen
+% \begin{figure}[h]
+	%     \centering
+	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/Strom ADC"}
+	%     \caption{Stromverlauf -- ADC-Messung (Optimiert)}
+	%     \label{fig:strom-adc-nachher}
+	% \end{figure}
+
+\subsubsection{BLE-Initialisierung und Advertisement}
+\label{sec:ble-init}
+% Hier Text einfügen (Screenshots BLE Init und Advertisement -- Ausgangslage und Optimiert)
+
+\subsubsection{BLE-Verbindung und Datenübertragung}
+\label{sec:ble-data}
+
+In der Ausgangslage wurden BLE-Init, Advertisement, Verbindungsaufbau und Datenübertragung als zusammenhängende Phase gemessen.
+Abbildung~\ref{fig:strom-ble} zeigt die gesamte BLE-Phase.
+Die Selektion umfasst \textbf{5.642\,s} mit einem Ladungsverbrauch von \textbf{700\,mC} (entspricht \textbf{0.194\,mAh}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/subscription"}
+	\caption{Stromverlauf -- BLE-Phase gesamt (Ausgangslage)}
+	\label{fig:strom-ble}
+\end{figure}
+
+% Hier Text einfügen (optimierte Messungen BLE-Verbindung -- Screenshot nachher)
 	\subsection{Dimensionierung der Spannungsversorgung (Buck-Boost)}
 	Für die Systemspannung wurde der hocheffiziente Buck-Boost-Konverter \textit{TPS63802} gewählt. Dieser ermöglicht es, die schwankende Spannung der 18650-Lithium-Ionen-Zelle ($3,0\text{V}$ bis $4,2\text{V}$) stabil auf das Zielniveau zu wandeln.
 
@@ -163,60 +314,10 @@
 		\item \textbf{Optimiertes Dropout-Verhalten:} Die extrem niedrige Dropout-Spannung ermöglicht den stabilen Betrieb der $3,3\,V$-Elektronik bis zu einer Batteriespannung von ca. $3,35\,V$. Dies maximiert die nutzbare Kapazität der 18650-Zelle.
 	\end{itemize}
 
-	\subsection{Sensorik: Wägezellen und ADC}
 
-	\subsubsection{Wägezellen (YZC-133)}
-
-	Als Kraftsensoren kommen vier Wägezellen des Typs YZC-133 zum Einsatz \cite{yzc133_datasheet}.
-	Jede Zelle ist für eine Nennlast von \SI{1}{\kilogram} ausgelegt und enthält intern eine vollständige Wheatstone-Brücke aus vier Dehnungsmessstreifen (DMS).
-	Die relevanten elektrischen Kenngrössen sind in Tabelle~\ref{tab:yzc133} zusammengefasst.
-
-	\begin{table}[h]
-		\centering
-		\caption{Elektrische Spezifikation YZC-133}
-		\label{tab:yzc133}
-		\begin{tabular}{@{}ll@{}}
-			\toprule
-			Parameter & Wert \\ \midrule
-			Nennlast                & \SI{1}{\kilogram} \\
-			Nennkennwert (Empfindlichkeit) & $1{,}0 \pm 0{,}15\,\text{mV/V}$ \\
-			Nullpunktsignal         & $\pm 0{,}1\,\text{mV/V}$ \\
-			Kriechfehler            & $0{,}03\,\%\,\text{F.S.} / \SI{30}{\minute}$ \\
-			Eingangsimpedanz        & $1066 \pm 20\,\Omega$ \\
-			Ausgangsimpedanz        & $1000 \pm 5\,\Omega$ \\ \bottomrule
-		\end{tabular}
-	\end{table}
-
-	Bei \SI{3{,}3}{\volt} Erregerspannung liegen beide Ausgangspins der Brücke auf einem Gleichtaktpotenzial von ca.\ \SI{1{,}65}{\volt} ($V_{\text{ex}}/2$).
-	Das Nutzsignal ist die \emph{Differenz} zwischen diesen beiden Pins: bei Vollast nominell $1{,}0\,\text{mV/V} \times 3{,}3\,\text{V} = \SI{3{,}3}{\milli\volt}$.
-	Der differentielle Eingang des ADS1234 erfasst genau diese Differenz und unterdrückt das Gleichtaktsignal durch seine hohe Gleichtaktunterdrückung (CMRR).
-	Die vier Zellen sind in X-Formation an den Ecken der Waagplattform montiert.
-
-	\subsubsection{ADS1234 -- 4-Kanal-24-Bit-ADC}
-
-	Für die Signalerfassung wird der ADS1234 von Texas Instruments eingesetzt \cite{ads1234_datasheet}.
-	Der Chip ist ein 24-Bit-Sigma-Delta-ADC mit vier differenziellen Eingangskanälen und einem integrierten programmierbaren Verstärker (PGA) mit den Verstärkungsfaktoren 1, 2, 64 und 128.
-	Mit PGA-Gain 128 ergibt sich für das \SI{3{,}3}{\milli\volt}-Signal der YZC-133 ein verstärktes Differenzsignal von ca. \SI{422}{\milli\volt}, das den Eingangsbereich des ADC gut ausnutzt.
-	Die wählbare Ausgabedatenrate beträgt 10~SPS oder 80~SPS; im vorliegenden System wird 10~SPS verwendet, da dies das Eingangsrauschen durch die längere Integrationszeit maximally reduziert.
-
-	\subsubsection{Von einem auf vier ADC-Kanäle}
-
-	In der Vorarbeit zu dieser Bachelorarbeit waren alle vier Wägezellen in einer gemeinsamen Wheatstone-Brücke zusammengeschaltet und lieferten ihr summiertes Signal an einen einzigen ADC-Kanal.
-	In dieser Arbeit wird jede Wägezelle einzeln an einen eigenen Eingangskanal des ADS1234 geführt.
-	Dieser Wechsel bringt zwei wesentliche Vorteile:
-
-	\paragraph{Ecklastkompensation}
-	Mit einem einzigen Summensignal ist keine positionsabhängige Korrektur möglich: Das System kann nicht unterscheiden, ob eine Abweichung durch einen exzentrischen Lastangriffspunkt oder durch eine tatsächliche Massenänderung entsteht.
-	Durch die individuellen Kanäle lässt sich jede Wägezelle separat kalibrieren und der dominante Sensor pro Lastposition gezielt korrigieren (siehe Abschnitt~\ref{sec:kalibrierung}).
-
-	\paragraph{Rauschverhalten und individuelle Kalibrierung}
-	Die Empfindlichkeit der YZC-133 streut mit $\pm 15\,\%$ zwischen den Exemplaren.
-	In der Einzelkanal-Lösung mittelte sich diese Streuung über die parallele Zusammenschaltung heraus, konnte aber nicht pro Sensor korrigiert werden.
-	Mit vier separaten Kanälen wird die Empfindlichkeitsdifferenz jeder Wägezelle durch den individuell bestimmten Skalierungsfaktor (\texttt{spanFactor}) in der Software exakt kompensiert.
-	Zusätzlich verbessert die digitale Summation vier statistisch unkorrelierter ADC-Messungen das Signal-Rausch-Verhältnis gegenüber einer einzigen Messung um den Faktor $\sqrt{4} = 2$ ($+6\,\text{dB}$), da sich das Rauschen der Kanäle inkohärent addiert, während sich die Nutzsignale kohärent addieren.
 
 	% ============================================================
-	\section{Implementation Software}
+	\section{Messgenauigkeits Optimierung}
 	% ============================================================
 
 	\subsection{ADS1234 -- Ansteuerung und Kalibrierung}
@@ -325,187 +426,40 @@
 	\begin{equation}
 		m = \sum_{i=1}^{4} \text{spanFactor}_i \cdot \bigl(\text{raw}_i - \text{zeroOffset}_i\bigr)
 	\end{equation}
-
+	
+		\subsection{Sensorik: Wägezellen und ADC}
+	
+	\subsubsection{Wägezellen (YZC-133)}
+	
+	Als Kraftsensoren kommen vier Wägezellen des Typs YZC-133 zum Einsatz \cite{yzc133_datasheet}.
+	Jede Zelle ist für eine Nennlast von \SI{1}{\kilogram} ausgelegt und enthält intern eine vollständige Wheatstone-Brücke aus vier Dehnungsmessstreifen (DMS).
+	Die relevanten elektrischen Kenngrössen sind in Tabelle~\ref{tab:yzc133} zusammengefasst.
+	
+	\begin{table}[h]
+		\centering
+		\caption{Elektrische Spezifikation YZC-133}
+		\label{tab:yzc133}
+		\begin{tabular}{@{}ll@{}}
+			\toprule
+			Parameter & Wert \\ \midrule
+			Nennlast                & \SI{1}{\kilogram} \\
+			Nennkennwert (Empfindlichkeit) & $1{,}0 \pm 0{,}15\,\text{mV/V}$ \\
+			Nullpunktsignal         & $\pm 0{,}1\,\text{mV/V}$ \\
+			Kriechfehler            & $0{,}03\,\%\,\text{F.S.} / \SI{30}{\minute}$ \\
+			Eingangsimpedanz        & $1066 \pm 20\,\Omega$ \\
+			Ausgangsimpedanz        & $1000 \pm 5\,\Omega$ \\ \bottomrule
+		\end{tabular}
+	\end{table}
+	
+	Bei \SI{3{,}3}{\volt} Erregerspannung liegen beide Ausgangspins der Brücke auf einem Gleichtaktpotenzial von ca.\ \SI{1{,}65}{\volt} ($V_{\text{ex}}/2$).
+	Das Nutzsignal ist die \emph{Differenz} zwischen diesen beiden Pins: bei Vollast nominell $1{,}0\,\text{mV/V} \times 3{,}3\,\text{V} = \SI{3{,}3}{\milli\volt}$.
+	Der differentielle Eingang des ADS1234 erfasst genau diese Differenz und unterdrückt das Gleichtaktsignal durch seine hohe Gleichtaktunterdrückung (CMRR).
+	Die vier Zellen sind in X-Formation an den Ecken der Waagplattform montiert.
+	
 	% ============================================================
 	\section{Tests und Validierung}
 	% ============================================================
 
-	\subsection{Strommessungen und Low-Power-Optimierung}
-
-	Ein zentrales Ziel dieser Arbeit ist die Minimierung des Stromverbrauchs, um eine möglichst lange Batterielaufzeit zu erreichen.
-	Die folgenden Messungen dokumentieren den Ladungsverbrauch in den einzelnen Betriebsphasen und quantifizieren den Effekt der implementierten Optimierungen.
-	Tabelle~\ref{tab:strom-uebersicht} fasst die verbrauchte Ladung pro Phase zusammen -- jeweils vor und nach der Optimierung.
-
-	
-	\subsubsection{Setup}
-	Die Strommessungen wurden mit dem \textit{Nordic Semiconductor Power Profiler Kit~II} (PPK2) in Verbindung mit der Software \textit{nRF Connect for Desktop} (Power Profiler App) durchgeführt.
-	Das PPK2 wurde als Amperemeter in den Versorgungspfad des Zielsystems eingeschleift.
-	Das Gerät erfasst den Strom mit einer Abtastrate von bis zu $100{,}000\,\text{Samples/s}$, was eine präzise zeitliche Auflösung auch kurzer Stromspitzen ermöglicht.
-
-	In der nRF Connect Power Profiler App lassen sich Zeitfenster (\emph{Selektionen}) manuell markieren, woraufhin die Software automatisch den mittleren Strom, die Dauer sowie den gesamten Ladungsverbrauch der Selektion in Millicoulomb (\si{mC}) und Milliampere-Stunden (\si{mAh}) berechnet.
-	Alle in dieser Arbeit angegebenen Ladungswerte basieren auf solchen Selektionen aus aufgezeichneten Stromprofilen.
-	
-	\subsubsection{Ausgangslage}
-	Abbildung~\ref{fig:stromverbrauch-ausgangslage} zeigt den Stromverlauf eines vollständigen Messzyklus in der Ausgangslage, wie er direkt aus der Vorgängerarbeit übernommen wurde.
-	In dieser Vorarbeit stand die funktionale Korrektheit im Vordergrund -- eine gezielte Optimierung des Stromverbrauchs hatte keine Priorität.
-
-	Im Profil sind drei charakteristische Abschnitte erkennbar: ein kurzer initialer Peak während Boot und Initialisierung, ein ruhigeres Plateau während der ADC-Messung sowie ein erhöhter und zeitlich ausgedehnter Abschnitt während der BLE-Kommunikation.
-	Die gesamte Aktivphase erstreckt sich über ca.\ \textbf{10\,s} mit einem Gesamtladungsverbrauch von \textbf{0.314\,mAh}, bevor das System in den Deep Sleep übergeht.
-	
-	
-	\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage"}
-	\caption{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}
-	\label{fig:stromverbrauch-ausgangslage}
-	\end{figure}
-
-	\subsubsection{Übersicht des Zyklus der Waage}
-	\begin{enumerate}
-	\item \textbf{Boot (0\,s):} Der ESP32 startet nach dem Deep Sleep neu. Die State Machine wird initialisiert.
-	\item \textbf{ADC-Initialisierung (0\,s):} Der ADS1234 wird eingeschaltet und auf Betriebsbereitschaft geprüft (\texttt{ADC ready}).
-	\item \textbf{Messung (1--2\,s):} Das Gewicht wird erfasst und auf Änderung geprüft (\texttt{Weight changed: true}).
-	\item \textbf{BLE-Initialisierung (2--3\,s):} Der BLE-Stack wird gestartet und Advertisement begonnen.
-	\item \textbf{Datenübertragung (3--10\,s):} Das System wartet auf die Verbindung des Gateways (~6\,s Wartezeit), überträgt den Messwert per Indication und beendet die Verbindung.
-	\item \textbf{Deep Sleep (ab 10\,s):} Das System tritt in den Deep Sleep ein und bleibt bis zum nächsten Messzyklus inaktiv.
-	\end{enumerate}
-
-	
-		\begin{table}[h]
-		\centering
-		\caption{Ladungsverbrauch pro Betriebsphase: Ausgangslage vs.\ Optimiert}
-		\label{tab:strom-uebersicht}
-		\begin{tabular}{@{}lccc@{}}
-			\toprule
-			Betriebsphase & Ausgangslage [mAh] & Optimiert [mAh] & Einsparung [mAh] \\ \midrule
-			Deep Sleep                              & --    & --    & -- \\
-			Ramp Up (Boot, Init, ADC)               & 0.123 & --    & -- \\
-			BLE-Init \& Advertisement$^{*}$         & --    & --    & -- \\
-			BLE-Verbindung \& Datenübertragung$^{*}$& 0.194 & --    & -- \\
-			\midrule
-			Aktivphase gesamt                       & 0.314 & --    & -- \\ \bottomrule
-		\end{tabular}
-		\\[4pt]
-		\small $^{*}$In der Ausgangslage gemeinsam als eine Selektion gemessen (0.194\,mAh total).
-	\end{table}
-
-	Die gesamte Aktivphase beträgt in der Ausgangslage ca.\ \textbf{10 Sekunden} pro Zyklus mit einem Ladungsverbrauch von \textbf{0.314\,mAh} (Abbildung~\ref{fig:stromverbrauch-ausgangslage}).
-
-	Die nachfolgenden Abschnitte beschreiben jede Betriebsphase im Detail -- mit Stromprofilen der Ausgangslage sowie der optimierten Version -- und erläutern, welche Massnahmen zur jeweiligen Einsparung geführt haben:
-
-	\begin{enumerate}
-		\item \textbf{Deep Sleep} (Abschnitt~\ref{sec:deep-sleep}): \\
-		Im Deep Sleep dominiert der Ruhestrom des Systems.
-		Durch gezieltes Abschalten externer Peripherie (ADS1234, Wägezellen-Versorgung) vor dem Schlafeingang sowie die Wahl eines LDO mit minimalem Quiescent Current wurde der Sockellader auf ein Minimum reduziert.
-
-		\item \textbf{Ramp Up -- Boot, Initialisierung und ADC} (Abschnitt~\ref{sec:ramp-up}): \\
-		Diese Phase umfasst den ESP32-Bootvorgang, die State-Machine-Initialisierung sowie die ADS1234-Messung.
-		Die Ausgangslage verbrauchte \textbf{0.123\,mAh}.
-		Optimierungspotenzial liegt unter anderem in der Reduktion der Boot-Zeit sowie in der Minimierung der ADC-Einschaltdauer.
-
-		\item \textbf{ADC} (Abschnitt~\ref{sec:ramp-up}): \\
-			\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC"}
-			\caption{Stromverlauf -- ADC (Ausgangslage)}
-			\label{fig:strom-bootup}
-		\end{figure}
-
-		\item \textbf{BLE-Initialisierung und Advertisement} (Abschnitt~\ref{sec:ble-init}): \\
-		Der NimBLE-Stack wird gestartet und das Advertisement-Paket ausgesendet.
-		Durch den Wechsel von der Standard-Bluedroid-Implementierung auf den schlanken NimBLE-Stack konnte der Speicherverbrauch und die Initialisierungszeit signifikant reduziert werden.
-
-		\item \textbf{BLE-Verbindung und Datenübertragung} (Abschnitt~\ref{sec:ble-data}): \\
-		Das Gateway baut die Verbindung auf, der Messwert wird per Indication übertragen und die Verbindung anschliessend getrennt.
-		In der Ausgangslage betrug der Ladungsverbrauch dieser Phase (gemeinsam mit BLE-Init gemessen) \textbf{0.194\,mAh}.
-		Durch Optimierung der Connection-Parameter und Reduktion der Wartezeit auf den Gateway konnte dieser Wert gesenkt werden.
-	\end{enumerate}
-
-	\subsubsection{Deep Sleep}
-	\label{sec:deep-sleep}
-
-	Im Deep Sleep ist der ESP32 vollständig inaktiv; lediglich der RTC-Timer läuft weiter, um das System nach dem konfigurierten Intervall aufzuwecken.
-	Der Ruhestrom setzt sich in dieser Phase aus dem Quiescent Current des LDO (RT9080: $2\,\mu\text{A}$), dem Deep-Sleep-Strom des ESP32-C3 sowie allfälligen Leckströmen durch externe Peripherie zusammen.
-
-	% TODO: Screenshot Deep Sleep Ausgangslage einfügen
-	% \begin{figure}[h]
-	%     \centering
-	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/DeepSleep"}
-	%     \caption{Stromverlauf -- Deep Sleep (Ausgangslage)}
-	%     \label{fig:strom-deepsleep-vorher}
-	% \end{figure}
-
-	In der Ausgangslage blieben der ADS1234 und die Wägezellen-Versorgungsleitung (\texttt{DMS\_PWR}) beim Eintreten in den Deep Sleep aktiv, was zu einem erhöhten Sockellader führte.
-	Durch das explizite Abschalten dieser Peripherie vor dem \texttt{esp\_deep\_sleep\_start()}-Aufruf konnte der Ruhestrom auf den spezifizierten Minimalwert abgesenkt werden.
-
-	% TODO: Screenshot Deep Sleep Optimiert einfügen
-	% \begin{figure}[h]
-	%     \centering
-	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/DeepSleep"}
-	%     \caption{Stromverlauf -- Deep Sleep (Optimiert)}
-	%     \label{fig:strom-deepsleep-nachher}
-	% \end{figure}
-
-	\subsubsection{Ramp Up: Boot, Initialisierung und ADC}
-	\label{sec:ramp-up}
-
-	Nach dem Aufwachen aus dem Deep Sleep durchläuft das System zuerst die Boot- und Initialisierungsphase.
-	Abbildung~\ref{fig:strom-bootup} zeigt den Stromverlauf dieser Phase in der Ausgangslage.
-	Die Selektion umfasst \textbf{2.581\,s} mit einem Ladungsverbrauch von \textbf{253.78\,mC} (entspricht \textbf{0.070\,mAh}).
-
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/bootup"}
-		\caption{Stromverlauf -- Boot \& Initialisierung (Ausgangslage)}
-		\label{fig:strom-bootup}
-	\end{figure}
-
-	Im Anschluss erfolgt die ADC-Messung.
-	Abbildung~\ref{fig:strom-adc} zeigt den Verlauf während des ADC-Samplings.
-	Die Selektion umfasst \textbf{1.769\,s} mit einem Ladungsverbrauch von \textbf{189.97\,mC} (entspricht \textbf{0.053\,mAh}).
-
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC"}
-		\caption{Stromverlauf -- ADC-Messung (Ausgangslage)}
-		\label{fig:strom-adc}
-	\end{figure}
-
-	% TODO: Screenshot Ramp Up Optimiert einfügen
-	% \begin{figure}[h]
-	%     \centering
-	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/bootup"}
-	%     \caption{Stromverlauf -- Boot \& Initialisierung (Optimiert)}
-	%     \label{fig:strom-bootup-nachher}
-	% \end{figure}
-
-	% TODO: Screenshot ADC Optimiert einfügen
-	% \begin{figure}[h]
-	%     \centering
-	%     \includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch nachher/Strom ADC"}
-	%     \caption{Stromverlauf -- ADC-Messung (Optimiert)}
-	%     \label{fig:strom-adc-nachher}
-	% \end{figure}
-
-	\subsubsection{BLE-Initialisierung und Advertisement}
-	\label{sec:ble-init}
-	% Hier Text einfügen (Screenshots BLE Init und Advertisement -- Ausgangslage und Optimiert)
-
-	\subsubsection{BLE-Verbindung und Datenübertragung}
-	\label{sec:ble-data}
-
-	In der Ausgangslage wurden BLE-Init, Advertisement, Verbindungsaufbau und Datenübertragung als zusammenhängende Phase gemessen.
-	Abbildung~\ref{fig:strom-ble} zeigt die gesamte BLE-Phase.
-	Die Selektion umfasst \textbf{5.642\,s} mit einem Ladungsverbrauch von \textbf{700\,mC} (entspricht \textbf{0.194\,mAh}).
-
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/subscription"}
-		\caption{Stromverlauf -- BLE-Phase gesamt (Ausgangslage)}
-		\label{fig:strom-ble}
-	\end{figure}
-
-	% Hier Text einfügen (optimierte Messungen BLE-Verbindung -- Screenshot nachher)
 
 	% ============================================================
 	\section{Fazit, Diskussion und Ausblick}
