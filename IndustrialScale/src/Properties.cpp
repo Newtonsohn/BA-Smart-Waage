@@ -6,18 +6,20 @@
 
 namespace Properties {
 // ADS1234 Pins
-const int ADS1234_DRDY_DOUT = 2;   // DRDY + DOUT combined, active low
+const int ADS1234_DRDY_DOUT = 14;   // DRDY + DOUT combined, active low, 32 -> alt IO2
 const int ADS1234_SCLK      = 15;
 const int ADS1234_PDWN      = 26;  // active low: LOW=power-down, HIGH=run
 const int ADS1234_DMS_PWR   = 17;  // MOSFET DMS power, active low
-const int ADS1234_A0        = 32;  // channel select bit 0
-const int ADS1234_A1        = 4;   // channel select bit 1
+const int ADS1234_A0        = 4;  // channel select bit 0, 4 -> alt IO32
+const int ADS1234_A1        = 2;   // channel select bit 1, 2 ->alt IO4
 
 // Display Pins
-const int DISPLAY_CS_PIN    = 14;   // Blau
-const int DISPLAY_DC_PIN    = 5;   // Weiss
-const int DISPLAY_RESET_PIN = 19;   // Orange
-const int DISPLAY_BUSY_PIN  = 16;   // Violett
+const int DISPLAY_CS_PIN    = 32;   // Blau 14
+const int DISPLAY_DC_PIN    = 5;   // Weiss 5
+const int DISPLAY_RESET_PIN = 19;   // Orange 19
+const int DISPLAY_BUSY_PIN  = 16;   // Violett 16
+// SCL = 18 //Grün
+// SDA = 23 //Gelb
 
 // Settings
 int connectionTimeout = 1800;

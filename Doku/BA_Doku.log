@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  15 MAY 2026 11:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  31 MAY 2026 14:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -423,6 +423,15 @@ Package babel Info: 'german' activates 'german' shorthands.
 
 LaTeX Warning: Label `fig:strom-bootup' multiply defined.
 
+
+LaTeX Warning: Label `fig:strom-bootup' multiply defined.
+
+
+LaTeX Warning: Label `fig:strom-bootup' multiply defined.
+
+
+LaTeX Warning: Label `fig:strom-bootup' multiply defined.
+
 )
 \openout1 = `BA_Doku.aux'.
 
@@ -627,52 +636,71 @@ File: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png Graphic file (t
 ype png)
 <use Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png>
 Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.
-png  used on input line 409.
+png  used on input line 412.
 (pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
 
-Overfull \hbox (7.98979pt too wide) in paragraph at lines 414--417
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[14]
+<Images/Stromverbrauch/Nachher/ADC.png, id=337, 2308.625pt x 1146.2825pt>
+File: Images/Stromverbrauch/Nachher/ADC.png Graphic file (type png)
+<use Images/Stromverbrauch/Nachher/ADC.png>
+Package pdftex.def Info: Images/Stromverbrauch/Nachher/ADC.png  used on input l
+ine 430.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+
+Overfull \hbox (7.98979pt too wide) in paragraph at lines 437--440
 \OT1/cmr/m/n/12 sen-det. Durch den Wech-sel von der Standard-Bluedroid-Implemen
 tierung
  []
 
-[14 <./Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png (PNG copy)>]
-Overfull \hbox (39.27194pt too wide) in paragraph at lines 438--440
-[]\OT1/cmr/m/n/12 In der Aus-gangs-la-ge blie-ben der ADS1234 und die W[]agezel
-len-Versorgungsleitung
- []
-
-<Images/Stromverbrauch/Stromverbrauch vorher/bootup.png, id=341, 2308.625pt x 1
-146.2825pt>
-File: Images/Stromverbrauch/Stromverbrauch vorher/bootup.png Graphic file (type
- png)
-<use Images/Stromverbrauch/Stromverbrauch vorher/bootup.png>
-Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/bootup.png
-  used on input line 458.
-(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-File: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png Graphic file (t
-ype png)
-<use Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png>
-Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.
-png  used on input line 469.
-(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[15]
-<Images/Stromverbrauch/Stromverbrauch vorher/subscription.png, id=353, 2308.625
+[15 <./Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png (PNG copy)> <.
+/Images/Stromverbrauch/Nachher/ADC.png (PNG copy)>]
+<Images/Stromverbrauch/Stromverbrauch vorher/subscription.png, id=346, 2308.625
 pt x 1146.2825pt>
 File: Images/Stromverbrauch/Stromverbrauch vorher/subscription.png Graphic file
  (type png)
 <use Images/Stromverbrauch/Stromverbrauch vorher/subscription.png>
 Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/subscripti
-on.png  used on input line 503.
+on.png  used on input line 443.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+<Images/Stromverbrauch/Nachher/BLE_GANZ.png, id=347, 2308.625pt x 1146.2825pt>
+File: Images/Stromverbrauch/Nachher/BLE_GANZ.png Graphic file (type png)
+<use Images/Stromverbrauch/Nachher/BLE_GANZ.png>
+Package pdftex.def Info: Images/Stromverbrauch/Nachher/BLE_GANZ.png  used on in
+put line 450.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+ [16 <./Images/Stromverbrauch/Stromverbrauch vorher/subscription.png (PNG copy)
+> <./Images/Stromverbrauch/Nachher/BLE_GANZ.png (PNG copy)>]
+Overfull \hbox (39.27194pt too wide) in paragraph at lines 475--477
+[]\OT1/cmr/m/n/12 In der Aus-gangs-la-ge blie-ben der ADS1234 und die W[]agezel
+len-Versorgungsleitung
+ []
+
+<Images/Stromverbrauch/Stromverbrauch vorher/bootup.png, id=357, 2308.625pt x 1
+146.2825pt>
+File: Images/Stromverbrauch/Stromverbrauch vorher/bootup.png Graphic file (type
+ png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/bootup.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/bootup.png
+  used on input line 495.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
+File: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png Graphic file (t
+ype png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.
+png  used on input line 506.
 (pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
 
-
 LaTeX Warning: `h' float specifier changed to `ht'.
+
+[17 <./Images/Stromverbrauch/Stromverbrauch vorher/bootup.png (PNG copy)>]
+File: Images/Stromverbrauch/Stromverbrauch vorher/subscription.png Graphic file
+ (type png)
+<use Images/Stromverbrauch/Stromverbrauch vorher/subscription.png>
+Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/subscripti
+on.png  used on input line 540.
+(pdftex.def)             Requested size: 331.50238pt x 164.5888pt.
 
 (BA_Doku.bbl
 Underfull \hbox (badness 3815) in paragraph at lines 4--8
@@ -680,7 +708,7 @@ Underfull \hbox (badness 3815) in paragraph at lines 4--8
 mr/m/n/12 .  On-li-ne; auf-ge-ru-fen
  []
 
-[16 <./Images/Stromverbrauch/Stromverbrauch vorher/bootup.png (PNG copy)>]
+[18]
 Underfull \hbox (badness 10000) in paragraph at lines 16--20
 []\OT1/cmr/m/n/12 Getting star-ted with esp32-c3 su-per mi-
  []
@@ -709,8 +737,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 28--31
 ti . com / lit / ds / symlink /
  []
 
-) [17 <./Images/Stromverbrauch/Stromverbrauch vorher/subscription.png (PNG copy
-)>] (BA_Doku.aux)
+) [19] (BA_Doku.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -723,10 +750,10 @@ Package rerunfilecheck Info: File `BA_Doku.out' has not changed.
 (rerunfilecheck)             Checksum: CD127B13FEF3BE3F2E5826F66CB100C4;8003.
  ) 
 Here is how much of TeX's memory you used:
- 15458 strings out of 467871
- 310165 string characters out of 5418376
+ 15487 strings out of 467871
+ 311299 string characters out of 5418376
  700997 words of memory out of 5000000
- 44063 multiletter control sequences out of 15000+600000
+ 44087 multiletter control sequences out of 15000+600000
  640491 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,12n,79p,491b,1211s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -745,9 +772,9 @@ pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
 m/cmsy8.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
 sfonts/cm/cmti12.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/
 public/amsfonts/cm/cmtt12.pfb>
-Output written on BA_Doku.pdf (17 pages, 1016452 bytes).
+Output written on BA_Doku.pdf (19 pages, 1364194 bytes).
 PDF statistics:
- 454 PDF objects out of 1000 (max. 8388607)
- 108 named destinations out of 1000 (max. 500000)
- 341 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 470 PDF objects out of 1000 (max. 8388607)
+ 113 named destinations out of 1000 (max. 500000)
+ 351 words of extra memory for PDF output out of 10000 (max. 10000000)
 

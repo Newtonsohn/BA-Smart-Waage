@@ -404,6 +404,9 @@
 		Optimierungspotenzial liegt unter anderem in der Reduktion der Boot-Zeit sowie in der Minimierung der ADC-Einschaltdauer.
 
 		\item \textbf{ADC} (Abschnitt~\ref{sec:ramp-up}): \\
+			In der Ausgangslage verwendete die Vorgängerarbeit den \textbf{HX711} -- einen einkanaligen 24-Bit-ADC, an den alle vier Wägezellen als gemeinsame Brücke angeschlossen waren.
+			Die Messung erfasste 20 Samples auf diesem einzigen Kanal; zwischen jedem Sample wurde ein blockierendes \texttt{delay(50\,ms)} ausgeführt, was den ESP32-Kern für die gesamte Wartezeit vollaktiv liess.
+
 			\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC"}
@@ -411,9 +414,43 @@
 			\label{fig:strom-bootup}
 		\end{figure}
 
+			Im optimierten Design werden die vier Kanäle des ADS1234 sequenziell ausgelesen; pro Kanal werden \textbf{5 Samples} erfasst.
+			Nach jedem abgeschlossenen Sample kehrt der ESP32 sofort in den Light Sleep zurück und wird durch einen GPIO-Interrupt auf dem \texttt{DRDY}-Pin geweckt, sobald der ADS1234 die nächste Wandlung bereitstellt.
+			Im Profil sind diese fünf kurzen Aktivierungsspitzen pro Kanalgruppe deutlich erkennbar.
+
+			Zwischen den vier Kanalgruppen zeigt sich jeweils eine Pause von ca.\ \textbf{400\,ms}: Dies ist die physikalisch bedingte Einschwingzeit des internen Sigma-Delta-Filters nach einem Kanalwechsel.
+			Der ADS1234 integriert einen digitalen sinc\textsuperscript{3}-Filter; dessen Impulsantwort erstreckt sich über 3--4 Ausgangsperioden, was bei der eingestellten Datenrate von 10\,Hz rund 300--400\,ms entspricht.
+			Erst nach dieser Zeit sind die Ausgabewerte frei von Einflüssen des vorangegangenen Kanals.
+			Auch diese Wartezeit verbringt der ESP32 im Light Sleep -- der Kern schläft, bis \texttt{DRDY} das Ende der Einschwingphase signalisiert.
+
+			Der Gesamtladungsverbrauch der ADC-Phase sinkt von ca.\ \textbf{190\,mC} auf ca.\ \textbf{100\,mC} -- eine Einsparung von rund \textbf{47\,\%}.
+
+			\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Nachher/ADC"}
+			\caption{Stromverlauf -- ADC (Optimiert)}
+			\label{fig:strom-bootup}
+		\end{figure}
+		
+		
+
 		\item \textbf{BLE-Initialisierung und Advertisement} (Abschnitt~\ref{sec:ble-init}): \\
 		Der NimBLE-Stack wird gestartet und das Advertisement-Paket ausgesendet.
 		Durch den Wechsel von der Standard-Bluedroid-Implementierung auf den schlanken NimBLE-Stack konnte der Speicherverbrauch und die Initialisierungszeit signifikant reduziert werden.
+		
+			\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/subscription"}
+			\caption{Stromverlauf -- BLE Initialisierung und Subscription (Ausgangslage)}
+			\label{fig:strom-bootup}
+		\end{figure}
+		
+			\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Nachher/BLE_GANZ"}
+			\caption{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert)}
+			\label{fig:strom-bootup}
+		\end{figure}
 
 		\item \textbf{BLE-Verbindung und Datenübertragung} (Abschnitt~\ref{sec:ble-data}): \\
 		Das Gateway baut die Verbindung auf, der Messwert wird per Indication übertragen und die Verbindung anschliessend getrennt.
