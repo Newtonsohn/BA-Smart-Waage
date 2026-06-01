@@ -10,45 +10,46 @@ Warning--to sort, need author or key in s3_datasheet
 Warning--to sort, need author or key in c3_datasheet
 Warning--to sort, need author or key in TPS63802
 Warning--to sort, need author or key in yzc133_datasheet
-You've used 6 entries,
+Warning--to sort, need author or key in TPS62842_datasheet
+You've used 8 entries,
             2118 wiz_defined-function locations,
-            520 strings with 4780 characters,
-and the built_in function-call counts, 1073 in all, are:
-= -- 106
-> -- 12
+            529 strings with 5145 characters,
+and the built_in function-call counts, 1454 in all, are:
+= -- 144
+> -- 20
 < -- 0
-+ -- 8
-- -- 2
-* -- 32
-:= -- 140
-add.period$ -- 19
-call.type$ -- 6
-change.case$ -- 19
++ -- 12
+- -- 4
+* -- 42
+:= -- 195
+add.period$ -- 26
+call.type$ -- 8
+change.case$ -- 26
 chr.to.int$ -- 0
-cite$ -- 11
-duplicate$ -- 42
-empty$ -- 138
-format.name$ -- 2
-if$ -- 258
+cite$ -- 14
+duplicate$ -- 56
+empty$ -- 183
+format.name$ -- 4
+if$ -- 347
 int.to.chr$ -- 0
-int.to.str$ -- 6
+int.to.str$ -- 8
 missing$ -- 0
-newline$ -- 34
-num.names$ -- 2
-pop$ -- 60
+newline$ -- 45
+num.names$ -- 4
+pop$ -- 80
 preamble$ -- 1
-purify$ -- 13
+purify$ -- 18
 quote$ -- 0
-skip$ -- 30
+skip$ -- 40
 stack$ -- 0
-substring$ -- 30
-swap$ -- 6
+substring$ -- 40
+swap$ -- 8
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 24
-warning$ -- 5
-while$ -- 2
-width$ -- 7
-write$ -- 58
-(There were 5 warnings)
+type$ -- 32
+warning$ -- 6
+while$ -- 4
+width$ -- 9
+write$ -- 78
+(There were 6 warnings)

@@ -9,89 +9,98 @@
 \citation{rnt_supermini}
 \citation{s3_datasheet}
 \citation{c3_datasheet}
+\citation{yzc133_datasheet}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Einleitung}{3}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Ausgangslage}{3}{subsection.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Zielsetzung}{3}{subsection.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Meilensteine}{3}{subsection.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Requirements Engineering}{3}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Technische Ausgangslage}{3}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Design Space Exploration}{3}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}MCU-Auswahl: ESP32-S3 vs. ESP32-C3}{3}{subsubsection.3.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Evaluation kommerzieller Boards}{3}{subsubsection.3.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Kommunikationsstrategie}{3}{subsubsection.3.1.3}\protected@file@percent }
-\citation{TPS63802}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation Hardware}{4}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Dimensionierung der Spannungsversorgung (Buck-Boost)}{4}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Berechnung des Feedback-Netzwerks}{4}{subsubsection.4.1.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Widerstandswerte für unterschiedliche Ausgangsspannungen}}{4}{table.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Optimierung der Peripheriebeschaltung}{4}{subsubsection.4.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Versuchsaufbau: $3,3\text  {V}$ vs. $3,0\text  {V}$}{5}{subsubsection.4.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Energieversorgung (Power Supply)}{5}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Einfluss der Entladekurve auf die Effizienz}{5}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Die LDO-Effizienz-Kurve}{6}{subsubsection.4.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Dynamik des Break-Even-Punkts}{6}{subsubsection.4.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Zusammenfassende Bewertung für die Hardwarewahl}{6}{subsubsection.4.3.3}\protected@file@percent }
-\citation{yzc133_datasheet}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Technische Ausgangslage}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Design Space Exploration}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}MCU-Auswahl: ESP32-S3 vs. ESP32-C3}{3}{subsubsection.2.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Evaluation kommerzieller Boards}{3}{subsubsection.2.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Kommunikationsstrategie}{3}{subsubsection.2.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Optimierung Messgenauigkeit}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Sensorik: Wägezellen und ADC}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Wägezellen (YZC-133)}{3}{subsubsection.3.1.1}\protected@file@percent }
 \citation{ads1234_datasheet}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Sensorik: Wägezellen und ADC}{7}{subsection.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Wägezellen (YZC-133)}{7}{subsubsection.4.4.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Elektrische Spezifikation YZC-133}}{7}{table.2}\protected@file@percent }
-\newlabel{tab:yzc133}{{2}{7}{Elektrische Spezifikation YZC-133}{table.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}ADS1234 -- 4-Kanal-24-Bit-ADC}{7}{subsubsection.4.4.2}\protected@file@percent }
 \citation{ads1234_datasheet}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Von einem auf vier ADC-Kanäle}{8}{subsubsection.4.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Ecklastkompensation}{8}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Rauschverhalten und individuelle Kalibrierung}{8}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Implementation Software}{9}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}ADS1234 -- Ansteuerung und Kalibrierung}{9}{subsection.5.1}\protected@file@percent }
-\newlabel{sec:kalibrierung}{{5.1}{9}{ADS1234 -- Ansteuerung und Kalibrierung}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Überblick}{9}{subsubsection.5.1.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Pin-Belegung ADS1234 -- ESP32}}{9}{table.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Serielles Leseprotokoll}{9}{subsubsection.5.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.3}Kanalwechsel CH4 $\rightarrow $ CH1: PDWN-Workaround}{10}{subsubsection.5.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.4}Kalibrierung}{10}{subsubsection.5.1.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Schritt 1 -- Nullpunkt (Zero Offset)}{10}{section*.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Schritt 2 -- Empfindlichkeit (Span)}{11}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Schritt 3 -- Ecklastkompensation (Corner Trim)}{11}{section*.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Gewichtsberechnung im Betrieb}{12}{section*.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Tests und Validierung}{12}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Strommessungen und Low-Power-Optimierung}{12}{subsection.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.1}Setup}{12}{subsubsection.6.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.2}Ausgangslage}{12}{subsubsection.6.1.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}}{13}{figure.1}\protected@file@percent }
-\newlabel{fig:stromverbrauch-ausgangslage}{{1}{13}{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}{figure.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.3}Übersicht des Zyklus der Waage}{13}{subsubsection.6.1.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Ladungsverbrauch pro Betriebsphase: Ausgangslage vs.\ Optimiert}}{14}{table.4}\protected@file@percent }
-\newlabel{tab:strom-uebersicht}{{4}{14}{Ladungsverbrauch pro Betriebsphase: Ausgangslage vs.\ Optimiert}{table.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Stromverlauf -- ADC (Ausgangslage)}}{15}{figure.2}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{2}{15}{Stromverlauf -- ADC (Ausgangslage)}{figure.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Stromverlauf -- ADC (Optimiert)}}{15}{figure.3}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{3}{15}{Stromverlauf -- ADC (Optimiert)}{figure.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Stromverlauf -- BLE Initialisierung und Subscription (Ausgangslage)}}{16}{figure.4}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{4}{16}{Stromverlauf -- BLE Initialisierung und Subscription (Ausgangslage)}{figure.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert)}}{16}{figure.5}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{5}{16}{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert)}{figure.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.4}Deep Sleep}{17}{subsubsection.6.1.4}\protected@file@percent }
-\newlabel{sec:deep-sleep}{{6.1.4}{17}{Deep Sleep}{subsubsection.6.1.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.5}Ramp Up: Boot, Initialisierung und ADC}{17}{subsubsection.6.1.5}\protected@file@percent }
-\newlabel{sec:ramp-up}{{6.1.5}{17}{Ramp Up: Boot, Initialisierung und ADC}{subsubsection.6.1.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Stromverlauf -- Boot \& Initialisierung (Ausgangslage)}}{17}{figure.6}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{6}{17}{Stromverlauf -- Boot \& Initialisierung (Ausgangslage)}{figure.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Elektrische Spezifikation YZC-133}}{4}{table.1}\protected@file@percent }
+\newlabel{tab:yzc133}{{1}{4}{Elektrische Spezifikation YZC-133}{table.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}ADS1234 -- 4-Kanal-24-Bit-ADC}{4}{subsubsection.3.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Von einem auf vier ADC-Kanäle}{4}{subsubsection.3.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Ecklastkompensation}{4}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Rauschverhalten und individuelle Kalibrierung}{4}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}ADS1234 -- Ansteuerung und Kalibrierung}{5}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:kalibrierung}{{3.2}{5}{ADS1234 -- Ansteuerung und Kalibrierung}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Überblick}{5}{subsubsection.3.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Pin-Belegung ADS1234 -- ESP32}}{5}{table.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Serielles Leseprotokoll}{5}{subsubsection.3.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Kanalwechsel CH4 $\rightarrow $ CH1: PDWN-Workaround}{5}{subsubsection.3.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Kalibrierung}{6}{subsubsection.3.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Schritt 1 -- Nullpunkt (Zero Offset)}{6}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Schritt 2 -- Empfindlichkeit (Span)}{6}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Schritt 3 -- Ecklastkompensation (Corner Trim)}{6}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Gewichtsberechnung im Betrieb}{7}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Vergleich Messgenauigkeit}{7}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Vorgängerarbeit Messreihe}{7}{subsubsection.3.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Optimiertes Design Messreihe}{7}{subsubsection.3.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Low-Power Optimierung}{7}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Motivation}{7}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Strompfad Schema}{7}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Schema Strompfad -- Ausgangslage}}{8}{figure.1}\protected@file@percent }
+\newlabel{fig:strompfad-ausgangslage}{{1}{8}{Schema Strompfad -- Ausgangslage}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Ausgangslage}{8}{subsubsection.4.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Hardware Redesign}{8}{subsubsection.4.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Schema Strompfad -- Hardware Redesign}}{8}{figure.2}\protected@file@percent }
+\newlabel{fig:strompfad-redesign}{{2}{8}{Schema Strompfad -- Hardware Redesign}{figure.2}{}}
+\citation{lm2596_datasheet}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Strommessungen und Low-Power-Optimierung}{9}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Messmethodik}{9}{subsubsection.4.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Vergleichsstrategie}{9}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Software Optimierung}{10}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Ausgangslage}{10}{subsubsection.4.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}}{10}{figure.3}\protected@file@percent }
+\newlabel{fig:stromverbrauch-ausgangslage}{{3}{10}{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}Übersicht des Zyklus der Waage}{10}{subsubsection.4.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Übersicht Stromverbrauch}{11}{subsubsection.4.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Software-Vergleich: Altes System umverdrahtet vs.\ Neues System (beide Konfig~A, \SI {3.3}{\volt })}}{11}{table.3}\protected@file@percent }
+\newlabel{tab:sw-vergleich}{{3}{11}{Software-Vergleich: Altes System umverdrahtet vs.\ Neues System (beide Konfig~A, \SI {3.3}{\volt })}{table.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Gesamtsystem-Vergleich: Altes System unverändert (Konfig~B, \SI {5}{\volt }) vs.\ Neues System (Konfig~A, \SI {3.3}{\volt })\textsuperscript  {*}}}{11}{table.4}\protected@file@percent }
+\newlabel{tab:sys-vergleich}{{4}{11}{Gesamtsystem-Vergleich: Altes System unverändert (Konfig~B, \SI {5}{\volt }) vs.\ Neues System (Konfig~A, \SI {3.3}{\volt })\textsuperscript {*}}{table.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Stromverlauf -- ADC (Ausgangslage)}}{12}{figure.4}\protected@file@percent }
+\newlabel{fig:strom-bootup}{{4}{12}{Stromverlauf -- ADC (Ausgangslage)}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Stromverlauf -- ADC (Optimiert)}}{13}{figure.5}\protected@file@percent }
+\newlabel{fig:strom-bootup}{{5}{13}{Stromverlauf -- ADC (Optimiert)}{figure.5}{}}
+\citation{lm2596_datasheet}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Stromverlauf -- BLE Initialisierung und Subscription (Ausgangslage - Arduino BLE-Library)}}{14}{figure.6}\protected@file@percent }
+\newlabel{fig:strom-bootup}{{6}{14}{Stromverlauf -- BLE Initialisierung und Subscription (Ausgangslage - Arduino BLE-Library)}{figure.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - Arduino BLE-Library)}}{14}{figure.7}\protected@file@percent }
+\newlabel{fig:strom-bootup}{{7}{14}{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - Arduino BLE-Library)}{figure.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Gesamtverbrauch und Batterielebensdauer}{14}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:gesamtverbrauch}{{4.5}{14}{Gesamtverbrauch und Batterielebensdauer}{subsection.4.5}{}}
+\citation{lm2596_datasheet}
+\citation{TPS62842_datasheet}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - NimBLE)}}{15}{figure.8}\protected@file@percent }
+\newlabel{fig:strom-bootup}{{8}{15}{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - NimBLE)}{figure.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Zuverlässigkeitstest -- 100 BLE Advertisements (Optimiert - NimBLE)}}{15}{figure.9}\protected@file@percent }
+\newlabel{fig:strom-bootup}{{9}{15}{Zuverlässigkeitstest -- 100 BLE Advertisements (Optimiert - NimBLE)}{figure.9}{}}
+\@writefile{toc}{\contentsline {paragraph}{Aktivphase}{15}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Tiefschlaf}{15}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Energiebilanz pro Zyklus}{15}{section*.11}\protected@file@percent }
 \bibstyle{plain}
 \bibdata{quellen}
 \bibcite{c3_datasheet}{1}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Stromverlauf -- ADC-Messung (Ausgangslage)}}{18}{figure.7}\protected@file@percent }
-\newlabel{fig:strom-adc}{{7}{18}{Stromverlauf -- ADC-Messung (Ausgangslage)}{figure.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.6}BLE-Initialisierung und Advertisement}{18}{subsubsection.6.1.6}\protected@file@percent }
-\newlabel{sec:ble-init}{{6.1.6}{18}{BLE-Initialisierung und Advertisement}{subsubsection.6.1.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.7}BLE-Verbindung und Datenübertragung}{18}{subsubsection.6.1.7}\protected@file@percent }
-\newlabel{sec:ble-data}{{6.1.7}{18}{BLE-Verbindung und Datenübertragung}{subsubsection.6.1.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Stromverlauf -- BLE-Phase gesamt (Ausgangslage)}}{18}{figure.8}\protected@file@percent }
-\newlabel{fig:strom-ble}{{8}{18}{Stromverlauf -- BLE-Phase gesamt (Ausgangslage)}{figure.8}{}}
 \bibcite{s3_datasheet}{2}
 \bibcite{rnt_supermini}{3}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Stromverlauf -- BLE-Phase gesamt (Ausgangslage)}}{16}{figure.10}\protected@file@percent }
+\newlabel{fig:strom-ble}{{10}{16}{Stromverlauf -- BLE-Phase gesamt (Ausgangslage)}{figure.10}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text  {Buck}} = 61\,\%$,\ $3 \times 2600\,\text  {mAh}$ bei \SI {11.1}{\volt })}}{16}{table.5}\protected@file@percent }
+\newlabel{tab:batterielaufzeit}{{5}{16}{Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text {Buck}} = 61\,\%$,\ $3 \times 2600\,\text {mAh}$ bei \SI {11.1}{\volt })}{table.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Vergleich mit der Ausgangslage}{16}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Fazit, Diskussion und Ausblick}{16}{section.5}\protected@file@percent }
 \bibcite{yzc133_datasheet}{4}
-\bibcite{TPS63802}{5}
-\bibcite{ads1234_datasheet}{6}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Fazit, Diskussion und Ausblick}{19}{section.7}\protected@file@percent }
-\gdef \@abspage@last{19}
+\bibcite{TPS62842_datasheet}{5}
+\bibcite{TPS63802}{6}
+\bibcite{ads1234_datasheet}{7}
+\bibcite{lm2596_datasheet}{8}
+\gdef \@abspage@last{17}

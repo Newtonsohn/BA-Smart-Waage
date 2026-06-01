@@ -24,6 +24,11 @@ Kraftsensor 0\ldots1\,kg, yzc-133.
   \url{https://www.reichelt.com/ch/de/shop/produkt/kraftsensor_0_1_kg_yzc-133-282443}.
 \newblock Online; aufgerufen 29.04.2026.
 
+\bibitem{TPS62842_datasheet}
+Tps62842 datasheet.
+\newblock \url{https://www.ti.com/product/TPS62840/part-details/TPS62842DGRR}.
+\newblock Online; aufgerufen 01.06.2026.
+
 \bibitem{TPS63802}
 Tps63802 datasheet.
 \newblock \url{https://www.ti.com/lit/ds/symlink/tps63802.pdf}.
@@ -34,5 +39,12 @@ Tps63802 datasheet.
 \newblock {ADS1234} product datasheet.
 \newblock \url{https://www.ti.com/lit/ds/symlink/ads1234.pdf}.
 \newblock Online; aufgerufen 29.04.2026.
+
+\bibitem{lm2596_datasheet}
+{Texas Instruments}.
+\newblock {LM2596 SIMPLE SWITCHER\textregistered{} Power Converter 150-kHz 3-A
+  Step-Down Voltage Regulator}.
+\newblock \url{https://www.ti.com/lit/ds/symlink/lm2596.pdf}.
+\newblock Revision C (SNVS124C); Online; aufgerufen 01.06.2026.
 
 \end{thebibliography}
