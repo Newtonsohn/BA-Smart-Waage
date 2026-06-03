@@ -2,6 +2,7 @@
 #include "Properties.h"
 #include <cmath>
 #include <cstdio>
+#include <Arduino.h>
 
 #define CAL_SAMPLES      10       // averaged samples per channel per step
 #define CAL_WEIGHT_G     3000.0f  // center calibration weight in grams

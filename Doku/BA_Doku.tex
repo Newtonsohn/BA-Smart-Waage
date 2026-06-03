@@ -280,7 +280,7 @@
 	Die folgenden Messungen dokumentieren den Ladungsverbrauch in den einzelnen Betriebsphasen und quantifizieren den Effekt der implementierten Optimierungen.
 	Tabellen~\ref{tab:sw-vergleich} und~\ref{tab:sys-vergleich} fassen die verbrauchte Ladung pro Phase zusammen -- jeweils im direkten Vergleich zwischen Ausgangslage und optimiertem System.
 
-	\subsubsection{Messmethodik}
+	\subsection{Übersicht Zyklus}
 	Die Strommessungen wurden mit dem \textit{Nordic Semiconductor Power Profiler Kit~II} (PPK2) in Verbindung mit der Software \textit{nRF Connect for Desktop} (Power Profiler App) durchgeführt.
 	Das PPK2 wurde als Amperemeter in den jeweiligen Versorgungspfad eingeschleift; das Gerät erfasst den Strom mit einer Abtastrate von bis zu $100{,}000\,\text{Samples/s}$, was eine präzise zeitliche Auflösung auch kurzer Stromspitzen ermöglicht.
 	Da das PPK2 auf eine maximale Eingangsspannung von \SI{5}{\volt} ausgelegt ist, kann es nicht direkt an der Batterie (\SI{11.1}{\volt}) betrieben werden; alle Messungen erfolgen daher am Ausgang des LM2596S-Schaltreglers~\cite{lm2596_datasheet}.
@@ -306,7 +306,6 @@
 	
 	\subsection{Software Optimierung}
 	
-	\subsubsection{Ausgangslage}
 	Abbildung~\ref{fig:stromverbrauch-ausgangslage} zeigt den Stromverlauf eines vollständigen Messzyklus in der Ausgangslage, wie er direkt aus der Vorgängerarbeit übernommen wurde.
 	In dieser Vorarbeit stand die funktionale Korrektheit im Vordergrund -- eine gezielte Optimierung des Stromverbrauchs hatte keine Priorität.
 
@@ -321,7 +320,6 @@
 	\label{fig:stromverbrauch-ausgangslage}
 	\end{figure}
 
-	\subsubsection{Übersicht des Zyklus der Waage}
 	\begin{enumerate}
 		\item \textbf{Deep Sleep:} Zwischen den Messzyklen befindet sich das System im Deep Sleep. Die meisten Funktionen sind abgeschaltet; lediglich der RTC-Timer läuft weiter und weckt den ESP32 nach Ablauf des konfigurierten Intervalls. Der Stromverbrauch ist in dieser Phase minimal.
 		\item \textbf{Boot und Initialisierung:} Der ESP32 startet nach dem Deep Sleep neu. Der nichtflüchtige Speicher (NVS) wird ausgelesen, die State Machine initialisiert und der HX711-ADC eingerichtet.
@@ -331,58 +329,88 @@
 		\item \textbf{Nächster Zyklus:} Der Messzyklus ist abgeschlossen; das System kehrt in den Deep Sleep zurück. Im gezeigten Stromprofil folgt der nächste Zyklus sofort, weshalb kein ausgeprägtes Tiefstromplateau sichtbar ist.
 	\end{enumerate}
 
-	\subsubsection{Übersicht Stromverbrauch}
+	\subsection{Gesamtsystem Stromverbrauch}
 
 	Tabelle~\ref{tab:sw-vergleich} vergleicht die Software-Ausgangslage mit dem optimierten System; beide wurden in Konfig~A (\SI{3.3}{\volt}) gemessen, sodass die Ladungswerte in \si{mC} direkt gegenübergestellt werden können.
 	Tabelle~\ref{tab:sys-vergleich} stellt das alte Gesamtsystem (Konfig~B, \SI{5}{\volt}) dem neuen System (Konfig~A, \SI{3.3}{\volt}) gegenüber; da die Spannungsniveaus differieren, wird der Verbrauch in \si{mAh} angegeben.
-
+	
+	\subsubsection{Vergleich Energieverbrauch Aktiver Zyklus}
 	\begin{table}[H]
 	\centering
-	\caption{Gesamtsystem-Vergleich\textsuperscript}
+	\caption{Gesamtsystem-Vergleich (Aktiver Zyklus)\textsuperscript}
 	\label{tab:sys-vergleich}
 	\begin{tabular}{@{}lrrrrrr@{}}
 		\toprule
 		Betriebsphase 					& Alt [mJ] 	& Neu [mJ] 	& Ersparnis \\
 		\midrule
 		
-		\multicolumn{3}{l}{\textit{Statischer Verbrauch}} \\
-		Dehnmessstreifen (dauerhaft)    & 			& 			&			\\
-		ADC								&			&			&			\\
-		Verlust Buck (Berechnet)		&	2955	&			&	346.1 	\\
-		ESP32 über LDO					&	3430	&	--		&	--		\\
+		Vor Buck						&			&			&			\\
+		Verlust Buck (Berechnet)		&	2955	&			&		 	\\
+		ESP32 über LDO					&	3430	&	nA		&			\\
 		ESP32 über 3V3					&	2220	&	223.8	&			\\
-		davon ESP32 LDO					&			&	--		&			\\
+		davon ESP32 LDO					&			&	nA		&			\\
 		Dennmessstreifen				&			&	89.1	&			\\
+		ADC								&			&			&			\\
 		\midrule
 		
-		Aktivphase gesamt               & -- 		& 0.314 	& 0.039 	& -- 		\\
+		Aktivphase gesamt               & -- 		& 0.314 	& 0.039		\\
 		\midrule
 		
-		\textbf{Gesamt (ein Zyklus)}    & \textbf{604.9} & \textbf{6503} & \textbf{69{,}9} & \textbf{783} & $\mathbf{-85\,\%}$ \\
+		\textbf{Gesamt (ein Zyklus)}    & 			&			 &  	 	\\
+		\bottomrule
+	\end{tabular}
+	\\[4pt]
+\end{table}
+
+	
+	\subsubsection{Vergleich Leistungsverbrauch Deep-Sleep}
+		\begin{table}[H]
+	\centering
+	\caption{5V und 3V Rail hinter Buck converter - Vergleich (Deep-Sleep)\textsuperscript}
+	\label{tab:sys-vergleich-deep-sleep}
+	\begin{tabular}{@{}lrrrrrr@{}}
+		\toprule
+		Betriebsphase 					& Alt [mW] 	& Neu [mW] 	& Ersparnis \\
+		\midrule
+		Nach Buck-Conv.
+		Dehnmessstreifen			    & 78.19		&	0		&			\\
+		ADC								& 9.762		&	4.042	&			\\
+		ESP32							& 27.53		&	10.15	&			\\
+		
+		\midrule
+		Nach Buck summiert		     	& 115.4		& 	14.19 	& 	 		\\
+		\midrule
+		
+		\textbf{Gesamt (Vor Buck)}    	& 268.2		&  90.96	& 		 	\\
 		\bottomrule
 	\end{tabular}
 	\\[4pt]
 
 \end{table}
 
-	\subsubsection{Software ESP32}
+	Der Buck converter hat bereits im Leerlauf einen Verbrauch von 69.77 mW. Der Stromverbrauch ist verglichen mit den 14.19 mW des neuen Systems gigantisch.
+
+	\subsubsection{Vergleich Energieverbrauch ESP32}
 
 	\begin{table}[H]
 	\centering
 	\caption{Software-Vergleich: Altes System umverdrahtet vs.\ Neues System (beide Konfig~A, \SI{3.3}{\volt}) am 3V3 des ESP32. Beim alten System sind eigentlich 5V vom Buck convter am VIN Pin des Esp32 angeschlossen, der die Spannung auf 3.3Volt regelt, für den direkten Vergleich werden aber beide 3.0V am 3v3 angeschlossen, wie es beim neuen optimierten Waage festverdrahtet ist. Die Dennmessstreifen werden ebenfalls abehängt biem neuen System, biem alten System sind die DMS am HX711 Modul festverdrahtet, welcher sich nicht in der Messschlaufe befindet, der Verlust vom ADS1234 ADC beim neuen System wird dank eines Messpins noch seperat betrachtet.}
+	
 	\label{tab:sw-vergleich}
 	\begin{tabular}{@{}lrrr@{}}
 		\toprule
 		Betriebsphase 					& Alt [mJ] 	& Neu [mJ] & Einsparung \\
 		\midrule
-		Boot und Ramp-up                & 			&  			& $-80\,\%$ \\
-		ADC-Messung                     &  			&  			& $-83\,\%$ \\
-		BLE                             &  			&  			& $-93\,\%$ \\
+		Boot und Ramp-up                & 360.3		& 71.08		& $-80\,\%$ \\
+		ADC-Messung                     & 807,8		& 50.83		& $-83\,\%$ \\
+		BLE                             & 1293		& 101.6		& $-93\,\%$ \\
+		ADC Chip						& --		& 13.42		& --		\\			
 		\midrule
-		\textbf{Aktivphase gesamt}      & \textbf{689{,}4} & \textbf{76{,}3} & $\mathbf{-89\,\%}$ \\
+		\textbf{Gesamt(ein Zyklus}      & \textbf{689{,}4} & \textbf{76{,}3} & $\mathbf{-89\,\%}$ \\
 		\bottomrule
-	\end{tabular}
+		\end{tabular}
 	\end{table}
+
 
 
 
@@ -391,10 +419,6 @@
 	Die nachfolgenden Abschnitte beschreiben jede Betriebsphase im Detail -- mit Stromprofilen der Ausgangslage sowie der optimierten Version -- und erläutern, welche Massnahmen zur jeweiligen Einsparung geführt haben:
 
 	\begin{enumerate}
-		\item \textbf{Deep Sleep} (Abschnitt~\ref{sec:deep-sleep}): \\
-		Im Deep Sleep dominiert der Ruhestrom des Systems.
-		Durch gezieltes Abschalten externer Peripherie (ADS1234, Wägezellen-Versorgung) vor dem Schlafeingang sowie die Wahl eines LDO mit minimalem Quiescent Current wurde der Sockellader auf ein Minimum reduziert.
-
 		\item \textbf{Ramp Up -- Boot, Initialisierung und ADC} (Abschnitt~\ref{sec:ramp-up}): \\
 		Diese Phase umfasst den ESP32-Bootvorgang, die State-Machine-Initialisierung sowie die ADS1234-Messung.
 		Die Ausgangslage verbrauchte \textbf{0.123\,mAh}.
@@ -521,6 +545,17 @@
 	Für das neue System mit ca.\ \SI{35.4}{\milli\ampere} mittlerem Laststrom entspricht der Quiescent-Strom bereits rund \SI{13}{\percent} des Gesamteingangsstroms -- bei \SI{3}{\ampere} wäre er vernachlässigbar.
 	Da der LM2596S keinen Burst- oder PFM-Modus für Leichtlast unterstützt, ist dieser Verlust strukturell bedingt.
 	Die Messung bestätigt qualitativ die in Abschnitt~\ref{sec:gesamtverbrauch} verwendete Effizienzannahme von \SI{61}{\percent}~\cite{lm2596_datasheet}.
+	
+	\subsubsection{ADC}
+	Der ADC wird vom Programm per !PWDN Pin in den Schlaf geschickt nach der Messung und davor geweckt, aber dadurch das der ESP32 in den Deep Sleep geht, werden die GPIO floating gelassen. Es hätte ein Pull down Widerstand eingebaut werden müssen, dass er auch wärend des Sleeps abeschaltet wird, dadurch konsumiert er im Deep Sleep 1mA. Während des Zyklus verbraucht er 13.42 mJ. Etwas mehr als nötig, da er bereits eingeschaltet aus dem Deep Sleep kommt und nur kurz für die BLE Phase abgeschaltet wird.
+	
+				\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.85\linewidth]{"Images/Definitiv/neu/ADC_Chip"}
+		\caption{Stromverlauf -- ADC Chip(Neues Design))}
+		\label{fig:strom-bootup}
+	\end{figure}
+	
 	\subsection{Gesamtverbrauch und Batterielebensdauer}
 	\label{sec:gesamtverbrauch}
 
@@ -581,7 +616,39 @@
 	Das alte System wies am 5\,V-Rail einen mittleren Strom von \textbf{104\,mA} auf; mit einer LM2596S-Effizienz von \textbf{79\,\%} entspricht das einem Batteriestrom von ca.\ \textbf{59\,mA}.
 	Das optimierte System erreicht am 3{,}3\,V-Rail \textbf{35{,}4\,mA}; mit $\eta = 61\,\%$ entspricht das ca.\ \textbf{17\,mA} auf Batterieebene -- eine Reduktion um den Faktor \textbf{3{,}5}.
 	Die Batterielaufzeit steigt damit von ca.\ \textbf{44\,h} ($\approx$\,1{,}8\,Tage) auf ca.\ \textbf{150\,h} ($\approx$\,6{,}3\,Tage).
+	
 
+	\section{Messungen}
+	\subsection{Messgenauigkeit}
+	\subsection{Low-Power Analyse und Optimierung}
+		\subsubsection{Vergleich Energieverbrauch Aktiver Zyklus}
+		Alt:
+		ESP32 über LDO:
+		
+					\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/Definitiv/alt/old_esp32_LDO"}
+			\caption{Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}
+			\label{fig:strom-bootup}
+		\end{figure}
+		
+		ESP32 über 3v3 Pin:
+					\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/Definitiv/alt/esp32_3v3/zyklus"}
+			\caption{Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}
+			\label{fig:strom-bootup}
+			
+		\end{figure}
+		
+		\subsubsection{Vergleich Leistungsverbrauch Deep-Sleep}
+		
+		
+		
+		
+		\subsubsection{Vergleich Energieverbrauch ESP32}
+		
+		
 	% ============================================================
 	\section{Fazit, Diskussion und Ausblick}
 	% ============================================================

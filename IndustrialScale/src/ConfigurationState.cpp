@@ -82,6 +82,8 @@ void ConfigurationState::update() {
 
 void ConfigurationState::exit() {
   Logger::log("Exit Configuration State");
+  digitalWrite(Properties::ADS1234_PDWN, LOW);
+  digitalWrite(Properties::ADS1234_DMS_PWR, HIGH);
 }
 
 void ConfigurationState::updateDisplayWithConfiguration() {
