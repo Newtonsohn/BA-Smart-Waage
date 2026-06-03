@@ -342,42 +342,36 @@
 	\label{tab:sys-vergleich}
 	\begin{tabular}{@{}lrrrrrr@{}}
 		\toprule
-		Betriebsphase 					& Alt [mJ] 	& Neu [mJ] 	& Ersparnis \\
+		Betriebsphase & Alt [mC] & Alt [mJ] & Neu [mC] & Neu [mJ] & Ersparnis  \\
 		\midrule
-		
 		\multicolumn{3}{l}{\textit{Statischer Verbrauch}} \\
-		Dehnmessstreifen (dauerhaft)    & 			& 			&			\\
-		ADC								&			&			&			\\
-		Verlust Buck (Berechnet)		&	2955	&			&	346.1 	\\
-		ESP32 über LDO					&	3430	&	--		&	--		\\
-		ESP32 über 3V3					&	2220	&	223.8	&			\\
-		davon ESP32 LDO					&			&	--		&			\\
-		Dennmessstreifen				&			&	89.1	&			\\
+		Dehnmessstreifen (dauerhaft)    & -- & entfällt \\
+		Deep Sleep                      & -- & 13{,}75\,mA (laufend)\textsuperscript{**} \\
+		\multicolumn{3}{l}{\textit{Dynamischer Verbrauch}} \\
+		Boot und Ramp-up                & -- & -- \\
+		ADC-Messung                     & 0{,}123 & 0{,}028 \\
+		BLE                             & 0{,}194 & 0{,}011 \\
 		\midrule
-		
-		Aktivphase gesamt               & -- 		& 0.314 	& 0.039 	& -- 		\\
+		Aktivphase gesamt               & -- & -- & 0{,}314 & 0{,}039 & -- \\
 		\midrule
-		
-		\textbf{Gesamt (ein Zyklus)}    & \textbf{604.9} & \textbf{6503} & \textbf{69{,}9} & \textbf{783} & $\mathbf{-85\,\%}$ \\
+		\textbf{Gesamt (ein Zyklus)}    & \textbf{465{,}1} & \textbf{5273} & \textbf{69{,}9} & \textbf{783} & $\mathbf{-85\,\%}$ \\
 		\bottomrule
 	\end{tabular}
 	\\[4pt]
 
 \end{table}
 
-	\subsubsection{Software ESP32}
-
 	\begin{table}[H]
 	\centering
-	\caption{Software-Vergleich: Altes System umverdrahtet vs.\ Neues System (beide Konfig~A, \SI{3.3}{\volt}) am 3V3 des ESP32. Beim alten System sind eigentlich 5V vom Buck convter am VIN Pin des Esp32 angeschlossen, der die Spannung auf 3.3Volt regelt, für den direkten Vergleich werden aber beide 3.0V am 3v3 angeschlossen, wie es beim neuen optimierten Waage festverdrahtet ist. Die Dennmessstreifen werden ebenfalls abehängt biem neuen System, biem alten System sind die DMS am HX711 Modul festverdrahtet, welcher sich nicht in der Messschlaufe befindet, der Verlust vom ADS1234 ADC beim neuen System wird dank eines Messpins noch seperat betrachtet.}
+	\caption{Software-Vergleich: Altes System umverdrahtet vs.\ Neues System (beide Konfig~A, \SI{3.3}{\volt})}
 	\label{tab:sw-vergleich}
 	\begin{tabular}{@{}lrrr@{}}
 		\toprule
-		Betriebsphase 					& Alt [mJ] 	& Neu [mJ] & Einsparung \\
+		Betriebsphase & Alt [mC] & Neu [mC] & Einsparung \\
 		\midrule
-		Boot und Ramp-up                & 			&  			& $-80\,\%$ \\
-		ADC-Messung                     &  			&  			& $-83\,\%$ \\
-		BLE                             &  			&  			& $-93\,\%$ \\
+		Boot und Ramp-up                & 120{,}3 & 23{,}95 & $-80\,\%$ \\
+		ADC-Messung                     & 104{,}6 & 17{,}98 & $-83\,\%$ \\
+		BLE                             & 464{,}7 & 33{,}75 & $-93\,\%$ \\
 		\midrule
 		\textbf{Aktivphase gesamt}      & \textbf{689{,}4} & \textbf{76{,}3} & $\mathbf{-89\,\%}$ \\
 		\bottomrule
@@ -478,49 +472,15 @@
 		Durch Optimierung der Connection-Parameter und Reduktion der Wartezeit auf den Gateway konnte dieser Wert gesenkt werden.
 	\end{enumerate}
 
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/subscription"}
+		\caption{Stromverlauf -- BLE-Phase gesamt (Ausgangslage)}
+		\label{fig:strom-ble}
+	\end{figure}
 
 	% Hier Text einfügen (optimierte Messungen BLE-Verbindung -- Screenshot nachher)
 
-	\subsection{Verlüste Hardware}
-	Dieses Kapitel bezieht sich auf die Verlüste vom ADC, Buck converter und LDO
-	\subsubsection{Methodik}
-	Es wird jeweils über einen Zyklus die Energie vor und nach dem LDO und Buck converter gemessen, die Differenz dieser Energien ist dann dem Bauteil zu verschulden. Bei den ADC wird dann einfach der Strompfad zum Bauteil angeschaut.
-	
-	\subsubsection{Buck converter}
-
-	Zur Bestimmung des Verlusts am LM2596S-Schaltregler wird die Energie \emph{vor} dem Konverter (Eingang, Batterieseite) mit der Energie \emph{nach} dem Konverter (Ausgang, Lastseite) verglichen; die Differenz entspricht dem dem Schaltregler-Board zuzuschreibenden Verlust.
-	Die Werte stammen jeweils aus der Tabelle des Kapitels \textit{Übersicht Stromverbrauch} und umfassen einen vollständigen Messzyklus.
-	Beim alten System wurde sichergestellt, dass BLE-Initialisierung und Subscription zusammen ca.\ \SI{5.4}{\second} dauerten, um vergleichbare und reproduzierbare Messungen zu gewährleisten.
-
-	\paragraph{Altes System}
-
-	\begin{align}
-		\Delta E_{\text{Buck, alt}} &= \SI{6503}{\milli\joule} - \SI{3548}{\milli\joule} = \SI{2955}{\milli\joule} \\
-		\eta_{\text{Buck, alt}} &= \frac{\SI{3548}{\milli\joule}}{\SI{6503}{\milli\joule}} \approx \SI{54.6}{\percent}
-	\end{align}
-
-	\paragraph{Neues System}
-
-	\begin{align}
-		\Delta E_{\text{Buck, neu}} &= \SI{689.5}{\milli\joule} - \SI{343.4}{\milli\joule} = \SI{346.1}{\milli\joule} \\
-		\eta_{\text{Buck, neu}} &= \frac{\SI{343.4}{\milli\joule}}{\SI{689.5}{\milli\joule}} \approx \SI{49.8}{\percent}
-	\end{align}
-
-	\paragraph{Vergleich}
-
-	Beide Systeme weisen einen ähnlichen Wirkungsgrad von ca.\ \SI{50}{\percent} auf.
-	Der entscheidende Unterschied liegt im absoluten Verlust: Das alte System verliert \SI{2955}{\milli\joule} pro Zyklus am Schaltregler, das neue System nur \SI{346.1}{\milli\joule} -- eine Reduktion um den Faktor \textbf{8,5}.
-	Der geringere absolute Verlust ist direkt auf den deutlich niedrigeren Gesamtenergieverbrauch des optimierten Systems zurückzuführen.
-
-	\paragraph{Plausibilitätsprüfung anhand des Datenblatts}
-
-	Das Datenblatt des LM2596S~\cite{lm2596_datasheet} gibt für eine Konfiguration von \SI{12}{\volt} Eingang auf \SI{3.3}{\volt} Ausgang bei einem Ausgangsstrom von \SI{3}{\ampere} einen typischen Wirkungsgrad von \SI{79}{\percent} an.
-	Die gemessenen Werte von ca.\ \SI{50}{\percent} liegen erwartungsgemäss darunter -- zum einen weil beide Systeme mit mittleren Lastströmen weit unter \SI{3}{\ampere} betrieben werden, zum anderen weil es sich nicht um den nackten LM2596S-Chip handelt, sondern um ein fertiges Schaltregler-Board mit zusätzlicher Peripherie (Freilaufdiode, Spule, Filterkapazitoren, Schutzschaltungen), die den Gesamtwirkungsgrad weiter senken.
-
-	Bei geringer Nutzlast dominiert zudem der Quiescent-Strom des LM2596S von ca.\ \SI{5.5}{\milli\ampere} den Eingangsstrom überproportional.
-	Für das neue System mit ca.\ \SI{35.4}{\milli\ampere} mittlerem Laststrom entspricht der Quiescent-Strom bereits rund \SI{13}{\percent} des Gesamteingangsstroms -- bei \SI{3}{\ampere} wäre er vernachlässigbar.
-	Da der LM2596S keinen Burst- oder PFM-Modus für Leichtlast unterstützt, ist dieser Verlust strukturell bedingt.
-	Die Messung bestätigt qualitativ die in Abschnitt~\ref{sec:gesamtverbrauch} verwendete Effizienzannahme von \SI{61}{\percent}~\cite{lm2596_datasheet}.
 	\subsection{Gesamtverbrauch und Batterielebensdauer}
 	\label{sec:gesamtverbrauch}
 

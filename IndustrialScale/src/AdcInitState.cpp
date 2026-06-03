@@ -35,7 +35,7 @@ void AdcInitState::enter() {
   // Power-on sequence (datasheet Section 7.4.5):
   // Enable load cell power, then toggle PDWN low→high to start conversions
   digitalWrite(Properties::ADS1234_DMS_PWR, LOW);   // enable DMS power (active low)
-  delay(100);
+  delay(2);
   digitalWrite(Properties::ADS1234_PDWN, LOW);      // assert power-down briefly
   delay(10);
   digitalWrite(Properties::ADS1234_PDWN, HIGH);     // release → chip starts converting

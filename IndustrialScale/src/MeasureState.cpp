@@ -1,6 +1,7 @@
 #include "MeasureState.h"
 #include "Properties.h"
 #include "StateType.h"
+#include <Arduino.h>
 
 #define WEIGHT_CHANGE_THRESHOLD 0.9
 
@@ -30,6 +31,8 @@ void MeasureState::update() {}
 
 void MeasureState::exit() {
   Logger::log("Exit Measure State");
+  digitalWrite(Properties::ADS1234_PDWN, LOW);      // power-down ADS1234
+  digitalWrite(Properties::ADS1234_DMS_PWR, HIGH);  // disable DMS power
 }
 
 StateType MeasureState::nextState() {
