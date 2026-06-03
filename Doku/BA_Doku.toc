@@ -41,22 +41,35 @@
 \contentsline {subsubsection}{\numberline {4.6.2}Vergleich Leistungsverbrauch Deep-Sleep}{12}{subsubsection.4.6.2}%
 \contentsline {subsubsection}{\numberline {4.6.3}Vergleich Energieverbrauch ESP32}{12}{subsubsection.4.6.3}%
 \contentsline {subsection}{\numberline {4.7}Verlüste Hardware}{15}{subsection.4.7}%
-\contentsline {subsubsection}{\numberline {4.7.1}Methodik}{16}{subsubsection.4.7.1}%
+\contentsline {subsubsection}{\numberline {4.7.1}Messmethode}{16}{subsubsection.4.7.1}%
 \contentsline {subsubsection}{\numberline {4.7.2}Buck converter}{16}{subsubsection.4.7.2}%
 \contentsline {paragraph}{Altes System}{16}{section*.9}%
 \contentsline {paragraph}{Neues System}{16}{section*.10}%
 \contentsline {paragraph}{Vergleich}{16}{section*.11}%
 \contentsline {paragraph}{Plausibilitätsprüfung anhand des Datenblatts}{16}{section*.12}%
-\contentsline {subsubsection}{\numberline {4.7.3}ADC}{17}{subsubsection.4.7.3}%
+\contentsline {subsubsection}{\numberline {4.7.3}LDO}{17}{subsubsection.4.7.3}%
+\contentsline {subsubsection}{\numberline {4.7.4}ADC}{17}{subsubsection.4.7.4}%
 \contentsline {subsection}{\numberline {4.8}Gesamtverbrauch und Batterielebensdauer}{17}{subsection.4.8}%
 \contentsline {paragraph}{Aktivphase}{17}{section*.13}%
-\contentsline {paragraph}{Tiefschlaf}{17}{section*.14}%
+\contentsline {paragraph}{Tiefschlaf}{18}{section*.14}%
 \contentsline {paragraph}{Energiebilanz pro Zyklus}{18}{section*.15}%
 \contentsline {paragraph}{Vergleich mit der Ausgangslage}{18}{section*.16}%
 \contentsline {section}{\numberline {5}Messungen}{18}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Messgenauigkeit}{18}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Low-Power Analyse und Optimierung}{18}{subsection.5.2}%
 \contentsline {subsubsection}{\numberline {5.2.1}Vergleich Energieverbrauch Aktiver Zyklus}{18}{subsubsection.5.2.1}%
-\contentsline {subsubsection}{\numberline {5.2.2}Vergleich Leistungsverbrauch Deep-Sleep}{19}{subsubsection.5.2.2}%
-\contentsline {subsubsection}{\numberline {5.2.3}Vergleich Energieverbrauch ESP32}{19}{subsubsection.5.2.3}%
-\contentsline {section}{\numberline {6}Fazit, Diskussion und Ausblick}{19}{section.6}%
+\contentsline {paragraph}{ESP32 über 3V3-Pin}{18}{section*.17}%
+\contentsline {paragraph}{Dehnmessstreifen}{19}{section*.18}%
+\contentsline {paragraph}{ADC}{19}{section*.19}%
+\contentsline {paragraph}{Verluste Umwandlung}{20}{section*.20}%
+\contentsline {subsubsection}{\numberline {5.2.2}Vergleich Energieverbrauch ESP32}{20}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Verluste Hardware}{20}{subsubsection.5.2.3}%
+\contentsline {paragraph}{Buck-Converter}{20}{section*.21}%
+\contentsline {paragraph}{LDO}{20}{section*.22}%
+\contentsline {paragraph}{ADC}{20}{section*.23}%
+\contentsline {subsubsection}{\numberline {5.2.4}Vergleich Leistungsverbrauch Deep-Sleep}{20}{subsubsection.5.2.4}%
+\contentsline {paragraph}{Dehnmessstreifen}{20}{section*.24}%
+\contentsline {paragraph}{ADC}{20}{section*.25}%
+\contentsline {paragraph}{ESP32}{21}{section*.26}%
+\contentsline {subsubsection}{\numberline {5.2.5}Vergleich Energieverbrauch ESP32}{21}{subsubsection.5.2.5}%
+\contentsline {section}{\numberline {6}Fazit, Diskussion und Ausblick}{21}{section.6}%

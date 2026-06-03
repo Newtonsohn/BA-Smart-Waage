@@ -62,8 +62,8 @@
 \newlabel{fig:stromverbrauch-ausgangslage}{{3}{10}{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}{figure.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Gesamtsystem Stromverbrauch}{11}{subsection.4.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.1}Vergleich Energieverbrauch Aktiver Zyklus}{11}{subsubsection.4.6.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Gesamtsystem-Vergleich (Aktiver Zyklus)\textsuperscript  }}{11}{table.3}\protected@file@percent }
-\newlabel{tab:sys-vergleich}{{3}{11}{Gesamtsystem-Vergleich (Aktiver Zyklus)\textsuperscript }{table.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Gesamtsystem Energiebedarf Zusammensetzung - Vergleich Aktiver Zyklus\textsuperscript  }}{11}{table.3}\protected@file@percent }
+\newlabel{tab:sys-vergleich}{{3}{11}{Gesamtsystem Energiebedarf Zusammensetzung - Vergleich Aktiver Zyklus\textsuperscript }{table.3}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.2}Vergleich Leistungsverbrauch Deep-Sleep}{12}{subsubsection.4.6.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces 5V und 3V Rail hinter Buck converter - Vergleich (Deep-Sleep)\textsuperscript  }}{12}{table.4}\protected@file@percent }
 \newlabel{tab:sys-vergleich-deep-sleep}{{4}{12}{5V und 3V Rail hinter Buck converter - Vergleich (Deep-Sleep)\textsuperscript }{table.4}{}}
@@ -85,25 +85,25 @@
 \citation{lm2596_datasheet}
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Zuverlässigkeitstest -- 100 BLE Advertisements (Optimiert - NimBLE)}}{16}{figure.9}\protected@file@percent }
 \newlabel{fig:strom-bootup}{{9}{16}{Zuverlässigkeitstest -- 100 BLE Advertisements (Optimiert - NimBLE)}{figure.9}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.1}Methodik}{16}{subsubsection.4.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.1}Messmethode}{16}{subsubsection.4.7.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.2}Buck converter}{16}{subsubsection.4.7.2}\protected@file@percent }
+\newlabel{sub:Buck}{{4.7.2}{16}{Buck converter}{subsubsection.4.7.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Altes System}{16}{section*.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Neues System}{16}{section*.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Vergleich}{16}{section*.11}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Plausibilitätsprüfung anhand des Datenblatts}{16}{section*.12}\protected@file@percent }
 \citation{lm2596_datasheet}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.3}ADC}{17}{subsubsection.4.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.3}LDO}{17}{subsubsection.4.7.3}\protected@file@percent }
+\newlabel{sub:ldo}{{4.7.3}{17}{LDO}{subsubsection.4.7.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.4}ADC}{17}{subsubsection.4.7.4}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Stromverlauf -- ADC Chip(Neues Design))}}{17}{figure.10}\protected@file@percent }
 \newlabel{fig:strom-bootup}{{10}{17}{Stromverlauf -- ADC Chip(Neues Design))}{figure.10}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Gesamtverbrauch und Batterielebensdauer}{17}{subsection.4.8}\protected@file@percent }
 \newlabel{sec:gesamtverbrauch}{{4.8}{17}{Gesamtverbrauch und Batterielebensdauer}{subsection.4.8}{}}
 \@writefile{toc}{\contentsline {paragraph}{Aktivphase}{17}{section*.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Tiefschlaf}{17}{section*.14}\protected@file@percent }
 \citation{lm2596_datasheet}
 \citation{TPS62842_datasheet}
-\bibstyle{plain}
-\bibdata{quellen}
-\bibcite{c3_datasheet}{1}
+\@writefile{toc}{\contentsline {paragraph}{Tiefschlaf}{18}{section*.14}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Energiebilanz pro Zyklus}{18}{section*.15}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text  {Buck}} = 61\,\%$,\ $3 \times 2600\,\text  {mAh}$ bei \SI {11.1}{\volt })}}{18}{table.6}\protected@file@percent }
 \newlabel{tab:batterielaufzeit}{{6}{18}{Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text {Buck}} = 61\,\%$,\ $3 \times 2600\,\text {mAh}$ bei \SI {11.1}{\volt })}{table.6}{}}
@@ -112,17 +112,44 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Messgenauigkeit}{18}{subsection.5.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Low-Power Analyse und Optimierung}{18}{subsection.5.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Vergleich Energieverbrauch Aktiver Zyklus}{18}{subsubsection.5.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{ESP32 über 3V3-Pin}{18}{section*.17}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Messpunkt: vor ESP32 3V3-Pin -- Ausgangslage; Wert: \SI {2220}{\milli \joule }}}{19}{figure.11}\protected@file@percent }
+\newlabel{fig:esp32-3v3-alt}{{11}{19}{Messpunkt: vor ESP32 3V3-Pin -- Ausgangslage; Wert: \SI {2220}{\milli \joule }}{figure.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Messpunkt: vor ESP32 3V3-Pin -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}}{19}{figure.12}\protected@file@percent }
+\newlabel{fig:esp32-3v3-neu}{{12}{19}{Messpunkt: vor ESP32 3V3-Pin -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}{figure.12}{}}
+\@writefile{toc}{\contentsline {paragraph}{Dehnmessstreifen}{19}{section*.18}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Ganzer Zyklus \textbf  {mit} DMS -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}}{19}{figure.13}\protected@file@percent }
+\newlabel{fig:dms-mitDMS}{{13}{19}{Ganzer Zyklus \textbf {mit} DMS -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}{figure.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Ganzer Zyklus \textbf  {ohne} DMS -- Optimiertes System; Wert: \SI {223.8}{\milli \joule }}}{19}{figure.14}\protected@file@percent }
+\newlabel{fig:dms-ohneDMS}{{14}{19}{Ganzer Zyklus \textbf {ohne} DMS -- Optimiertes System; Wert: \SI {223.8}{\milli \joule }}{figure.14}{}}
+\@writefile{toc}{\contentsline {paragraph}{ADC}{19}{section*.19}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Messpunkt: vor HX711 VIN-Pin -- Ausgangslage; Wert: \SI {106.2}{\milli \joule }}}{20}{figure.15}\protected@file@percent }
+\newlabel{fig:adc-alt}{{15}{20}{Messpunkt: vor HX711 VIN-Pin -- Ausgangslage; Wert: \SI {106.2}{\milli \joule }}{figure.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Messpunkt: vor ADS1234 AVDD/DVDD-Pin -- Optimiertes System; Wert: \SI {13.42}{\milli \joule }}}{20}{figure.16}\protected@file@percent }
+\newlabel{fig:adc-neu}{{16}{20}{Messpunkt: vor ADS1234 AVDD/DVDD-Pin -- Optimiertes System; Wert: \SI {13.42}{\milli \joule }}{figure.16}{}}
+\@writefile{toc}{\contentsline {paragraph}{Verluste Umwandlung}{20}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Vergleich Energieverbrauch ESP32}{20}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Verluste Hardware}{20}{subsubsection.5.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Buck-Converter}{20}{section*.21}\protected@file@percent }
+\newlabel{par:ldo}{{5.2.3}{20}{LDO}{section*.22}{}}
+\@writefile{toc}{\contentsline {paragraph}{LDO}{20}{section*.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{ADC}{20}{section*.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.4}Vergleich Leistungsverbrauch Deep-Sleep}{20}{subsubsection.5.2.4}\protected@file@percent }
+\newlabel{par:deep}{{5.2.4}{20}{Vergleich Leistungsverbrauch Deep-Sleep}{subsubsection.5.2.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Dehnmessstreifen}{20}{section*.24}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces Messpunkt: vor DMS 78.19 mW (Alt))}}{20}{figure.17}\protected@file@percent }
+\newlabel{fig:strom-bootup}{{17}{20}{Messpunkt: vor DMS 78.19 mW (Alt))}{figure.17}{}}
+\@writefile{toc}{\contentsline {paragraph}{ADC}{20}{section*.25}\protected@file@percent }
+\bibstyle{plain}
+\bibdata{quellen}
+\bibcite{c3_datasheet}{1}
 \bibcite{s3_datasheet}{2}
 \bibcite{rnt_supermini}{3}
 \bibcite{yzc133_datasheet}{4}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}}{19}{figure.11}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{11}{19}{Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}{figure.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}}{19}{figure.12}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{12}{19}{Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}{figure.12}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Vergleich Leistungsverbrauch Deep-Sleep}{19}{subsubsection.5.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Vergleich Energieverbrauch ESP32}{19}{subsubsection.5.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Fazit, Diskussion und Ausblick}{19}{section.6}\protected@file@percent }
 \bibcite{TPS62842_datasheet}{5}
 \bibcite{ads1234_datasheet}{6}
 \bibcite{lm2596_datasheet}{7}
-\gdef \@abspage@last{20}
+\@writefile{toc}{\contentsline {paragraph}{ESP32}{21}{section*.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.5}Vergleich Energieverbrauch ESP32}{21}{subsubsection.5.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Fazit, Diskussion und Ausblick}{21}{section.6}\protected@file@percent }
+\gdef \@abspage@last{21}

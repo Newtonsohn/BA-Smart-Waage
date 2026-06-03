@@ -15,6 +15,8 @@
 \title{Bachelorarbeit: Low-Power IoT-Skala}
 \author{Thomas Rocheteau}
 \date{Februar 2026}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
 
 \begin{document}
 
@@ -337,28 +339,27 @@
 	\subsubsection{Vergleich Energieverbrauch Aktiver Zyklus}
 	\begin{table}[H]
 	\centering
-	\caption{Gesamtsystem-Vergleich (Aktiver Zyklus)\textsuperscript}
+	\caption{Gesamtsystem Energiebedarf Zusammensetzung - Vergleich Aktiver Zyklus\textsuperscript}
 	\label{tab:sys-vergleich}
-	\begin{tabular}{@{}lrrrrrr@{}}
+	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrr@{}}
 		\toprule
-		Betriebsphase 					& Alt [mJ] 	& Neu [mJ] 	& Ersparnis \\
+		Verbraucher 					& Alt [mJ] 	& Neu [mJ] 	& Ersparnis \\
 		\midrule
-		
-		Vor Buck						&			&			&			\\
-		Verlust Buck (Berechnet)		&	2955	&			&		 	\\
-		ESP32 über LDO					&	3430	&	nA		&			\\
-		ESP32 über 3V3					&	2220	&	223.8	&			\\
-		davon ESP32 LDO					&			&	nA		&			\\
-		Dennmessstreifen				&			&	89.1	&			\\
-		ADC								&			&			&			\\
+
+		\multicolumn{4}{l}{\textit{Verbrauch}} \\[2pt]
+		\quad ESP32 über 3V3			&	2220	&	223.8	&	$-89.9\,\%$	\\
+		\quad Dehnmessstreifen			&	781.9	&	89.1	&	$-88.6\,\%$	\\
+		\quad ADC						&	106.2	&	13.42	&	$-87.4\,\%$	\\[4pt]
+		\multicolumn{4}{l}{\textit{Verluste Umwandlung}} \\[2pt]
+		\quad Verlust LDO				&	1210	&	0		&	Entfällt	\\
+		\quad Verlust Buck				&	2955	&	346.1	&	$-88.3\,\%$	\\
 		\midrule
-		
-		Aktivphase gesamt               & -- 		& 0.314 	& 0.039		\\
+		Summiert						&	7273.1	&	672.4	&	$-90.7\,\%$	\\
+		Diskrepanz						&	$-770.1$&	17.1	&				\\
 		\midrule
-		
-		\textbf{Gesamt (ein Zyklus)}    & 			&			 &  	 	\\
+		\textbf{Gesamt Gemessen}    	& 	6503	&	689.5	&	$-89.4\,\%$	\\
 		\bottomrule
-	\end{tabular}
+	\end{tabular*}
 	\\[4pt]
 \end{table}
 
@@ -370,15 +371,17 @@
 	\label{tab:sys-vergleich-deep-sleep}
 	\begin{tabular}{@{}lrrrrrr@{}}
 		\toprule
-		Betriebsphase 					& Alt [mW] 	& Neu [mW] 	& Ersparnis \\
+		Verbraucher 					& Alt [mW] 	& Neu [mW] 	& Ersparnis \\
 		\midrule
+		\multicolumn{4}{l}{\textit{Verbrauch an Power Rail}} \\[2pt]
 		Nach Buck-Conv.
 		Dehnmessstreifen			    & 78.19		&	0		&			\\
 		ADC								& 9.762		&	4.042	&			\\
 		ESP32							& 27.53		&	10.15	&			\\
 		
 		\midrule
-		Nach Buck summiert		     	& 115.4		& 	14.19 	& 	 		\\
+		 Summiert		     			& 115.4		& 	14.19 	& 	 		\\
+		 Nach Buck gemessen				&			&			&			\\
 		\midrule
 		
 		\textbf{Gesamt (Vor Buck)}    	& 268.2		&  90.96	& 		 	\\
@@ -507,10 +510,10 @@
 
 	\subsection{Verlüste Hardware}
 	Dieses Kapitel bezieht sich auf die Verlüste vom ADC, Buck converter und LDO
-	\subsubsection{Methodik}
+	\subsubsection{Messmethode}
 	Es wird jeweils über einen Zyklus die Energie vor und nach dem LDO und Buck converter gemessen, die Differenz dieser Energien ist dann dem Bauteil zu verschulden. Bei den ADC wird dann einfach der Strompfad zum Bauteil angeschaut.
 	
-	\subsubsection{Buck converter}
+	\subsubsection{Buck converter}\label{sub:Buck}
 
 	Zur Bestimmung des Verlusts am LM2596S-Schaltregler wird die Energie \emph{vor} dem Konverter (Eingang, Batterieseite) mit der Energie \emph{nach} dem Konverter (Ausgang, Lastseite) verglichen; die Differenz entspricht dem dem Schaltregler-Board zuzuschreibenden Verlust.
 	Die Werte stammen jeweils aus der Tabelle des Kapitels \textit{Übersicht Stromverbrauch} und umfassen einen vollständigen Messzyklus.
@@ -545,13 +548,15 @@
 	Für das neue System mit ca.\ \SI{35.4}{\milli\ampere} mittlerem Laststrom entspricht der Quiescent-Strom bereits rund \SI{13}{\percent} des Gesamteingangsstroms -- bei \SI{3}{\ampere} wäre er vernachlässigbar.
 	Da der LM2596S keinen Burst- oder PFM-Modus für Leichtlast unterstützt, ist dieser Verlust strukturell bedingt.
 	Die Messung bestätigt qualitativ die in Abschnitt~\ref{sec:gesamtverbrauch} verwendete Effizienzannahme von \SI{61}{\percent}~\cite{lm2596_datasheet}.
+	\subsubsection{LDO}\label{sub:ldo}
+	
 	
 	\subsubsection{ADC}
 	Der ADC wird vom Programm per !PWDN Pin in den Schlaf geschickt nach der Messung und davor geweckt, aber dadurch das der ESP32 in den Deep Sleep geht, werden die GPIO floating gelassen. Es hätte ein Pull down Widerstand eingebaut werden müssen, dass er auch wärend des Sleeps abeschaltet wird, dadurch konsumiert er im Deep Sleep 1mA. Während des Zyklus verbraucht er 13.42 mJ. Etwas mehr als nötig, da er bereits eingeschaltet aus dem Deep Sleep kommt und nur kurz für die BLE Phase abgeschaltet wird.
 	
 				\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.85\linewidth]{"Images/Definitiv/neu/ADC_Chip"}
+		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/neu/ADC_Chip"}
 		\caption{Stromverlauf -- ADC Chip(Neues Design))}
 		\label{fig:strom-bootup}
 	\end{figure}
@@ -622,34 +627,107 @@
 	\subsection{Messgenauigkeit}
 	\subsection{Low-Power Analyse und Optimierung}
 		\subsubsection{Vergleich Energieverbrauch Aktiver Zyklus}
+
+		\paragraph{ESP32 über 3V3-Pin}
+		Der Messpunkt liegt direkt am 3V3-Versorgungspin des ESP32.
+		In der Ausgangslage wird der ESP32 mit \SI{3.3}{\volt} gespeist, was dem Ausgang des internen Board-LDO entspricht.
+		Im optimierten System entfällt der LDO; die Speisung erfolgt direkt über den 3V3-Pin, mit der optimierten\SI{3.0}{\volt} Spannung.
+
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus"}
+				\caption{Messpunkt: vor ESP32 3V3-Pin -- Ausgangslage; Wert: \SI{2220}{\milli\joule}}
+				\label{fig:esp32-3v3-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3V_mitDMS/zyklus"}
+				\caption{Messpunkt: vor ESP32 3V3-Pin -- Optimiertes System; Wert: \SI{312.9}{\milli\joule}}
+				\label{fig:esp32-3v3-neu}
+			\end{minipage}
+		\end{figure}
+
+		\paragraph{Dehnmessstreifen}
+		In der \textbf{Ausgangslage} sind die Wägezellen dauerhaft mit Spannung versorgt.
+		Der gemessene Leistungsverbrauch von \SI{78.19}{\milli\watt} (entnommen aus Abschnitt~\ref{par:ldo}) ergibt über die aktive Zyklusdauer von \SI{10}{\second} einen Energiebedarf von:
+		\[
+			P_{\text{DMS}} \times t_{\text{aktiv}} = \SI{78.19}{\milli\watt} \times \SI{10}{\second} = \SI{781.9}{\milli\joule}
+		\]
+
+		Im \textbf{optimierten System} wird der DMS-Anteil indirekt als Differenz zweier Messungen am 3V3-Pin bestimmt -- einmal mit und einmal ohne eingeschaltete Dehnmessstreifen:
+		\[
+			E_{\text{DMS}} = E_{\text{mit DMS}} - E_{\text{ohne DMS}} = \SI{312.9}{\milli\joule} - \SI{223.8}{\milli\joule} = \SI{89.1}{\milli\joule}
+		\]
+
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_mitDMS/zyklus"}
+				\caption{Ganzer Zyklus \textbf{mit} DMS -- Optimiertes System; Wert: \SI{312.9}{\milli\joule}}
+				\label{fig:dms-mitDMS}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus"}
+				\caption{Ganzer Zyklus \textbf{ohne} DMS -- Optimiertes System; Wert: \SI{223.8}{\milli\joule}}
+				\label{fig:dms-ohneDMS}
+			\end{minipage}
+		\end{figure}
+
+		\paragraph{ADC}
+		Der Energiebedarf des ADC wird direkt am Versorgungspin des jeweiligen Chips gemessen.
+
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC"}
+				\caption{Messpunkt: vor HX711 VIN-Pin -- Ausgangslage; Wert: \SI{106.2}{\milli\joule}}
+				\label{fig:adc-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/ADC_Chip"}
+				\caption{Messpunkt: vor ADS1234 AVDD/DVDD-Pin -- Optimiertes System; Wert: \SI{13.42}{\milli\joule}}
+				\label{fig:adc-neu}
+			\end{minipage}
+		\end{figure}
+
+		\paragraph{Verluste Umwandlung}
+		Die Verluste des LDO (Ausgangslage) sowie des Buck-Converters werden in den Abschnitten~\ref{par:ldo} und~\ref{sub:Buck} hergeleitet und in Tabelle~\ref{tab:sys-vergleich} übernommen.
+		
+		
+		
+		\subsubsection{Vergleich Energieverbrauch ESP32}
+		\subsubsection{Verluste Hardware}
+		\paragraph{Buck-Converter}
+		\paragraph{LDO}\label{par:ldo}
+		\paragraph{ADC}
+		\subsubsection{Vergleich Leistungsverbrauch Deep-Sleep}\label{par:deep}
+		\paragraph{Dehnmessstreifen}
 		Alt:
-		ESP32 über LDO:
-		
 					\begin{figure}[h]
 			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/Definitiv/alt/old_esp32_LDO"}
-			\caption{Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}
+			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS"}
+			\caption{Messpunkt: vor DMS 78.19 mW (Alt))}
 			\label{fig:strom-bootup}
 		\end{figure}
 		
-		ESP32 über 3v3 Pin:
-					\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/Definitiv/alt/esp32_3v3/zyklus"}
-			\caption{Messpunkt: vor ESP32 VIN Pin (LDO) (Alt))}
-			\label{fig:strom-bootup}
-			
-		\end{figure}
-		
-		\subsubsection{Vergleich Leistungsverbrauch Deep-Sleep}
-		
-		
+		\paragraph{ADC}
+		\paragraph{ESP32}
 		
 		
 		\subsubsection{Vergleich Energieverbrauch ESP32}
 		
 		
 	% ============================================================
+	
 	\section{Fazit, Diskussion und Ausblick}
 	% ============================================================
 	% Hier Text einfügen
