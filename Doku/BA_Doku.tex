@@ -33,7 +33,7 @@
 	\noindent\textbf{Erklärung zum Einsatz von KI-Tools}
 
 	\medskip
-	\noindent Ich erkläre hiermit, dass ich für die Erstellung dieser Projektarbeit die Unterstützung von Claude~\cite{claude_anthropic}, einem KI-gestützten Sprachmodell von Anthropic~\cite{anthropic}, genutzt habe. Dieses Modell wurde eingesetzt, um bestimmte Textabschnitte zu verfeinern, Anregungen für Formulierungen zu erhalten und komplizierte Konzepte verständlicher darzustellen. Ausserdem wurden einzelne Codeabschnitte mittels Claude entwickelt. Alle mit Hilfe von Claude erstellten Inhalte wurden von mir sorgfältig geprüft und den akademischen Standards sowie den spezifischen Anforderungen der ZHAW angepasst. Ich bestätige, dass die vorliegende Arbeit meine eigenen Ideen und Überlegungen widerspiegelt und gemäss den ethischen Richtlinien der akademischen Integrität verfasst wurde.
+	\noindent Ich erkläre hiermit, dass ich für die Erstellung dieser Bachelortarbeit die Unterstützung von Claude~\cite{claude_anthropic}, einem KI-gestützten Sprachmodell von Anthropic~\cite{anthropic}, genutzt habe. Dieses Modell wurde eingesetzt, um bestimmte Textabschnitte zu verfeinern, Anregungen für Formulierungen zu erhalten und komplizierte Konzepte verständlicher darzustellen. Ausserdem wurden einzelne Codeabschnitte mittels Claude entwickelt. Alle mit Hilfe von Claude erstellten Inhalte wurden von mir sorgfältig geprüft und den akademischen Standards sowie den spezifischen Anforderungen der ZHAW angepasst. Ich bestätige, dass die vorliegende Arbeit meine eigenen Ideen und Überlegungen widerspiegelt und gemäss den ethischen Richtlinien der akademischen Integrität verfasst wurde.
 
 	\vspace{1cm}
 
@@ -419,8 +419,7 @@
 	\subsubsection{Vergleich ESP32 Energieverbrauch}
 	\begin{table}[H]
 	\centering
-	\caption{Software-Vergleich Aktiver Zyklus am ESP32-3V3-Pin: Ausgangslage vs.\ Optimiertes System
-	(beide Konfig~A, \SI{3.3}{\volt}). DMS und LDO sind aus dem Messpfad ausgeschlossen.
+	\caption{Software-Vergleich Aktiver Zyklus am ESP32-3V3-Pin: Ausgangslage vs.\ Optimiertes System. Beide ESP32 wurden mit 3.0V gespeist. DMS und LDO sind aus dem Messpfad ausgeschlossen.
 	Messprofile und Berechnungen vgl.\ Abschnitt~\ref{par:esp32}.}
 	\label{tab:sw-vergleich}
 	\begin{tabular}{@{}lrrr@{}}
@@ -444,12 +443,7 @@
 	\end{minipage}
 	\end{table}
 
-
-
-
-	Die gesamte Aktivphase beträgt in der Ausgangslage ca.\ \textbf{10 Sekunden} pro Zyklus mit einem Ladungsverbrauch von \textbf{0.314\,mAh} (Abbildung~\ref{fig:stromverbrauch-ausgangslage}).
-
-	Die nachfolgenden Abschnitte beschreiben jede Betriebsphase im Detail -- mit Stromprofilen der Ausgangslage sowie der optimierten Version -- und erläutern, welche Massnahmen zur jeweiligen Einsparung geführt haben:
+	Die nachfolgenden Abschnitte beschreiben jede Betriebsphase im Detail und erläutern, welche Massnahmen zur jeweiligen Einsparung geführt haben:
 	\subsubsection{Optimierung Energieverbrauch Software}\label{sub:software}
 	\begin{enumerate}
 		\item \textbf{Ramp Up -- Boot, Initialisierung und ADC} (Abschnitt~\ref{sec:ramp-up}): \\
@@ -476,8 +470,6 @@
 			Der ADS1234 integriert einen digitalen sinc\textsuperscript{3}-Filter; dessen Impulsantwort erstreckt sich über 3--4 Ausgangsperioden, was bei der eingestellten Datenrate von 10\,Hz rund 300--400\,ms entspricht.
 			Erst nach dieser Zeit sind die Ausgabewerte frei von Einflüssen des vorangegangenen Kanals.
 			Auch diese Wartezeit verbringt der ESP32 im Light Sleep -- der Kern schläft, bis \texttt{DRDY} das Ende der Einschwingphase signalisiert.
-
-			Der Gesamtladungsverbrauch der ADC-Phase sinkt von ca.\ \textbf{190\,mC} auf ca.\ \textbf{100\,mC} -- eine Einsparung von rund \textbf{47\,\%}.
 
 			\begin{figure}[h]
 			\centering
@@ -607,13 +599,33 @@
 	(vgl.\ Tabelle~\ref{tab:sys-vergleich}, Zeile \textit{Verlust LDO}).
 
 	\subsubsection{ADC}
-	Der ADC wird vom Programm per !PWDN Pin in den Schlaf geschickt nach der Messung und davor geweckt, aber dadurch das der ESP32 in den Deep Sleep geht, werden die GPIO floating gelassen. Es hätte ein Pull down Widerstand eingebaut werden müssen, dass er auch wärend des Sleeps abeschaltet wird, dadurch konsumiert er im Deep Sleep 1mA. Während des Zyklus verbraucht er 13.42 mJ. Etwas mehr als nötig, da er bereits eingeschaltet aus dem Deep Sleep kommt und nur kurz für die BLE Phase abgeschaltet wird.
-	
-				\begin{figure}[h]
+
+	Der ADS1234 wird nach der Messung über den \texttt{PWDN}-Pin in den Standby-Modus versetzt
+	und vor dem nächsten Zyklus wieder aktiviert.
+	Da der ESP32 im Anschluss in den Deep Sleep übergeht und die GPIO-Pins floatend werden,
+	bleibt der ADC im Tiefschlaf teilweise aktiv; ein Pull-down-Widerstand am \texttt{PWDN}-Pin
+	hätte eine vollständige Abschaltung ermöglicht.
+	Im alten System war der HX711 hardwareseitig nicht im Messpfad eingebunden und wird daher
+	separat betrachtet.
+	Die Zahlenwerte sind Tabelle~\ref{tab:sw-vergleich} zu entnehmen;
+	die Messprofile sind in Abbildungen~\ref{fig:adc-verlust-alt}
+	und~\ref{fig:adc-verlust-neu} dargestellt.
+
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/neu/ADC_Chip"}
-		\caption{Stromverlauf -- ADC Chip(Neues Design))}
-		\label{fig:strom-bootup}
+		\begin{minipage}[t]{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC"}
+			\caption{ADC-Verlust -- Ausgangslage (HX711)}
+			\label{fig:adc-verlust-alt}
+		\end{minipage}
+		\hfill
+		\begin{minipage}[t]{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/ADC_Chip"}
+			\caption{ADC-Verlust -- Optimiertes System (ADS1234)}
+			\label{fig:adc-verlust-neu}
+		\end{minipage}
 	\end{figure}
 	
 	\subsection{Gesamtverbrauch und Batterielebensdauer}
@@ -804,8 +816,7 @@ Leiterbahnen ermöglichen.
 		
 		\subsubsection{Vergleich Energieverbrauch ESP32}\label{par:esp32}
 
-		Dieser Abschnitt dokumentiert die JouleScope-Messungen am ESP32-3V3-Pin pro Betriebsphase
-		(Konfig~A, \SI{3.3}{\volt}, ohne DMS und LDO).
+		Dieser Abschnitt dokumentiert die JouleScope-Messungen am ESP32-3V3-Pin pro Betriebsphase, ohne DMS und LDO).
 		Da der ADS1234 am gleichen Rail angeschlossen ist, enthält jede Phasenmessung des neuen Systems
 		dessen Anteil. Für den fairen Vergleich wird der gemessene ADS1234-Anteil von
 		\SI{13.42}{\milli\joule} von allen Neu-Werten abgezogen; die bereinigten Werte entsprechen

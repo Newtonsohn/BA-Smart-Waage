@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  4 JUN 2026 13:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.29)  4 JUN 2026 21:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -520,15 +520,6 @@ LaTeX Warning: Label `fig:strom-bootup' multiply defined.
 
 LaTeX Warning: Label `fig:strom-bootup' multiply defined.
 
-
-LaTeX Warning: Label `fig:strom-bootup' multiply defined.
-
-
-LaTeX Warning: Label `fig:strom-bootup' multiply defined.
-
-
-LaTeX Warning: Label `fig:strom-bootup' multiply defined.
-
 )
 \openout1 = `BA_Doku.aux'.
 
@@ -818,37 +809,27 @@ l.413 		\item \textbf
  <./Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage.png
 >]
 
-LaTeX Warning: Reference `sec:ramp-up' on page 14 undefined on input line 455.
+LaTeX Warning: Reference `sec:ramp-up' on page 14 undefined on input line 449.
+
+
+LaTeX Warning: Reference `sec:ramp-up' on page 14 undefined on input line 454.
 
 [14
 pdfTeX warning (ext4): destination with the same identifier (name{table.5}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.459 
+l.457 
       ]
-
-LaTeX Warning: Reference `sec:ramp-up' on page 15 undefined on input line 460.
-
-<Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png, id=430, 2308.625pt 
-x 1146.2825pt>
-File: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png Graphic file (t
-ype png)
-<use Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png>
-Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.
-png  used on input line 466.
-(pdftex.def)             Requested size: 386.96027pt x 192.11938pt.
-<Images/Stromverbrauch/Nachher/ADC.png, id=431, 2308.625pt x 1146.2825pt>
+<Images/Stromverbrauch/Nachher/ADC.png, id=430, 2308.625pt x 1146.2825pt>
 File: Images/Stromverbrauch/Nachher/ADC.png Graphic file (type png)
 <use Images/Stromverbrauch/Nachher/ADC.png>
 Package pdftex.def Info: Images/Stromverbrauch/Nachher/ADC.png  used on input l
-ine 484.
+ine 469.
 (pdftex.def)             Requested size: 386.96027pt x 192.11938pt.
 
-LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-LaTeX Warning: Reference `sec:ble-init' on page 15 undefined on input line 491.
+LaTeX Warning: Reference `sec:ble-init' on page 15 undefined on input line 476.
 
 
 [15
@@ -856,103 +837,79 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.494 
-       <./Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC.png (PNG copy)>
-]
-<Images/Stromverbrauch/Stromverbrauch vorher/subscription.png, id=439, 2308.625
-pt x 1146.2825pt>
-File: Images/Stromverbrauch/Stromverbrauch vorher/subscription.png Graphic file
- (type png)
-<use Images/Stromverbrauch/Stromverbrauch vorher/subscription.png>
-Package pdftex.def Info: Images/Stromverbrauch/Stromverbrauch vorher/subscripti
-on.png  used on input line 497.
-(pdftex.def)             Requested size: 386.96027pt x 192.11938pt.
-<Images/Stromverbrauch/Nachher/BLE_ARDUINO.png, id=440, 2308.625pt x 1146.2825p
+l.482 
+       <./Images/Stromverbrauch/Nachher/ADC.png (PNG copy)>]
+<Images/Stromverbrauch/Nachher/BLE_ARDUINO.png, id=438, 2308.625pt x 1146.2825p
 t>
 File: Images/Stromverbrauch/Nachher/BLE_ARDUINO.png Graphic file (type png)
 <use Images/Stromverbrauch/Nachher/BLE_ARDUINO.png>
 Package pdftex.def Info: Images/Stromverbrauch/Nachher/BLE_ARDUINO.png  used on
- input line 507.
+ input line 485.
 (pdftex.def)             Requested size: 386.96027pt x 192.11938pt.
 
+Overfull \hbox (0.44055pt too wide) in paragraph at lines 490--492
+\OT1/cmr/m/n/12 den schlan-ken \OT1/cmr/bx/n/12 Nim-BLE\OT1/cmr/m/n/12 -Stack e
+r-setzt, der spe-zi-ell f[]ur res-sour-cen-be-schr[]ankte Ger[]ate
+ []
+
+<Images/Stromverbrauch/Nachher/BLE_GANZ.png, id=439, 2308.625pt x 1146.2825pt>
+File: Images/Stromverbrauch/Nachher/BLE_GANZ.png Graphic file (type png)
+<use Images/Stromverbrauch/Nachher/BLE_GANZ.png>
+Package pdftex.def Info: Images/Stromverbrauch/Nachher/BLE_GANZ.png  used on in
+put line 495.
+(pdftex.def)             Requested size: 386.96027pt x 192.11938pt.
+<Images/Stromverbrauch/Nachher/ADV_RELIAB.png, id=440, 455.45157pt x 34.62938pt
+>
+File: Images/Stromverbrauch/Nachher/ADV_RELIAB.png Graphic file (type png)
+<use Images/Stromverbrauch/Nachher/ADV_RELIAB.png>
+Package pdftex.def Info: Images/Stromverbrauch/Nachher/ADV_RELIAB.png  used on 
+input line 505.
+(pdftex.def)             Requested size: 386.96027pt x 29.42241pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Overfull \hbox (0.44055pt too wide) in paragraph at lines 512--514
-\OT1/cmr/m/n/12 den schlan-ken \OT1/cmr/bx/n/12 Nim-BLE\OT1/cmr/m/n/12 -Stack e
-r-setzt, der spe-zi-ell f[]ur res-sour-cen-be-schr[]ankte Ger[]ate
- []
+LaTeX Warning: Reference `sec:ble-data' on page 16 undefined on input line 510.
+
 
 [16
 pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.514 
-      
+l.514 	\end{enumerate}
+                      
 pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.514 
-       <./Images/Stromverbrauch/Nachher/ADC.png (PNG copy)> <./Images/Stromverb
-rauch/Stromverbrauch vorher/subscription.png (PNG copy)>]
-<Images/Stromverbrauch/Nachher/BLE_GANZ.png, id=448, 2308.625pt x 1146.2825pt>
-File: Images/Stromverbrauch/Nachher/BLE_GANZ.png Graphic file (type png)
-<use Images/Stromverbrauch/Nachher/BLE_GANZ.png>
-Package pdftex.def Info: Images/Stromverbrauch/Nachher/BLE_GANZ.png  used on in
-put line 517.
-(pdftex.def)             Requested size: 386.96027pt x 192.11938pt.
-<Images/Stromverbrauch/Nachher/ADV_RELIAB.png, id=449, 455.45157pt x 34.62938pt
->
-File: Images/Stromverbrauch/Nachher/ADV_RELIAB.png Graphic file (type png)
-<use Images/Stromverbrauch/Nachher/ADV_RELIAB.png>
-Package pdftex.def Info: Images/Stromverbrauch/Nachher/ADV_RELIAB.png  used on 
-input line 527.
-(pdftex.def)             Requested size: 386.96027pt x 29.42241pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-LaTeX Warning: Reference `sec:ble-data' on page 17 undefined on input line 532.
-
-
-[17
+l.514 	\end{enumerate}
+                       <./Images/Stromverbrauch/Nachher/BLE_ARDUINO.png (PNG co
+py)> <./Images/Stromverbrauch/Nachher/BLE_GANZ.png (PNG copy)>] [17
 pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.536 	\end{enumerate}
-                      
-pdfTeX warning (ext4): destination with the same identifier (name{figure.8}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.536 	\end{enumerate}
-                       <./Images/Stromverbrauch/Nachher/BLE_ARDUINO.png (PNG co
-py)> <./Images/Stromverbrauch/Nachher/BLE_GANZ.png (PNG copy)>] [18
-pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.579 
+l.557 
        <./Images/Stromverbrauch/Nachher/ADV_RELIAB.png>]
-<Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png, id=484, 1891.065pt x 953.06
+<Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png, id=478, 1891.065pt 
+x 953.06062pt>
+File: Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png Graphic file (t
+ype png)
+<use Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png>
+Package pdftex.def Info: Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.
+png  used on input line 604.
+(pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
+<Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png, id=479, 1891.065pt x 953.06
 062pt>
 File: Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png Graphic file (type png)
 
 <use Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png  use
-d on input line 614.
-(pdftex.def)             Requested size: 386.96027pt x 195.01512pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[19]
-Overfull \hbox (0.56946pt too wide) in paragraph at lines 629--630
+d on input line 611.
+(pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
+ [18]
+Overfull \hbox (0.56946pt too wide) in paragraph at lines 627--628
  []\OT1/cmr/bx/n/12 Aktivphase[] \OT1/cmr/m/n/12 Die Ak-tiv-pha-se des op-ti-mi
 er-ten Sy-stems um-fasst ADC-Messung (\OT1/cmr/bx/n/12 100mC\OT1/cmr/m/n/12 )
  []
@@ -960,201 +917,206 @@ er-ten Sy-stems um-fasst ADC-Messung (\OT1/cmr/bx/n/12 100mC\OT1/cmr/m/n/12 )
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[20
-pdfTeX warning (ext4): destination with the same identifier (name{figure.10}) h
-as been already used, duplicate ignored
+[19
+pdfTeX warning (ext4): destination with the same identifier (name{figure.8}) ha
+s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.679 	
-        <./Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png>] [21
+l.677 	
+       
+pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.677 	
+        <./Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png> <./Images
+/Stromverbrauch/JouleScope/neu/ADC_Chip.png>] [20
 pdfTeX warning (ext4): destination with the same identifier (name{table.6}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.723 
+l.721 
       ]
-<Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.png, id=528, 1891.065pt 
+<Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.png, id=525, 1891.065pt 
 x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.png Graphic file (t
 ype png)
 <use Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.
-png  used on input line 738.
+png  used on input line 736.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
 <Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3V_mitDMS/zyklus.png, id=52
-9, 1891.065pt x 953.06062pt>
+6, 1891.065pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3V_mitDMS/zyklus.png G
 raphic file (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3V_mitDMS/zyklus.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3V_
-mitDMS/zyklus.png  used on input line 745.
+mitDMS/zyklus.png  used on input line 743.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_mitDMS/zyklus.png, id=53
-1, 1891.065pt x 953.06062pt>
+<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_mitDMS/zyklus.png, id=52
+8, 1891.065pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_mitDMS/zyklus.png G
 raphic file (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_mitDMS/zyklus.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_
-mitDMS/zyklus.png  used on input line 767.
+mitDMS/zyklus.png  used on input line 765.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
 <Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus.png, id=5
-32, 1891.065pt x 953.06062pt>
+29, 1891.065pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus.png 
 Graphic file (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_
-ohneDMS/zyklus.png  used on input line 774.
+ohneDMS/zyklus.png  used on input line 772.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
- [22
+ [21
+pdfTeX warning (ext4): destination with the same identifier (name{figure.10}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.777 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{figure.11}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.779 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{figure.12}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.779 
+l.777 
        <./Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.png> <./Images/
 Stromverbrauch/JouleScope/neu/new_esp32_3v3_3V_mitDMS/zyklus.png>]
-<Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png, id=545, 1891.065pt 
-x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png Graphic file (t
 ype png)
 <use Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.
-png  used on input line 787.
+png  used on input line 785.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
 File: Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png Graphic file (type png)
 
 <use Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png  use
-d on input line 794.
+d on input line 792.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
 
-Overfull \hbox (12.0928pt too wide) in paragraph at lines 801--802
+Overfull \hbox (12.0928pt too wide) in paragraph at lines 799--800
  []\OT1/cmr/bx/n/12 Verluste Um-wand-lung[] \OT1/cmr/m/n/12 Die Ver-lu-ste des 
 LDO (Aus-gangs-la-ge) so-wie des Buck-Converters
  []
 
-<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/boot.png, id=550, 1891.065pt
+<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/boot.png, id=546, 1891.065pt
  x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/boot.png Graphic file (
 type png)
 <use Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/boot.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/boot
-.png  used on input line 819.
+.png  used on input line 816.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
 
-Underfull \hbox (badness 6110) in paragraph at lines 820--820
-[]\OT1/cmr/m/n/12 Abbildung 17: []Boot -- Aus-gangs-la-ge;
+Underfull \hbox (badness 6110) in paragraph at lines 817--817
+[]\OT1/cmr/m/n/12 Abbildung 16: []Boot -- Aus-gangs-la-ge;
  []
 
-<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/boot.png, id=551
+<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/boot.png, id=547
 , 1891.065pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/boot.png Gr
 aphic file (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/boot.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_
-ohneDMS/boot.png  used on input line 826.
+ohneDMS/boot.png  used on input line 823.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-[23
+[22
+pdfTeX warning (ext4): destination with the same identifier (name{figure.12}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.828 		\[
+          
 pdfTeX warning (ext4): destination with the same identifier (name{figure.13}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.831 		\[
+l.828 		\[
           
 pdfTeX warning (ext4): destination with the same identifier (name{figure.14}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.831 		\[
+l.828 		\[
           
 pdfTeX warning (ext4): destination with the same identifier (name{figure.15}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.831 		\[
-          
-pdfTeX warning (ext4): destination with the same identifier (name{figure.16}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.831 		\[
+l.828 		\[
            <./Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_mitDMS/zykl
 us.png> <./Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus
-.png> <./Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC.png>]
-<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ADC.png, id=565, 1891.065pt 
+.png>]
+<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ADC.png, id=560, 1891.065pt 
 x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ADC.png Graphic file (t
 ype png)
 <use Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ADC.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ADC.
-png  used on input line 840.
+png  used on input line 837.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/adc.png, id=566,
+<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/adc.png, id=561,
  1891.065pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/adc.png Gra
 phic file (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/adc.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_
-ohneDMS/adc.png  used on input line 847.
+ohneDMS/adc.png  used on input line 844.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ble.png, id=567, 1891.065pt 
+<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ble.png, id=562, 1891.065pt 
 x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ble.png Graphic file (t
 ype png)
 <use Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ble.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ble.
-png  used on input line 861.
+png  used on input line 858.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/ble.png, id=568,
+<Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/ble.png, id=563,
  1891.065pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/ble.png Gra
 phic file (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/ble.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_
-ohneDMS/ble.png  used on input line 868.
+ohneDMS/ble.png  used on input line 865.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
- [24
+ [23
+pdfTeX warning (ext4): destination with the same identifier (name{figure.16}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.879 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{figure.17}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.882 
+l.879 
       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.18}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.882 
+l.879 
       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.19}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.882 
+l.879 
       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.20}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.882 
+l.879 
       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.21}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.882 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{figure.22}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.882 
+l.879 
        <./Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/boot.png> <./Images
 /Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/boot.png> <./Images/Str
 omverbrauch/JouleScope/alt/esp32_3v3_3v/ADC.png> <./Images/Stromverbrauch/Joule
@@ -1165,135 +1127,135 @@ File: Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png Graphic file (type png)
 
 <use Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/ADC_Chip.png  use
-d on input line 885.
+d on input line 882.
 (pdftex.def)             Requested size: 273.14923pt x 137.65944pt.
-<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/zyklus.png, id=588, 1891.065
+<Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/zyklus.png, id=583, 1891.065
 pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/zyklus.png Graphic file
  (type png)
 <use Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/zyklus.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/zykl
-us.png  used on input line 895.
+us.png  used on input line 892.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
 File: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus.png 
 Graphic file (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_
-ohneDMS/zyklus.png  used on input line 902.
+ohneDMS/zyklus.png  used on input line 899.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/alt/old_vor_buck.png, id=590, 1919.67188pt x 
+<Images/Stromverbrauch/JouleScope/alt/old_vor_buck.png, id=585, 1919.67188pt x 
 954.56625pt>
 File: Images/Stromverbrauch/JouleScope/alt/old_vor_buck.png Graphic file (type 
 png)
 <use Images/Stromverbrauch/JouleScope/alt/old_vor_buck.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/old_vor_buck.png 
- used on input line 924.
+ used on input line 921.
 (pdftex.def)             Requested size: 218.51521pt x 108.64398pt.
-<Images/Stromverbrauch/JouleScope/neu/new_vor_buck_auf_3_0V.png, id=591, 1891.0
+<Images/Stromverbrauch/JouleScope/neu/new_vor_buck_auf_3_0V.png, id=586, 1891.0
 65pt x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_vor_buck_auf_3_0V.png Graphic fi
 le (type png)
 <use Images/Stromverbrauch/JouleScope/neu/new_vor_buck_auf_3_0V.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_vor_buck_auf_
-3_0V.png  used on input line 931.
+3_0V.png  used on input line 928.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
- [25
+ [24
+pdfTeX warning (ext4): destination with the same identifier (name{figure.22}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.933 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{figure.23}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.936 
+l.933 
       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.24}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.936 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{figure.25}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.936 
+l.933 
        <./Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/zyklus.png>]
-<Images/Stromverbrauch/JouleScope/alt/alt_nach_buck_3.png, id=604, 1891.065pt x
+<Images/Stromverbrauch/JouleScope/alt/alt_nach_buck_3.png, id=598, 1891.065pt x
  953.06062pt>
 File: Images/Stromverbrauch/JouleScope/alt/alt_nach_buck_3.png Graphic file (ty
 pe png)
 <use Images/Stromverbrauch/JouleScope/alt/alt_nach_buck_3.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/alt_nach_buck_3.p
-ng  used on input line 942.
+ng  used on input line 939.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/neu/new_nach_buck_3v.png, id=605, 1891.065pt 
+<Images/Stromverbrauch/JouleScope/neu/new_nach_buck_3v.png, id=599, 1891.065pt 
 x 953.06062pt>
 File: Images/Stromverbrauch/JouleScope/neu/new_nach_buck_3v.png Graphic file (t
 ype png)
 <use Images/Stromverbrauch/JouleScope/neu/new_nach_buck_3v.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/neu/new_nach_buck_3v.
-png  used on input line 949.
+png  used on input line 946.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/alt/old_esp32_LDO.png, id=606, 1891.065pt x 9
+<Images/Stromverbrauch/JouleScope/alt/old_esp32_LDO.png, id=600, 1891.065pt x 9
 53.06062pt>
 File: Images/Stromverbrauch/JouleScope/alt/old_esp32_LDO.png Graphic file (type
  png)
 <use Images/Stromverbrauch/JouleScope/alt/old_esp32_LDO.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/old_esp32_LDO.png
-  used on input line 967.
+  used on input line 964.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
 File: Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.png Graphic file (t
 ype png)
 <use Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus.
-png  used on input line 974.
+png  used on input line 971.
 (pdftex.def)             Requested size: 218.51521pt x 110.11592pt.
-<Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS.png, id=607, 1891.065pt x 9
+<Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS.png, id=601, 1891.065pt x 9
 53.06062pt>
 File: Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS.png Graphic file (type
  png)
 <use Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS.png>
 Package pdftex.def Info: Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS.png
-  used on input line 986.
+  used on input line 983.
 (pdftex.def)             Requested size: 386.96027pt x 195.01512pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[26
+[25
+pdfTeX warning (ext4): destination with the same identifier (name{figure.25}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.989 		\paragraph
+                  {ESP32}
 pdfTeX warning (ext4): destination with the same identifier (name{figure.26}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.992 		\paragraph
+l.989 		\paragraph
                   {ESP32}
 pdfTeX warning (ext4): destination with the same identifier (name{figure.27}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.992 		\paragraph
+l.989 		\paragraph
                   {ESP32}
 pdfTeX warning (ext4): destination with the same identifier (name{figure.28}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.992 		\paragraph
+l.989 		\paragraph
                   {ESP32}
 pdfTeX warning (ext4): destination with the same identifier (name{figure.29}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.992 		\paragraph
+l.989 		\paragraph
                   {ESP32}
 pdfTeX warning (ext4): destination with the same identifier (name{figure.30}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.992 		\paragraph
-                  {ESP32}
-pdfTeX warning (ext4): destination with the same identifier (name{figure.31}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.992 		\paragraph
+l.989 		\paragraph
                   {ESP32} <./Images/Stromverbrauch/JouleScope/alt/old_vor_buck.
 png> <./Images/Stromverbrauch/JouleScope/neu/new_vor_buck_auf_3_0V.png> <./Imag
 es/Stromverbrauch/JouleScope/alt/alt_nach_buck_3.png> <./Images/Stromverbrauch/
@@ -1316,43 +1278,43 @@ Underfull \hbox (badness 2717) in paragraph at lines 28--31
 ti . com / product / TPS62840 / part-[]details /
  []
 
-) [27
+) [26
+pdfTeX warning (ext4): destination with the same identifier (name{figure.31}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1005 	\begin{landscape}
+                          <./Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS
+.png>] [27]
+<Images/ESP32_Shield 2.pdf, id=642, 845.0531pt x 597.52838pt>
+File: Images/ESP32_Shield 2.pdf Graphic file (type pdf)
+<use Images/ESP32_Shield 2.pdf>
+Package pdftex.def Info: Images/ESP32_Shield 2.pdf  used on input line 1008.
+(pdftex.def)             Requested size: 547.27936pt x 386.97562pt.
+ [28
+
+
 pdfTeX warning (ext4): destination with the same identifier (name{figure.32}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1008 	\begin{landscape}
-                          <./Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS
-.png>] [28]
-<Images/ESP32_Shield 2.pdf, id=647, 845.0531pt x 597.52838pt>
-File: Images/ESP32_Shield 2.pdf Graphic file (type pdf)
-<use Images/ESP32_Shield 2.pdf>
-Package pdftex.def Info: Images/ESP32_Shield 2.pdf  used on input line 1011.
+l.1012 	\end{landscape}
+                        <./Images/ESP32_Shield 2.pdf>]
+<Images/ESP32_Shield 2-ADC.pdf, id=653, 845.0531pt x 597.52838pt>
+File: Images/ESP32_Shield 2-ADC.pdf Graphic file (type pdf)
+<use Images/ESP32_Shield 2-ADC.pdf>
+Package pdftex.def Info: Images/ESP32_Shield 2-ADC.pdf  used on input line 1017
+.
 (pdftex.def)             Requested size: 547.27936pt x 386.97562pt.
  [29
+
 
 
 pdfTeX warning (ext4): destination with the same identifier (name{figure.33}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1015 	\end{landscape}
-                        <./Images/ESP32_Shield 2.pdf>]
-<Images/ESP32_Shield 2-ADC.pdf, id=658, 845.0531pt x 597.52838pt>
-File: Images/ESP32_Shield 2-ADC.pdf Graphic file (type pdf)
-<use Images/ESP32_Shield 2-ADC.pdf>
-Package pdftex.def Info: Images/ESP32_Shield 2-ADC.pdf  used on input line 1020
-.
-(pdftex.def)             Requested size: 547.27936pt x 386.97562pt.
- [30
-
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{figure.34}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.1024 	\end{landscape}
+l.1021 	\end{landscape}
                         <./Images/ESP32_Shield 2-ADC.pdf>] (BA_Doku.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -1369,10 +1331,10 @@ Package rerunfilecheck Info: File `BA_Doku.out' has not changed.
 (rerunfilecheck)             Checksum: EC241F642B83EE6238374618C5BB1B09;9440.
  ) 
 Here is how much of TeX's memory you used:
- 17789 strings out of 467871
- 361377 string characters out of 5418376
- 747253 words of memory out of 5000000
- 46255 multiletter control sequences out of 15000+600000
+ 17765 strings out of 467871
+ 359851 string characters out of 5418376
+ 747414 words of memory out of 5000000
+ 46233 multiletter control sequences out of 15000+600000
  639307 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,17n,90p,860b,1232s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1393,9 +1355,9 @@ msfonts/cm/cmsy8.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fonts/type1/
 public/amsfonts/cm/cmti10.pfb><C:/Users/roche/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/roche/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on BA_Doku.pdf (30 pages, 8804317 bytes).
+Output written on BA_Doku.pdf (29 pages, 8347446 bytes).
 PDF statistics:
- 776 PDF objects out of 1000 (max. 8388607)
- 201 named destinations out of 1000 (max. 500000)
- 582 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 771 PDF objects out of 1000 (max. 8388607)
+ 199 named destinations out of 1000 (max. 500000)
+ 572 words of extra memory for PDF output out of 10000 (max. 10000000)
 
