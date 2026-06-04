@@ -88,16 +88,16 @@
       9
     ],
     "col_widths": [
-      233,
-      214,
-      141,
-      110,
-      141,
-      154,
-      141,
-      114,
-      141,
-      141
+      186,
+      171,
+      113,
+      88,
+      113,
+      123,
+      113,
+      91,
+      113,
+      113
     ],
     "custom_group_rules": [],
     "expanded_rows": [],
@@ -117,15 +117,15 @@
   },
   "schematic": {
     "selection_filter": {
-      "graphics": true,
-      "images": true,
-      "labels": true,
+      "graphics": false,
+      "images": false,
+      "labels": false,
       "lockedItems": false,
-      "otherItems": true,
-      "pins": true,
-      "symbols": true,
-      "text": true,
-      "wires": true
+      "otherItems": false,
+      "pins": false,
+      "symbols": false,
+      "text": false,
+      "wires": false
     }
   }
 }

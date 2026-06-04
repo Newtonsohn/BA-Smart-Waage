@@ -11,17 +11,39 @@
 \usepackage{verbatim}
 \usepackage{float}
 \usepackage[a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{pdfpages}
+\usepackage{pdflscape}
 
-\title{Bachelorarbeit: Low-Power IoT-Skala}
-\author{Thomas Rocheteau}
-\date{Februar 2026}
+
+
+
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
 \begin{document}
+	\includepdf[pages=-]{Images/T_VL_Vorlage_Titelseite_BA.pdf}
 
-	\maketitle
+	% ============================================================
+	\section*{Eigenständigkeitserklärung}
+	% ============================================================
 
+	\noindent Hiermit versichere ich, dass ich die vorliegende Arbeit selbstständig, oder gemeinsam mit den aufgeführten Gruppenmitgliedern, verfasst habe. Ich habe ausschliesslich die im Text oder Anhang angegeben Quellen und Hilfsmittel (auch Internetseiten und generative KI-Tools) benutzt. Ich trage die Verantwortung für die Qualität des Textes sowie die Auswahl aller Inhalte und habe sichergestellt, dass Informationen und Argumente mit geeigneten wissenschaftlichen Quellen belegt bzw.\ gestützt werden. Generative KI-Tools wurden summarisch unter der Angabe des Namens und des Zwecks angegeben. Bei Verfehlungen aller Art treten die Paragraphen 39 und 40 (Unredlichkeit und Verfahren bei Unredlichkeit) der ZHAW-Rahmenprüfungsordnung sowie die Bestimmungen der Disziplinarmassnahmen der Hochschulordnung in Kraft.
+
+	\bigskip
+	\noindent\textbf{Erklärung zum Einsatz von KI-Tools}
+
+	\medskip
+	\noindent Ich erkläre hiermit, dass ich für die Erstellung dieser Projektarbeit die Unterstützung von Claude~\cite{claude_anthropic}, einem KI-gestützten Sprachmodell von Anthropic~\cite{anthropic}, genutzt habe. Dieses Modell wurde eingesetzt, um bestimmte Textabschnitte zu verfeinern, Anregungen für Formulierungen zu erhalten und komplizierte Konzepte verständlicher darzustellen. Ausserdem wurden einzelne Codeabschnitte mittels Claude entwickelt. Alle mit Hilfe von Claude erstellten Inhalte wurden von mir sorgfältig geprüft und den akademischen Standards sowie den spezifischen Anforderungen der ZHAW angepasst. Ich bestätige, dass die vorliegende Arbeit meine eigenen Ideen und Überlegungen widerspiegelt und gemäss den ethischen Richtlinien der akademischen Integrität verfasst wurde.
+
+	\vspace{1cm}
+
+	\noindent
+	\begin{tabular}{@{}p{4.5cm}@{\hspace{0.75cm}}p{4.5cm}@{\hspace{0.75cm}}p{4.5cm}@{}}
+		\small\textit{Ort, Datum} & \small\textit{Name} & \small\textit{Unterschrift} \\[0.4cm]
+		Winterthur, 05.06.2026    & Thomas Lino Rocheteau & \rule{4.5cm}{0.4pt}        \\[0.2cm]
+	\end{tabular}
+
+	\newpage
 	\tableofcontents
 	\newpage
 
@@ -235,6 +257,7 @@
 	 
 	 \subsubsection{Optimiertes Design Messreihe}
 	
+
 	% ============================================================
 	\section{Low-Power Optimierung}
 	% ============================================================
@@ -305,31 +328,6 @@
 
 	In der nRF Connect Power Profiler App lassen sich Zeitfenster (\emph{Selektionen}) manuell markieren, woraufhin die Software automatisch den mittleren Strom, die Dauer sowie den gesamten Ladungsverbrauch der Selektion in Millicoulomb (\si{mC}) und Milliampere-Stunden (\si{mAh}) berechnet.
 	Alle in dieser Arbeit angegebenen Ladungswerte basieren auf solchen Selektionen aus aufgezeichneten Stromprofilen.
-	
-	\subsection{Software Optimierung}
-	
-	Abbildung~\ref{fig:stromverbrauch-ausgangslage} zeigt den Stromverlauf eines vollständigen Messzyklus in der Ausgangslage, wie er direkt aus der Vorgängerarbeit übernommen wurde.
-	In dieser Vorarbeit stand die funktionale Korrektheit im Vordergrund -- eine gezielte Optimierung des Stromverbrauchs hatte keine Priorität.
-
-	Im Profil sind drei charakteristische Abschnitte erkennbar: ein kurzer initialer Peak während Boot und Initialisierung, ein ruhigeres Plateau während der ADC-Messung sowie ein erhöhter und zeitlich ausgedehnter Abschnitt während der BLE-Kommunikation.
-	Die gesamte Aktivphase erstreckt sich über ca.\ \textbf{10\,s} mit einem Gesamtladungsverbrauch von \textbf{0.314\,mAh}, bevor das System in den Deep Sleep übergeht.
-	
-	
-	\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage"}
-	\caption{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}
-	\label{fig:stromverbrauch-ausgangslage}
-	\end{figure}
-
-	\begin{enumerate}
-		\item \textbf{Deep Sleep:} Zwischen den Messzyklen befindet sich das System im Deep Sleep. Die meisten Funktionen sind abgeschaltet; lediglich der RTC-Timer läuft weiter und weckt den ESP32 nach Ablauf des konfigurierten Intervalls. Der Stromverbrauch ist in dieser Phase minimal.
-		\item \textbf{Boot und Initialisierung:} Der ESP32 startet nach dem Deep Sleep neu. Der nichtflüchtige Speicher (NVS) wird ausgelesen, die State Machine initialisiert und der HX711-ADC eingerichtet.
-		\item \textbf{ADC-Messung:} Der HX711 erfasst 20 Samples auf einem einzigen Kanal, an dem alle vier Wägezellen als gemeinsame Brücke angeschlossen sind. Zwischen jedem Sample wartet der ESP32 in einem blockierenden \texttt{delay(50\,ms)}, was den Kern während der gesamten Messphase vollständig aktiv hält.
-		\item \textbf{BLE-Initialisierung:} Der BLE-Stack wird gestartet und das Advertisement für die Gateway-Verbindung gesendet.
-		\item \textbf{Verbindung und Datenübertragung:} Das System wartet auf den Verbindungsaufbau des Gateways (typisch ca.\ 6\,s), überträgt den Messwert per GATT-Indication und trennt die Verbindung.
-		\item \textbf{Nächster Zyklus:} Der Messzyklus ist abgeschlossen; das System kehrt in den Deep Sleep zurück. Im gezeigten Stromprofil folgt der nächste Zyklus sofort, weshalb kein ausgeprägtes Tiefstromplateau sichtbar ist.
-	\end{enumerate}
 
 	\subsection{Gesamtsystem Stromverbrauch}
 
@@ -393,25 +391,57 @@
 
 	Der Buck converter hat bereits im Leerlauf einen Verbrauch von 69.77 mW. Der Stromverbrauch ist verglichen mit den 14.19 mW des neuen Systems gigantisch.
 
-	\subsubsection{Vergleich Energieverbrauch ESP32}
-
+	\subsection{Vergleich Energieverbrauch ESP32}
+	
+	\subsubsection{Übersicht Stromverlauf ESP32}
+	
+	Abbildung~\ref{fig:stromverbrauch-ausgangslage} zeigt den Stromverlauf eines vollständigen Messzyklus in der Ausgangslage, wie er direkt aus der Vorgängerarbeit übernommen wurde.
+	In dieser Vorarbeit stand die funktionale Korrektheit im Vordergrund -- eine gezielte Optimierung des Stromverbrauchs hatte keine Priorität.
+	
+	Im Profil sind drei charakteristische Abschnitte erkennbar: ein kurzer initialer Peak während Boot und Initialisierung, ein ruhigeres Plateau während der ADC-Messung sowie ein erhöhter und zeitlich ausgedehnter Abschnitt während der BLE-Kommunikation.
+	Die gesamte Aktivphase erstreckt sich über ca.\ \textbf{10\,s}, bevor das System in den Deep Sleep übergeht.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Stromverbrauch Ausgangslage"}
+		\caption{Stromverbrauch -- Ausgangslage, ein vollständiger Messzyklus}
+		\label{fig:stromverbrauch-ausgangslage}
+	\end{figure}
+	
+	\begin{enumerate}
+		\item \textbf{Deep Sleep:} Zwischen den Messzyklen befindet sich das System im Deep Sleep. Die meisten Funktionen sind abgeschaltet; lediglich der RTC-Timer läuft weiter und weckt den ESP32 nach Ablauf des konfigurierten Intervalls. Der Stromverbrauch ist in dieser Phase minimal.
+		\item \textbf{Boot und Initialisierung:} Der ESP32 startet nach dem Deep Sleep neu. Der nichtflüchtige Speicher (NVS) wird ausgelesen, die State Machine initialisiert und der HX711-ADC eingerichtet.
+		\item \textbf{ADC-Messung:} Der HX711 erfasst 20 Samples auf einem einzigen Kanal, an dem alle vier Wägezellen als gemeinsame Brücke angeschlossen sind. Zwischen jedem Sample wartet der ESP32 in einem blockierenden \texttt{delay(50\,ms)}, was den Kern während der gesamten Messphase vollständig aktiv hält.
+		\item \textbf{BLE-Initialisierung:} Der BLE-Stack wird gestartet und das Advertisement für die Gateway-Verbindung gesendet.
+		\item \textbf{Verbindung und Datenübertragung:} Das System wartet auf den Verbindungsaufbau des Gateways (typisch ca.\ 6\,s), überträgt den Messwert per GATT-Indication und trennt die Verbindung.
+		\item \textbf{Nächster Zyklus:} Der Messzyklus ist abgeschlossen; das System kehrt in den Deep Sleep zurück. Im gezeigten Stromprofil folgt der nächste Zyklus sofort, weshalb kein ausgeprägtes Tiefstromplateau sichtbar ist.
+	\end{enumerate}
+	\subsubsection{Vergleich ESP32 Energieverbrauch}
 	\begin{table}[H]
 	\centering
-	\caption{Software-Vergleich: Altes System umverdrahtet vs.\ Neues System (beide Konfig~A, \SI{3.3}{\volt}) am 3V3 des ESP32. Beim alten System sind eigentlich 5V vom Buck convter am VIN Pin des Esp32 angeschlossen, der die Spannung auf 3.3Volt regelt, für den direkten Vergleich werden aber beide 3.0V am 3v3 angeschlossen, wie es beim neuen optimierten Waage festverdrahtet ist. Die Dennmessstreifen werden ebenfalls abehängt biem neuen System, biem alten System sind die DMS am HX711 Modul festverdrahtet, welcher sich nicht in der Messschlaufe befindet, der Verlust vom ADS1234 ADC beim neuen System wird dank eines Messpins noch seperat betrachtet.}
-	
+	\caption{Software-Vergleich Aktiver Zyklus am ESP32-3V3-Pin: Ausgangslage vs.\ Optimiertes System
+	(beide Konfig~A, \SI{3.3}{\volt}). DMS und LDO sind aus dem Messpfad ausgeschlossen.
+	Messprofile und Berechnungen vgl.\ Abschnitt~\ref{par:esp32}.}
 	\label{tab:sw-vergleich}
 	\begin{tabular}{@{}lrrr@{}}
 		\toprule
-		Betriebsphase 					& Alt [mJ] 	& Neu [mJ] & Einsparung \\
+		Betriebsphase                 & Alt [mJ]       & Neu bereinigt$^{*}$ [mJ] & Einsparung \\
 		\midrule
-		Boot und Ramp-up                & 360.3		& 71.08		& $-80\,\%$ \\
-		ADC-Messung                     & 807,8		& 50.83		& $-83\,\%$ \\
-		BLE                             & 1293		& 101.6		& $-93\,\%$ \\
-		ADC Chip						& --		& 13.42		& --		\\			
+		Boot und Ramp-up              & 360.3          & 57.66                    & $-84.0\,\%$ \\
+		ADC-Messung                   & 807.8          & 37.41                    & $-95.4\,\%$ \\
+		BLE                           & 1293           & 88.18                    & $-93.2\,\%$ \\
+		ADS1234 Chip (Abzug$^{*}$)    & --             & 13.42                    & -- \\
 		\midrule
-		\textbf{Gesamt(ein Zyklus}      & \textbf{689{,}4} & \textbf{76{,}3} & $\mathbf{-89\,\%}$ \\
+		\textbf{Gesamt Zyklus}        & \textbf{1858}  & \textbf{210.4}           & $\mathbf{-88.7\,\%}$ \\
 		\bottomrule
-		\end{tabular}
+	\end{tabular}
+	\\[6pt]
+	\begin{minipage}{0.95\linewidth}
+		\footnotesize $^{*}$~Der ADS1234 ist am ESP32-3V3-Rail angeschlossen und in den Phasenmessungen des
+		neuen Systems enthalten. Da der HX711 des alten Systems ausserhalb des Messpfades lag, wird der
+		ADS1234-Anteil (\SI{13.42}{\milli\joule}) von allen Neu-Werten abgezogen.
+		Rohmessungen und Rechnungen: Abschnitt~\ref{par:esp32}.
+	\end{minipage}
 	\end{table}
 
 
@@ -420,7 +450,7 @@
 	Die gesamte Aktivphase beträgt in der Ausgangslage ca.\ \textbf{10 Sekunden} pro Zyklus mit einem Ladungsverbrauch von \textbf{0.314\,mAh} (Abbildung~\ref{fig:stromverbrauch-ausgangslage}).
 
 	Die nachfolgenden Abschnitte beschreiben jede Betriebsphase im Detail -- mit Stromprofilen der Ausgangslage sowie der optimierten Version -- und erläutern, welche Massnahmen zur jeweiligen Einsparung geführt haben:
-
+	\subsubsection{Optimierung Energieverbrauch Software}\label{sub:software}
 	\begin{enumerate}
 		\item \textbf{Ramp Up -- Boot, Initialisierung und ADC} (Abschnitt~\ref{sec:ramp-up}): \\
 		Diese Phase umfasst den ESP32-Bootvorgang, die State-Machine-Initialisierung sowie die ADS1234-Messung.
@@ -516,7 +546,10 @@
 	\subsubsection{Buck converter}\label{sub:Buck}
 
 	Zur Bestimmung des Verlusts am LM2596S-Schaltregler wird die Energie \emph{vor} dem Konverter (Eingang, Batterieseite) mit der Energie \emph{nach} dem Konverter (Ausgang, Lastseite) verglichen; die Differenz entspricht dem dem Schaltregler-Board zuzuschreibenden Verlust.
-	Die Werte stammen jeweils aus der Tabelle des Kapitels \textit{Übersicht Stromverbrauch} und umfassen einen vollständigen Messzyklus.
+	Die Messwerte entstammen den JouleScope-Aufzeichnungen
+	(Abbildungen~\ref{fig:buck-vor-alt}, \ref{fig:buck-vor-neu},
+	\ref{fig:buck-nach-alt} und~\ref{fig:buck-nach-neu})
+	und umfassen jeweils einen vollständigen Messzyklus.
 	Beim alten System wurde sichergestellt, dass BLE-Initialisierung und Subscription zusammen ca.\ \SI{5.4}{\second} dauerten, um vergleichbare und reproduzierbare Messungen zu gewährleisten.
 
 	\paragraph{Altes System}
@@ -549,8 +582,30 @@
 	Da der LM2596S keinen Burst- oder PFM-Modus für Leichtlast unterstützt, ist dieser Verlust strukturell bedingt.
 	Die Messung bestätigt qualitativ die in Abschnitt~\ref{sec:gesamtverbrauch} verwendete Effizienzannahme von \SI{61}{\percent}~\cite{lm2596_datasheet}.
 	\subsubsection{LDO}\label{sub:ldo}
-	
-	
+
+	Der interne LDO des ESP32-Entwicklerboards wandelt die vom LM2596S gelieferte Spannung
+	auf die vom Mikrocontroller benötigten \SI{3.3}{\volt}.
+	Diese zusätzliche Konverterstufe erzeugt eine nicht vernachlässigbare Verlustleistung.
+
+	\paragraph{Ausgangslage}
+
+	Die Energie vor dem LDO (am VIN-Pin, Eingang) beträgt \SI{3430}{\milli\joule}; nach dem LDO
+	(am 3V3-Pin, Ausgang) verbleiben \SI{2220}{\milli\joule}:
+
+	\begin{align}
+		\Delta E_{\text{LDO, alt}} &= \SI{3430}{\milli\joule} - \SI{2220}{\milli\joule} = \SI{1210}{\milli\joule} \\
+		\eta_{\text{LDO, alt}} &= \frac{\SI{2220}{\milli\joule}}{\SI{3430}{\milli\joule}} \approx \SI{64.7}{\percent}
+	\end{align}
+
+	Die Messprofile sind in Abbildungen~\ref{fig:ldo-vor-alt} und~\ref{fig:ldo-nach-alt} dargestellt.
+
+	\paragraph{Optimiertes System -- LDO entfällt}
+
+	Im optimierten System wird der ESP32 direkt über den \texttt{3V3}-Pin eingespeist, anstatt über den
+	\texttt{VIN}-Pin. Damit wird der interne LDO vollständig umgangen, und der Verlust von
+	\SI{1210}{\milli\joule} pro Zyklus entfällt ersatzlos
+	(vgl.\ Tabelle~\ref{tab:sys-vergleich}, Zeile \textit{Verlust LDO}).
+
 	\subsubsection{ADC}
 	Der ADC wird vom Programm per !PWDN Pin in den Schlaf geschickt nach der Messung und davor geweckt, aber dadurch das der ESP32 in den Deep Sleep geht, werden die GPIO floating gelassen. Es hätte ein Pull down Widerstand eingebaut werden müssen, dass er auch wärend des Sleeps abeschaltet wird, dadurch konsumiert er im Deep Sleep 1mA. Während des Zyklus verbraucht er 13.42 mJ. Etwas mehr als nötig, da er bereits eingeschaltet aus dem Deep Sleep kommt und nur kurz für die BLE Phase abgeschaltet wird.
 	
@@ -622,6 +677,49 @@
 	Das optimierte System erreicht am 3{,}3\,V-Rail \textbf{35{,}4\,mA}; mit $\eta = 61\,\%$ entspricht das ca.\ \textbf{17\,mA} auf Batterieebene -- eine Reduktion um den Faktor \textbf{3{,}5}.
 	Die Batterielaufzeit steigt damit von ca.\ \textbf{44\,h} ($\approx$\,1{,}8\,Tage) auf ca.\ \textbf{150\,h} ($\approx$\,6{,}3\,Tage).
 	
+
+	% ============================================================
+\section{PCB-Design}
+% ============================================================
+
+Das PCB-Layout und der vollständige Schaltplan sind im Anhang dokumentiert.
+Dieses Kapitel beschreibt die wesentlichen Designentscheidungen sowie die im Rahmen der Arbeit
+identifizierten Schwachstellen des realisierten Boards.
+
+\paragraph{ADS1234}
+Der Einsatz des ADS1234 hat sich als richtige Entscheidung erwiesen.
+Dank seiner 24-Bit-Auflösung und vier unabhängigen Eingangskanälen ermöglicht er hochgenaue
+Einzelkanalmessungen sowie die in Abschnitt~\ref{sec:kalibrierung} beschriebene
+Ecklastkompensation.
+
+\paragraph{ADS1234 -- Hardware-Filterung}
+Im PCB wurde ein analoges Filterschaltkreis (RC-Tiefpass) vor den Differenzeingängen des ADS1234
+vorgesehen, jedoch nicht bestückt und nicht weiter untersucht.
+Die entsprechenden Bestückungsplätze wurden für den Betrieb mit Lötzinn überbrückt.
+
+\paragraph{Temperatursensor SHT30}
+Ein SHT30-Temperatursensor wurde in das PCB integriert, um temperaturbedingte Messfehler der
+Wägezellen softwareseitig kompensieren zu können.
+Die Hardwareanbindung (I\textsuperscript{2}C) ist vollständig implementiert; eine softwareseitige
+Auswertung wurde im Rahmen dieser Arbeit nicht realisiert.
+
+\paragraph{TPS63802 Buck-Converter}
+Für das PCB wurde irrtümlicherweise der TPS63802 als Schaltregler gewählt, da ursprünglich
+angenommen wurde, der LM2596S könne die Spannung nicht auf \SI{3.0}{\volt} regeln.
+Dieser Irrtum wurde erst gegen Ende der Arbeit durch erneute Sichtung der Vorgängerdokumentation
+erkannt -- der LM2596S ist dazu durchaus in der Lage.
+Unabhängig davon erweist sich der TPS63802 als für diesen Anwendungsfall ungeeignet:
+Seine maximale Eingangsspannung von \SI{6.5}{\volt} ist zu gering für zwei in Reihe geschaltete
+18650-Zellen (Nennspannung \SI{7.4}{\volt}, Maximalspannung \SI{8.4}{\volt}).
+Ausserdem unterschreitet die Entladeschlussspannung einer Einzelzelle von \SI{3.0}{\volt}
+in Kombination mit der Dropout-Spannung des Reglers die minimal erforderliche Eingangsspannung.
+
+\paragraph{Messpunkte (Power-Header)}
+Auf dem PCB wurden 2$\times$1-Pin-Header als Strommess-Breakouts in die Versorgungspfade der
+einzelnen Verbraucher eingeschleift.
+Diese Messpunkte haben sich bei der Leistungsanalyse (vgl.\ Kapitel~\ref{sub:Buck}) als äusserst
+hilfreich erwiesen, da sie den direkten Anschluss des JouleScope ohne Unterbrechung der
+Leiterbahnen ermöglichen.
 
 	\section{Messungen}
 	\subsection{Messgenauigkeit}
@@ -704,10 +802,181 @@
 		
 		
 		
-		\subsubsection{Vergleich Energieverbrauch ESP32}
+		\subsubsection{Vergleich Energieverbrauch ESP32}\label{par:esp32}
+
+		Dieser Abschnitt dokumentiert die JouleScope-Messungen am ESP32-3V3-Pin pro Betriebsphase
+		(Konfig~A, \SI{3.3}{\volt}, ohne DMS und LDO).
+		Da der ADS1234 am gleichen Rail angeschlossen ist, enthält jede Phasenmessung des neuen Systems
+		dessen Anteil. Für den fairen Vergleich wird der gemessene ADS1234-Anteil von
+		\SI{13.42}{\milli\joule} von allen Neu-Werten abgezogen; die bereinigten Werte entsprechen
+		Tabelle~\ref{tab:sw-vergleich}.
+
+		\paragraph{Boot und Ramp-up}
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/boot"}
+				\caption{Boot -- Ausgangslage; \SI{360.3}{\milli\joule}}
+				\label{fig:esp32-boot-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/boot"}
+				\caption{Boot -- Optimiertes System; \SI{71.08}{\milli\joule}}
+				\label{fig:esp32-boot-neu}
+			\end{minipage}
+		\end{figure}
+		\[
+			E_{\text{Boot, ber.}} = \SI{71.08}{\milli\joule} - \SI{13.42}{\milli\joule} = \SI{57.66}{\milli\joule}
+		\]
+
+		\paragraph{ADC-Messung}
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ADC"}
+				\caption{ADC-Phase -- Ausgangslage; \SI{807.8}{\milli\joule}}
+				\label{fig:esp32-adc-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/adc"}
+				\caption{ADC-Phase -- Optimiertes System; \SI{50.83}{\milli\joule}}
+				\label{fig:esp32-adc-neu}
+			\end{minipage}
+		\end{figure}
+		\[
+			E_{\text{ADC, ber.}} = \SI{50.83}{\milli\joule} - \SI{13.42}{\milli\joule} = \SI{37.41}{\milli\joule}
+		\]
+
+		\paragraph{BLE}
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/ble"}
+				\caption{BLE-Phase -- Ausgangslage; \SI{1293}{\milli\joule}}
+				\label{fig:esp32-ble-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/ble"}
+				\caption{BLE-Phase -- Optimiertes System; \SI{101.6}{\milli\joule}}
+				\label{fig:esp32-ble-neu}
+			\end{minipage}
+		\end{figure}
+		\[
+			E_{\text{BLE, ber.}} = \SI{101.6}{\milli\joule} - \SI{13.42}{\milli\joule} = \SI{88.18}{\milli\joule}
+		\]
+
+		\paragraph{ADS1234 Chip (nur neues System)}
+		Im alten System befand sich der HX711 ausserhalb des Messpfades und wurde nicht separat erfasst.
+		Im neuen System ist der ADS1234 am selben 3{,}3\,V-Rail angeschlossen; sein Gesamtanteil pro
+		Zyklus wird separat über den AVDD/DVDD-Pin gemessen und als Korrekturterm von allen
+		Phasenmessungen abgezogen.
+
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.6\linewidth]{"Images/Stromverbrauch/JouleScope/neu/ADC_Chip"}
+			\caption{ADS1234 Chip -- Optimiertes System; \SI{13.42}{\milli\joule}}
+			\label{fig:esp32-adcchip-neu}
+		\end{figure}
+
+		\paragraph{Ganzer Zyklus}
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/esp32_3v3_3v/zyklus"}
+				\caption{Ganzer Zyklus -- Ausgangslage; \SI{1858}{\milli\joule}}
+				\label{fig:esp32-zyklus-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_esp32_3v3_3v_ohneDMS/zyklus"}
+				\caption{Ganzer Zyklus -- Optimiertes System; \SI{223.8}{\milli\joule}}
+				\label{fig:esp32-zyklus-neu}
+			\end{minipage}
+		\end{figure}
+		\[
+			E_{\text{Zyklus, ber.}} = \SI{223.8}{\milli\joule} - \SI{13.42}{\milli\joule} = \SI{210.4}{\milli\joule}
+		\]
+		
 		\subsubsection{Verluste Hardware}
-		\paragraph{Buck-Converter}
+		\paragraph{Buck-Converter}\label{sub:verluste-buck}
+
+		Die Messungen erfassen jeweils die Energie \emph{vor} (Batterieseite) und \emph{nach}
+		(Power-Rail) dem LM2596S-Schaltregler über einen vollständigen Zyklus.
+		Die Herleitung des Wirkungsgrads sowie die Verlustberechnung finden sich in
+		Abschnitt~\ref{sub:Buck}.
+
+		\noindent\textit{Vor dem Buck-Converter (Batterieseite):}
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/old_vor_buck"}
+				\caption{Vor Buck-Converter -- Ausgangslage; \SI{6503}{\milli\joule}}
+				\label{fig:buck-vor-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_vor_buck_auf_3_0V"}
+				\caption{Vor Buck-Converter -- Optimiertes System; \SI{689.5}{\milli\joule}}
+				\label{fig:buck-vor-neu}
+			\end{minipage}
+		\end{figure}
+
+		\noindent\textit{Nach dem Buck-Converter (Power-Rail):}
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/alt_nach_buck_3"}
+				\caption{Nach Buck-Converter -- Ausgangslage; \SI{3548}{\milli\joule}}
+				\label{fig:buck-nach-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/new_nach_buck_3v"}
+				\caption{Nach Buck-Converter -- Optimiertes System; \SI{343.4}{\milli\joule}}
+				\label{fig:buck-nach-neu}
+			\end{minipage}
+		\end{figure}
+		
+		
+		
+		
 		\paragraph{LDO}\label{par:ldo}
+
+		Der LDO ist ausschliesslich in der Ausgangslage relevant; das optimierte System speist
+		den ESP32 direkt über den \texttt{3V3}-Pin ein und umgeht den LDO vollständig.
+
+		\begin{figure}[H]
+			\centering
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/old_esp32_LDO"}
+				\caption{Vor LDO (VIN-Pin) -- Ausgangslage; \SI{3430}{\milli\joule}}
+				\label{fig:ldo-vor-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/alt/esp32_3v3/zyklus"}
+				\caption{Nach LDO (3V3-Pin) -- Ausgangslage; \SI{2220}{\milli\joule}}
+				\label{fig:ldo-nach-alt}
+			\end{minipage}
+		\end{figure}
+
 		\paragraph{ADC}
 		\subsubsection{Vergleich Leistungsverbrauch Deep-Sleep}\label{par:deep}
 		\paragraph{Dehnmessstreifen}
@@ -715,16 +984,12 @@
 					\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS"}
-			\caption{Messpunkt: vor DMS 78.19 mW (Alt))}
-			\label{fig:strom-bootup}
+			\caption{Messpunkt: vor DMS -- \SI{78.19}{\milli\watt} (Ausgangslage)}
+			\label{fig:deep-dms-alt}
 		\end{figure}
-		
+
 		\paragraph{ADC}
 		\paragraph{ESP32}
-		
-		
-		\subsubsection{Vergleich Energieverbrauch ESP32}
-		
 		
 	% ============================================================
 	
@@ -734,5 +999,28 @@
 
 	\bibliographystyle{plain}
 	\bibliography{quellen}
+
+	% ============================================================
+	\appendix
+	\section{PCB Schaltplan}\label{sec:anhang-pcb}
+	% ============================================================
+
+	\begin{landscape}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth, height=0.85\textheight, keepaspectratio]{Images/ESP32_Shield 2}
+			\caption{PCB Schaltplan -- Seite 1}
+			\label{fig:anhang-schaltplan-1}
+		\end{figure}
+	\end{landscape}
+
+	\begin{landscape}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth, height=0.85\textheight, keepaspectratio]{Images/ESP32_Shield 2-ADC}
+			\caption{PCB Schaltplan -- Seite 2}
+			\label{fig:anhang-schaltplan-2}
+		\end{figure}
+	\end{landscape}
 
 \end{document}
