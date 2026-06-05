@@ -2,6 +2,7 @@
 #include "Properties.h"
 #include <Fonts/FreeSansBold12pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
+#include <Arduino.h>
 
 #define CAL_X_MARGIN       10
 #define CAL_Y_TITLE        20
@@ -80,6 +81,7 @@ void CalibrationCheckState::exit() {
     } else {
       Logger::log("Not calibrated — weight unavailable");
     }
+
   }
   Logger::log("Exit CalibrationCheck State");
 }

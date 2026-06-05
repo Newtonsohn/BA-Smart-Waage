@@ -1,22 +1,10 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
-\bibitem{c3_datasheet}
-esp32-c3-wroom-02 datasheet.
+\bibitem{esp32_devboard_sleep}
+{ESP32} active mode and deep sleep mode power consumption comparison.
 \newblock
-  \url{https://documentation.espressif.com/esp32-c3-wroom-02_datasheet_en.pdf/}.
-\newblock Online; aufgerufen 01.02.2026.
-
-\bibitem{s3_datasheet}
-esp32-s3-wroom-02 datasheet.
-\newblock
-  \url{https://documentation.espressif.com/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf/}.
-\newblock Online; aufgerufen 01.02.2026.
-
-\bibitem{rnt_supermini}
-Getting started with esp32-c3 super mini.
-\newblock
-  \url{https://randomnerdtutorials.com/getting-started-esp32-c3-super-mini/}.
-\newblock Online; aufgerufen 01.02.2026.
+  \url{https://circuitdigest.com/microcontroller-projects/esp32-active-mode-and-deep-sleep-mode-power-consumption}.
+\newblock Online; aufgerufen 05.06.2026.
 
 \bibitem{yzc133_datasheet}
 Kraftsensor 0\ldots1\,kg, yzc-133.
@@ -24,15 +12,60 @@ Kraftsensor 0\ldots1\,kg, yzc-133.
   \url{https://www.reichelt.com/ch/de/shop/produkt/kraftsensor_0_1_kg_yzc-133-282443}.
 \newblock Online; aufgerufen 29.04.2026.
 
-\bibitem{TPS63802}
-Tps63802 datasheet.
-\newblock \url{https://www.ti.com/lit/ds/symlink/tps63802.pdf}.
-\newblock Online; aufgerufen 02.02.2026.
+\bibitem{TPS62842_datasheet}
+Tps62842 datasheet.
+\newblock \url{https://www.ti.com/product/TPS62840/part-details/TPS62842DGRR}.
+\newblock Online; aufgerufen 01.06.2026.
+
+\bibitem{vorgaengerarbeit}
+Cyrill Berger, Dominik Müller, and Kilian Brunner.
+\newblock Entwicklung einer smart-waage mit offener schnittstelle für die
+  industrie 4.0.
+\newblock Bachelorarbeit studiengang informatik, ZHAW, Institute of Embedded
+  Systems (InES), June 2025.
+\newblock Dok.-Nr.: BA~FS~25\_brnn\_283; Industriepartner: Skysec~GmbH.
+
+\bibitem{esp32c3_datasheet}
+{Espressif Systems}.
+\newblock {ESP32-C3} series datasheet.
+\newblock
+  \url{https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf}.
+\newblock Version 2.4; Online; aufgerufen 05.06.2026.
+
+\bibitem{sbc_nodemcu_esp32c_datasheet}
+{Joy-IT}.
+\newblock {SBC-NodeMCU-ESP32-C} nodemcu esp32 usb-c -- datasheet.
+\newblock
+  \url{https://joy-it.net/files/files/Produkte/SBC-NodeMCU-ESP32-C/SBC-NodeMCU-ESP32-C_Datasheet-EN_2024-12-16.pdf}.
+\newblock Version 2024-12-16; Online; aufgerufen 05.06.2026.
+
+\bibitem{nrf52840_datasheet}
+{Nordic Semiconductor}.
+\newblock {nRF52840} product specification.
+\newblock
+  \url{https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html}.
+\newblock Online; aufgerufen 05.06.2026.
+
+\bibitem{vereinbarung}
+Thomas Rocheteau.
+\newblock Vereinbarung projekt-\,/\,bachelorarbeit: Entwicklung einer
+  smart-waage mit offener schnittstelle für die industrie 4.0.
+\newblock Projektvereinbarung bachelorarbeit, ZHAW, Institute of Embedded
+  Systems (InES), February 2026.
+\newblock Dok.-Nr.: BA26\_brnn\_241; Betreuer: Kilian Brunner;
+  Industriepartner: Skysec~GmbH.
 
 \bibitem{ads1234_datasheet}
 {Texas Instruments}.
 \newblock {ADS1234} product datasheet.
 \newblock \url{https://www.ti.com/lit/ds/symlink/ads1234.pdf}.
 \newblock Online; aufgerufen 29.04.2026.
+
+\bibitem{lm2596_datasheet}
+{Texas Instruments}.
+\newblock {LM2596 SIMPLE SWITCHER\textregistered{} Power Converter 150-kHz 3-A
+  Step-Down Voltage Regulator}.
+\newblock \url{https://www.ti.com/lit/ds/symlink/lm2596.pdf}.
+\newblock Revision C (SNVS124C); Online; aufgerufen 01.06.2026.
 
 \end{thebibliography}

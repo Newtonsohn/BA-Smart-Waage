@@ -37,18 +37,8 @@ void ConfigurationState::enter() {
     Properties::bleMacAddress[2], Properties::bleMacAddress[3],
     Properties::bleMacAddress[4], Properties::bleMacAddress[5]);
 
-  hw->display->fillScreen(GxEPD_WHITE);
-  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
-  hw->display->setFont(&FreeSansBold12pt7b);
-  hw->display->print("Waiting for GW");
-  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_MAC);
-  hw->display->setFont(&FreeSans9pt7b);
-  hw->display->print(cachedMac);
-  hw->display->display(true);
-
   Logger::log(("BLE MAC: " + String(cachedMac)).c_str());
   Logger::log("waiting for configuration...");
-  lastWeightUpdateMs = millis();
 }
 
 void ConfigurationState::update() {
@@ -56,7 +46,13 @@ void ConfigurationState::update() {
     if (millis() - lastWeightUpdateMs >= 3000) {
       lastWeightUpdateMs = millis();
 
-      float weight = hw->measureWeight();
+      float weight = 0;
+      if (Properties::calibrationValid) {
+        for (int ch = 1; ch <= 4; ch++) {
+          int32_t raw = hw->readChannel(ch);
+          weight += Properties::spanFactor[ch - 1] * (raw - Properties::zeroOffset[ch - 1]);
+        }
+      }
       char weightBuf[20];
       snprintf(weightBuf, sizeof(weightBuf), "%.1f g", weight);
       Logger::log(("Weight: " + String(weightBuf)).c_str());
@@ -78,6 +74,7 @@ void ConfigurationState::update() {
       if (parseConfigurationSuccess) {
         updateDisplayWithConfiguration();
         configurationSuccess = true;
+        Properties::saveConfigToNVS();
       }
     }
   }
@@ -85,6 +82,8 @@ void ConfigurationState::update() {
 
 void ConfigurationState::exit() {
   Logger::log("Exit Configuration State");
+  digitalWrite(Properties::ADS1234_PDWN, LOW);
+  digitalWrite(Properties::ADS1234_DMS_PWR, HIGH);
 }
 
 void ConfigurationState::updateDisplayWithConfiguration() {

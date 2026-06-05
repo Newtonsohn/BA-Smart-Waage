@@ -6,18 +6,20 @@
 
 namespace Properties {
 // ADS1234 Pins
-const int ADS1234_DRDY_DOUT = 2;   // DRDY + DOUT combined, active low
+const int ADS1234_DRDY_DOUT = 14;   // DRDY + DOUT combined, active low, 32 -> alt IO2
 const int ADS1234_SCLK      = 15;
 const int ADS1234_PDWN      = 26;  // active low: LOW=power-down, HIGH=run
 const int ADS1234_DMS_PWR   = 17;  // MOSFET DMS power, active low
-const int ADS1234_A0        = 32;  // channel select bit 0
-const int ADS1234_A1        = 4;   // channel select bit 1
+const int ADS1234_A0        = 4;  // channel select bit 0, 4 -> alt IO32
+const int ADS1234_A1        = 2;   // channel select bit 1, 2 ->alt IO4
 
 // Display Pins
-const int DISPLAY_CS_PIN    = 14;   // Blau
-const int DISPLAY_DC_PIN    = 5;   // Weiss
-const int DISPLAY_RESET_PIN = 19;   // Orange
-const int DISPLAY_BUSY_PIN  = 16;   // Violett
+const int DISPLAY_CS_PIN    = 32;   // Blau 14
+const int DISPLAY_DC_PIN    = 5;   // Weiss 5
+const int DISPLAY_RESET_PIN = 19;   // Orange 19
+const int DISPLAY_BUSY_PIN  = 16;   // Violett 16
+// SCL = 18 //Grün
+// SDA = 23 //Gelb
 
 // Settings
 int connectionTimeout = 1800;
@@ -30,22 +32,22 @@ const char* BACKEND_URL = "https://192.168.2.100:7093/bins/integration?mac=";
 const char* SERVICE_UUID = "f0cbd08a-41a1-4b14-b66f-420e6c7f6d1f";
 const char* CHARACTERISTIC_CONFIG_UUID = "b4520837-7d4f-4e4a-96ff-8f9cd9e64577";
 const char* CHARACTERISTIC_MEASURE_UUID = "a03cfc2e-370e-4c34-9d8e-9d75f6e93e88";
-uint8_t bleMacAddress[MAC_ADDRESS_LENGTH] = { 0, 0, 0, 0, 0, 0 };
+RTC_DATA_ATTR uint8_t bleMacAddress[MAC_ADDRESS_LENGTH] = { 0, 0, 0, 0, 0, 0 };
 
 // Scale
-float zeroOffset[4]  = {0, 0, 0, 0};
-float spanFactor[4]  = {0, 0, 0, 0};
-bool  calibrationValid = false;
-float currentWeight  = 0.0f;
-float prevWeight     = 0.0f;
+RTC_DATA_ATTR float zeroOffset[4]  = {0, 0, 0, 0};
+RTC_DATA_ATTR float spanFactor[4]  = {0, 0, 0, 0};
+RTC_DATA_ATTR bool  calibrationValid = false;
+RTC_DATA_ATTR float currentWeight  = 0.0f;
+RTC_DATA_ATTR float prevWeight     = 0.0f;
 
 // Configuration
 char deviceName[MAX_STRING_LENGTH_64] = "SmartScale";
 char itemName[MAX_STRING_LENGTH_64]   = "No Product";
 char itemNumber[MAX_STRING_LENGTH_64] = "No Product";
-int heartbeatTrigger = 0;
-int updateInterval   = 300;
-float itemWeight     = 5000.0f;
+RTC_DATA_ATTR int heartbeatTrigger = 0;
+RTC_DATA_ATTR int updateInterval   = 300;
+RTC_DATA_ATTR float itemWeight     = 5000.0f;
 
 // States
 bool deviceConnected      = false;
@@ -53,7 +55,7 @@ bool gwSubscribed         = false;
 bool configurationReceived = false;
 String configurationString = "";
 bool sendDataFailed       = false;
-int heartbeatCounter      = 0;
+RTC_DATA_ATTR int heartbeatCounter = 0;
 bool wakeUpCauseIsTimer   = false;
 char failureMessage[MAX_STRING_LENGTH_64] = "";
 

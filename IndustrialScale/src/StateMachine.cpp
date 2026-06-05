@@ -20,9 +20,6 @@
 
 StateMachine::StateMachine() {
   if (Properties::wakeUpCauseIsTimer) {
-    // Load values from NVS after wakeup
-    Properties::loadConfigFromNVS();
-
     // Increase the hearbeat counter by 1
     Properties::heartbeatCounter++;
 

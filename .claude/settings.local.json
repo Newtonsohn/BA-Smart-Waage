@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:lygte-info.dk)",
+      "WebFetch(domain:www.ti.com)",
+      "WebFetch(domain:community.element14.com)"
+    ]
+  }
+}
