@@ -75,120 +75,127 @@
 \newlabel{tab:sw-vergleich}{{5}{14}{Software-Vergleich Aktiver Zyklus am ESP32-3V3-Pin: Ausgangslage vs.\ Optimiertes System. Beide ESP32 wurden mit 3.0V gespeist. DMS und LDO sind aus dem Messpfad ausgeschlossen. Messprofile und Berechnungen vgl.\ Abschnitt~\ref {par:esp32}}{table.5}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.6.3}Optimierung Energieverbrauch Software}{14}{subsubsection.4.6.3}\protected@file@percent }
 \newlabel{sub:software}{{4.6.3}{14}{Optimierung Energieverbrauch Software}{subsubsection.4.6.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Stromverlauf -- ADC (Optimiert)}}{15}{figure.4}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{4}{15}{Stromverlauf -- ADC (Optimiert)}{figure.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - Arduino BLE-Library)}}{16}{figure.5}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{5}{16}{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - Arduino BLE-Library)}{figure.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - NimBLE)}}{16}{figure.6}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{6}{16}{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - NimBLE)}{figure.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces ADC-Stromverlauf -- Ausgangslage (HX711)}}{15}{figure.4}\protected@file@percent }
+\newlabel{fig:sw-adc-alt}{{4}{15}{ADC-Stromverlauf -- Ausgangslage (HX711)}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces ADC-Stromverlauf -- Optimiertes System (ADS1234)}}{15}{figure.5}\protected@file@percent }
+\newlabel{fig:sw-adc-neu}{{5}{15}{ADC-Stromverlauf -- Optimiertes System (ADS1234)}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces BLE -- Ausgangslage (Bluedroid, GATT-Verbindung)}}{16}{figure.6}\protected@file@percent }
+\newlabel{fig:sw-ble-alt}{{6}{16}{BLE -- Ausgangslage (Bluedroid, GATT-Verbindung)}{figure.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces BLE -- Optimiertes System (NimBLE, Advertisement)}}{16}{figure.7}\protected@file@percent }
+\newlabel{fig:sw-ble-nimble}{{7}{16}{BLE -- Optimiertes System (NimBLE, Advertisement)}{figure.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces BLE -- Zwischenschritt (Arduino BLE-Library, Advertisement)}}{16}{figure.8}\protected@file@percent }
+\newlabel{fig:sw-ble-arduino}{{8}{16}{BLE -- Zwischenschritt (Arduino BLE-Library, Advertisement)}{figure.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Zuverlässigkeitstest -- 100 BLE Advertisements (NimBLE)}}{16}{figure.9}\protected@file@percent }
+\newlabel{fig:sw-ble-reliab}{{9}{16}{Zuverlässigkeitstest -- 100 BLE Advertisements (NimBLE)}{figure.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Verlüste Hardware}{16}{subsection.4.7}\protected@file@percent }
 \citation{lm2596_datasheet}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Zuverlässigkeitstest -- 100 BLE Advertisements (Optimiert - NimBLE)}}{17}{figure.7}\protected@file@percent }
-\newlabel{fig:strom-bootup}{{7}{17}{Zuverlässigkeitstest -- 100 BLE Advertisements (Optimiert - NimBLE)}{figure.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Verlüste Hardware}{17}{subsection.4.7}\protected@file@percent }
+\citation{lm2596_datasheet}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.1}Messmethode}{17}{subsubsection.4.7.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.2}Buck converter}{17}{subsubsection.4.7.2}\protected@file@percent }
 \newlabel{sub:Buck}{{4.7.2}{17}{Buck converter}{subsubsection.4.7.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Altes System}{17}{section*.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Neues System}{17}{section*.11}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Vergleich}{17}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Plausibilitätsprüfung anhand des Datenblatts}{17}{section*.13}\protected@file@percent }
 \citation{lm2596_datasheet}
-\@writefile{toc}{\contentsline {paragraph}{Plausibilitätsprüfung anhand des Datenblatts}{18}{section*.13}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.3}LDO}{18}{subsubsection.4.7.3}\protected@file@percent }
 \newlabel{sub:ldo}{{4.7.3}{18}{LDO}{subsubsection.4.7.3}{}}
 \@writefile{toc}{\contentsline {paragraph}{Ausgangslage}{18}{section*.14}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Optimiertes System -- LDO entfällt}{18}{section*.15}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.7.4}ADC}{18}{subsubsection.4.7.4}\protected@file@percent }
-\citation{lm2596_datasheet}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces ADC-Verlust -- Ausgangslage (HX711)}}{18}{figure.10}\protected@file@percent }
+\newlabel{fig:adc-verlust-alt}{{10}{18}{ADC-Verlust -- Ausgangslage (HX711)}{figure.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces ADC-Verlust -- Optimiertes System (ADS1234)}}{18}{figure.11}\protected@file@percent }
+\newlabel{fig:adc-verlust-neu}{{11}{18}{ADC-Verlust -- Optimiertes System (ADS1234)}{figure.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Gesamtverbrauch und Batterielebensdauer}{18}{subsection.4.8}\protected@file@percent }
+\newlabel{sec:gesamtverbrauch}{{4.8}{18}{Gesamtverbrauch und Batterielebensdauer}{subsection.4.8}{}}
 \citation{lm2596_datasheet}
 \citation{TPS62842_datasheet}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces ADC-Verlust -- Ausgangslage (HX711)}}{19}{figure.8}\protected@file@percent }
-\newlabel{fig:adc-verlust-alt}{{8}{19}{ADC-Verlust -- Ausgangslage (HX711)}{figure.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces ADC-Verlust -- Optimiertes System (ADS1234)}}{19}{figure.9}\protected@file@percent }
-\newlabel{fig:adc-verlust-neu}{{9}{19}{ADC-Verlust -- Optimiertes System (ADS1234)}{figure.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Gesamtverbrauch und Batterielebensdauer}{19}{subsection.4.8}\protected@file@percent }
-\newlabel{sec:gesamtverbrauch}{{4.8}{19}{Gesamtverbrauch und Batterielebensdauer}{subsection.4.8}{}}
 \@writefile{toc}{\contentsline {paragraph}{Aktivphase}{19}{section*.16}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Tiefschlaf}{19}{section*.17}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Energiebilanz pro Zyklus}{19}{section*.18}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text  {Buck}} = 61\,\%$,\ $3 \times 2600\,\text  {mAh}$ bei \SI {11.1}{\volt })}}{20}{table.6}\protected@file@percent }
-\newlabel{tab:batterielaufzeit}{{6}{20}{Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text {Buck}} = 61\,\%$,\ $3 \times 2600\,\text {mAh}$ bei \SI {11.1}{\volt })}{table.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{Vergleich mit der Ausgangslage}{20}{section*.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}PCB-Design}{20}{section.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text  {Buck}} = 61\,\%$,\ $3 \times 2600\,\text  {mAh}$ bei \SI {11.1}{\volt })}}{19}{table.6}\protected@file@percent }
+\newlabel{tab:batterielaufzeit}{{6}{19}{Berechnete Batterielaufzeit -- Optimiertes System ($\eta _{\text {Buck}} = 61\,\%$,\ $3 \times 2600\,\text {mAh}$ bei \SI {11.1}{\volt })}{table.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Vergleich mit der Ausgangslage}{19}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}PCB-Design}{19}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{ADS1234}{20}{section*.20}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{ADS1234 -- Hardware-Filterung}{20}{section*.21}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Temperatursensor SHT30}{20}{section*.22}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{TPS63802 Buck-Converter}{20}{section*.23}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Messpunkte (Power-Header)}{21}{section*.24}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Messungen}{21}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Messgenauigkeit}{21}{subsection.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Low-Power Analyse und Optimierung}{21}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Vergleich Energieverbrauch Aktiver Zyklus}{21}{subsubsection.6.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{ESP32 über 3V3-Pin}{21}{section*.25}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Messpunkt: vor ESP32 3V3-Pin -- Ausgangslage; Wert: \SI {2220}{\milli \joule }}}{21}{figure.10}\protected@file@percent }
-\newlabel{fig:esp32-3v3-alt}{{10}{21}{Messpunkt: vor ESP32 3V3-Pin -- Ausgangslage; Wert: \SI {2220}{\milli \joule }}{figure.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Messpunkt: vor ESP32 3V3-Pin -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}}{21}{figure.11}\protected@file@percent }
-\newlabel{fig:esp32-3v3-neu}{{11}{21}{Messpunkt: vor ESP32 3V3-Pin -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}{figure.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{Messpunkte (Power-Header)}{20}{section*.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Messungen}{20}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Messgenauigkeit}{20}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Low-Power Analyse und Optimierung}{20}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Vergleich Energieverbrauch Aktiver Zyklus}{20}{subsubsection.6.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{ESP32 über 3V3-Pin}{20}{section*.25}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Messpunkt: vor ESP32 3V3-Pin -- Ausgangslage; Wert: \SI {2220}{\milli \joule }}}{21}{figure.12}\protected@file@percent }
+\newlabel{fig:esp32-3v3-alt}{{12}{21}{Messpunkt: vor ESP32 3V3-Pin -- Ausgangslage; Wert: \SI {2220}{\milli \joule }}{figure.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Messpunkt: vor ESP32 3V3-Pin -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}}{21}{figure.13}\protected@file@percent }
+\newlabel{fig:esp32-3v3-neu}{{13}{21}{Messpunkt: vor ESP32 3V3-Pin -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}{figure.13}{}}
 \@writefile{toc}{\contentsline {paragraph}{Dehnmessstreifen}{21}{section*.26}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Ganzer Zyklus \textbf  {mit} DMS -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}}{22}{figure.12}\protected@file@percent }
-\newlabel{fig:dms-mitDMS}{{12}{22}{Ganzer Zyklus \textbf {mit} DMS -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}{figure.12}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Ganzer Zyklus \textbf  {ohne} DMS -- Optimiertes System; Wert: \SI {223.8}{\milli \joule }}}{22}{figure.13}\protected@file@percent }
-\newlabel{fig:dms-ohneDMS}{{13}{22}{Ganzer Zyklus \textbf {ohne} DMS -- Optimiertes System; Wert: \SI {223.8}{\milli \joule }}{figure.13}{}}
-\@writefile{toc}{\contentsline {paragraph}{ADC}{22}{section*.27}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Messpunkt: vor HX711 VIN-Pin -- Ausgangslage; Wert: \SI {106.2}{\milli \joule }}}{22}{figure.14}\protected@file@percent }
-\newlabel{fig:adc-alt}{{14}{22}{Messpunkt: vor HX711 VIN-Pin -- Ausgangslage; Wert: \SI {106.2}{\milli \joule }}{figure.14}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Messpunkt: vor ADS1234 AVDD/DVDD-Pin -- Optimiertes System; Wert: \SI {13.42}{\milli \joule }}}{22}{figure.15}\protected@file@percent }
-\newlabel{fig:adc-neu}{{15}{22}{Messpunkt: vor ADS1234 AVDD/DVDD-Pin -- Optimiertes System; Wert: \SI {13.42}{\milli \joule }}{figure.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Ganzer Zyklus \textbf  {mit} DMS -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}}{21}{figure.14}\protected@file@percent }
+\newlabel{fig:dms-mitDMS}{{14}{21}{Ganzer Zyklus \textbf {mit} DMS -- Optimiertes System; Wert: \SI {312.9}{\milli \joule }}{figure.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Ganzer Zyklus \textbf  {ohne} DMS -- Optimiertes System; Wert: \SI {223.8}{\milli \joule }}}{21}{figure.15}\protected@file@percent }
+\newlabel{fig:dms-ohneDMS}{{15}{21}{Ganzer Zyklus \textbf {ohne} DMS -- Optimiertes System; Wert: \SI {223.8}{\milli \joule }}{figure.15}{}}
+\@writefile{toc}{\contentsline {paragraph}{ADC}{21}{section*.27}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Messpunkt: vor HX711 VIN-Pin -- Ausgangslage; Wert: \SI {106.2}{\milli \joule }}}{22}{figure.16}\protected@file@percent }
+\newlabel{fig:adc-alt}{{16}{22}{Messpunkt: vor HX711 VIN-Pin -- Ausgangslage; Wert: \SI {106.2}{\milli \joule }}{figure.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces Messpunkt: vor ADS1234 AVDD/DVDD-Pin -- Optimiertes System; Wert: \SI {13.42}{\milli \joule }}}{22}{figure.17}\protected@file@percent }
+\newlabel{fig:adc-neu}{{17}{22}{Messpunkt: vor ADS1234 AVDD/DVDD-Pin -- Optimiertes System; Wert: \SI {13.42}{\milli \joule }}{figure.17}{}}
 \@writefile{toc}{\contentsline {paragraph}{Verluste Umwandlung}{22}{section*.28}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Vergleich Energieverbrauch ESP32}{22}{subsubsection.6.2.2}\protected@file@percent }
 \newlabel{par:esp32}{{6.2.2}{22}{Vergleich Energieverbrauch ESP32}{subsubsection.6.2.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Boot -- Ausgangslage; \SI {360.3}{\milli \joule }}}{23}{figure.16}\protected@file@percent }
-\newlabel{fig:esp32-boot-alt}{{16}{23}{Boot -- Ausgangslage; \SI {360.3}{\milli \joule }}{figure.16}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces Boot -- Optimiertes System; \SI {71.08}{\milli \joule }}}{23}{figure.17}\protected@file@percent }
-\newlabel{fig:esp32-boot-neu}{{17}{23}{Boot -- Optimiertes System; \SI {71.08}{\milli \joule }}{figure.17}{}}
-\@writefile{toc}{\contentsline {paragraph}{Boot und Ramp-up}{23}{figure.17}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces ADC-Phase -- Ausgangslage; \SI {807.8}{\milli \joule }}}{23}{figure.18}\protected@file@percent }
-\newlabel{fig:esp32-adc-alt}{{18}{23}{ADC-Phase -- Ausgangslage; \SI {807.8}{\milli \joule }}{figure.18}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces ADC-Phase -- Optimiertes System; \SI {50.83}{\milli \joule }}}{23}{figure.19}\protected@file@percent }
-\newlabel{fig:esp32-adc-neu}{{19}{23}{ADC-Phase -- Optimiertes System; \SI {50.83}{\milli \joule }}{figure.19}{}}
-\@writefile{toc}{\contentsline {paragraph}{ADC-Messung}{23}{figure.19}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces BLE-Phase -- Ausgangslage; \SI {1293}{\milli \joule }}}{23}{figure.20}\protected@file@percent }
-\newlabel{fig:esp32-ble-alt}{{20}{23}{BLE-Phase -- Ausgangslage; \SI {1293}{\milli \joule }}{figure.20}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces BLE-Phase -- Optimiertes System; \SI {101.6}{\milli \joule }}}{23}{figure.21}\protected@file@percent }
-\newlabel{fig:esp32-ble-neu}{{21}{23}{BLE-Phase -- Optimiertes System; \SI {101.6}{\milli \joule }}{figure.21}{}}
-\@writefile{toc}{\contentsline {paragraph}{BLE}{23}{figure.21}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{ADS1234 Chip (nur neues System)}{24}{section*.32}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces ADS1234 Chip -- Optimiertes System; \SI {13.42}{\milli \joule }}}{24}{figure.22}\protected@file@percent }
-\newlabel{fig:esp32-adcchip-neu}{{22}{24}{ADS1234 Chip -- Optimiertes System; \SI {13.42}{\milli \joule }}{figure.22}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {23}{\ignorespaces Ganzer Zyklus -- Ausgangslage; \SI {1858}{\milli \joule }}}{24}{figure.23}\protected@file@percent }
-\newlabel{fig:esp32-zyklus-alt}{{23}{24}{Ganzer Zyklus -- Ausgangslage; \SI {1858}{\milli \joule }}{figure.23}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {24}{\ignorespaces Ganzer Zyklus -- Optimiertes System; \SI {223.8}{\milli \joule }}}{24}{figure.24}\protected@file@percent }
-\newlabel{fig:esp32-zyklus-neu}{{24}{24}{Ganzer Zyklus -- Optimiertes System; \SI {223.8}{\milli \joule }}{figure.24}{}}
-\@writefile{toc}{\contentsline {paragraph}{Ganzer Zyklus}{24}{figure.24}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces Boot -- Ausgangslage; \SI {360.3}{\milli \joule }}}{22}{figure.18}\protected@file@percent }
+\newlabel{fig:esp32-boot-alt}{{18}{22}{Boot -- Ausgangslage; \SI {360.3}{\milli \joule }}{figure.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces Boot -- Optimiertes System; \SI {71.08}{\milli \joule }}}{22}{figure.19}\protected@file@percent }
+\newlabel{fig:esp32-boot-neu}{{19}{22}{Boot -- Optimiertes System; \SI {71.08}{\milli \joule }}{figure.19}{}}
+\@writefile{toc}{\contentsline {paragraph}{Boot und Ramp-up}{22}{figure.19}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces ADC-Phase -- Ausgangslage; \SI {807.8}{\milli \joule }}}{23}{figure.20}\protected@file@percent }
+\newlabel{fig:esp32-adc-alt}{{20}{23}{ADC-Phase -- Ausgangslage; \SI {807.8}{\milli \joule }}{figure.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces ADC-Phase -- Optimiertes System; \SI {50.83}{\milli \joule }}}{23}{figure.21}\protected@file@percent }
+\newlabel{fig:esp32-adc-neu}{{21}{23}{ADC-Phase -- Optimiertes System; \SI {50.83}{\milli \joule }}{figure.21}{}}
+\@writefile{toc}{\contentsline {paragraph}{ADC-Messung}{23}{figure.21}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces BLE-Phase -- Ausgangslage; \SI {1293}{\milli \joule }}}{23}{figure.22}\protected@file@percent }
+\newlabel{fig:esp32-ble-alt}{{22}{23}{BLE-Phase -- Ausgangslage; \SI {1293}{\milli \joule }}{figure.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {23}{\ignorespaces BLE-Phase -- Optimiertes System; \SI {101.6}{\milli \joule }}}{23}{figure.23}\protected@file@percent }
+\newlabel{fig:esp32-ble-neu}{{23}{23}{BLE-Phase -- Optimiertes System; \SI {101.6}{\milli \joule }}{figure.23}{}}
+\@writefile{toc}{\contentsline {paragraph}{BLE}{23}{figure.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{ADS1234 Chip (nur neues System)}{23}{section*.32}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {24}{\ignorespaces ADS1234 Chip -- Optimiertes System; \SI {13.42}{\milli \joule }}}{24}{figure.24}\protected@file@percent }
+\newlabel{fig:esp32-adcchip-neu}{{24}{24}{ADS1234 Chip -- Optimiertes System; \SI {13.42}{\milli \joule }}{figure.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {25}{\ignorespaces Ganzer Zyklus -- Ausgangslage; \SI {1858}{\milli \joule }}}{24}{figure.25}\protected@file@percent }
+\newlabel{fig:esp32-zyklus-alt}{{25}{24}{Ganzer Zyklus -- Ausgangslage; \SI {1858}{\milli \joule }}{figure.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces Ganzer Zyklus -- Optimiertes System; \SI {223.8}{\milli \joule }}}{24}{figure.26}\protected@file@percent }
+\newlabel{fig:esp32-zyklus-neu}{{26}{24}{Ganzer Zyklus -- Optimiertes System; \SI {223.8}{\milli \joule }}{figure.26}{}}
+\@writefile{toc}{\contentsline {paragraph}{Ganzer Zyklus}{24}{figure.26}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.3}Verluste Hardware}{24}{subsubsection.6.2.3}\protected@file@percent }
 \newlabel{sub:verluste-buck}{{6.2.3}{24}{Buck-Converter}{section*.34}{}}
 \@writefile{toc}{\contentsline {paragraph}{Buck-Converter}{24}{section*.34}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {25}{\ignorespaces Vor Buck-Converter -- Ausgangslage; \SI {6503}{\milli \joule }}}{25}{figure.25}\protected@file@percent }
-\newlabel{fig:buck-vor-alt}{{25}{25}{Vor Buck-Converter -- Ausgangslage; \SI {6503}{\milli \joule }}{figure.25}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces Vor Buck-Converter -- Optimiertes System; \SI {689.5}{\milli \joule }}}{25}{figure.26}\protected@file@percent }
-\newlabel{fig:buck-vor-neu}{{26}{25}{Vor Buck-Converter -- Optimiertes System; \SI {689.5}{\milli \joule }}{figure.26}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {27}{\ignorespaces Nach Buck-Converter -- Ausgangslage; \SI {3548}{\milli \joule }}}{25}{figure.27}\protected@file@percent }
-\newlabel{fig:buck-nach-alt}{{27}{25}{Nach Buck-Converter -- Ausgangslage; \SI {3548}{\milli \joule }}{figure.27}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {28}{\ignorespaces Nach Buck-Converter -- Optimiertes System; \SI {343.4}{\milli \joule }}}{25}{figure.28}\protected@file@percent }
-\newlabel{fig:buck-nach-neu}{{28}{25}{Nach Buck-Converter -- Optimiertes System; \SI {343.4}{\milli \joule }}{figure.28}{}}
-\newlabel{par:ldo}{{6.2.3}{25}{LDO}{section*.35}{}}
-\@writefile{toc}{\contentsline {paragraph}{LDO}{25}{section*.35}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {29}{\ignorespaces Vor LDO (VIN-Pin) -- Ausgangslage; \SI {3430}{\milli \joule }}}{25}{figure.29}\protected@file@percent }
-\newlabel{fig:ldo-vor-alt}{{29}{25}{Vor LDO (VIN-Pin) -- Ausgangslage; \SI {3430}{\milli \joule }}{figure.29}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {30}{\ignorespaces Nach LDO (3V3-Pin) -- Ausgangslage; \SI {2220}{\milli \joule }}}{25}{figure.30}\protected@file@percent }
-\newlabel{fig:ldo-nach-alt}{{30}{25}{Nach LDO (3V3-Pin) -- Ausgangslage; \SI {2220}{\milli \joule }}{figure.30}{}}
-\@writefile{toc}{\contentsline {paragraph}{ADC}{25}{section*.36}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.4}Vergleich Leistungsverbrauch Deep-Sleep}{25}{subsubsection.6.2.4}\protected@file@percent }
-\newlabel{par:deep}{{6.2.4}{25}{Vergleich Leistungsverbrauch Deep-Sleep}{subsubsection.6.2.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Dehnmessstreifen}{25}{section*.37}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {27}{\ignorespaces Vor Buck-Converter -- Ausgangslage; \SI {6503}{\milli \joule }}}{24}{figure.27}\protected@file@percent }
+\newlabel{fig:buck-vor-alt}{{27}{24}{Vor Buck-Converter -- Ausgangslage; \SI {6503}{\milli \joule }}{figure.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {28}{\ignorespaces Vor Buck-Converter -- Optimiertes System; \SI {689.5}{\milli \joule }}}{24}{figure.28}\protected@file@percent }
+\newlabel{fig:buck-vor-neu}{{28}{24}{Vor Buck-Converter -- Optimiertes System; \SI {689.5}{\milli \joule }}{figure.28}{}}
 \bibstyle{plain}
 \bibdata{quellen}
 \bibcite{c3_datasheet}{1}
 \bibcite{s3_datasheet}{2}
+\@writefile{lof}{\contentsline {figure}{\numberline {29}{\ignorespaces Nach Buck-Converter -- Ausgangslage; \SI {3548}{\milli \joule }}}{25}{figure.29}\protected@file@percent }
+\newlabel{fig:buck-nach-alt}{{29}{25}{Nach Buck-Converter -- Ausgangslage; \SI {3548}{\milli \joule }}{figure.29}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {30}{\ignorespaces Nach Buck-Converter -- Optimiertes System; \SI {343.4}{\milli \joule }}}{25}{figure.30}\protected@file@percent }
+\newlabel{fig:buck-nach-neu}{{30}{25}{Nach Buck-Converter -- Optimiertes System; \SI {343.4}{\milli \joule }}{figure.30}{}}
+\newlabel{par:ldo}{{6.2.3}{25}{LDO}{section*.35}{}}
+\@writefile{toc}{\contentsline {paragraph}{LDO}{25}{section*.35}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {31}{\ignorespaces Vor LDO (VIN-Pin) -- Ausgangslage; \SI {3430}{\milli \joule }}}{25}{figure.31}\protected@file@percent }
+\newlabel{fig:ldo-vor-alt}{{31}{25}{Vor LDO (VIN-Pin) -- Ausgangslage; \SI {3430}{\milli \joule }}{figure.31}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {32}{\ignorespaces Nach LDO (3V3-Pin) -- Ausgangslage; \SI {2220}{\milli \joule }}}{25}{figure.32}\protected@file@percent }
+\newlabel{fig:ldo-nach-alt}{{32}{25}{Nach LDO (3V3-Pin) -- Ausgangslage; \SI {2220}{\milli \joule }}{figure.32}{}}
+\@writefile{toc}{\contentsline {paragraph}{ADC}{25}{section*.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.4}Vergleich Leistungsverbrauch Deep-Sleep}{25}{subsubsection.6.2.4}\protected@file@percent }
+\newlabel{par:deep}{{6.2.4}{25}{Vergleich Leistungsverbrauch Deep-Sleep}{subsubsection.6.2.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Dehnmessstreifen}{25}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{ADC}{25}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{ESP32}{25}{section*.39}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Fazit, Diskussion und Ausblick}{25}{section.7}\protected@file@percent }
 \bibcite{rnt_supermini}{3}
 \bibcite{yzc133_datasheet}{4}
 \bibcite{TPS62842_datasheet}{5}
@@ -196,15 +203,12 @@
 \bibcite{claude_anthropic}{7}
 \bibcite{ads1234_datasheet}{8}
 \bibcite{lm2596_datasheet}{9}
-\@writefile{lof}{\contentsline {figure}{\numberline {31}{\ignorespaces Messpunkt: vor DMS -- \SI {78.19}{\milli \watt } (Ausgangslage)}}{26}{figure.31}\protected@file@percent }
-\newlabel{fig:deep-dms-alt}{{31}{26}{Messpunkt: vor DMS -- \SI {78.19}{\milli \watt } (Ausgangslage)}{figure.31}{}}
-\@writefile{toc}{\contentsline {paragraph}{ADC}{26}{section*.38}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{ESP32}{26}{section*.39}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Fazit, Diskussion und Ausblick}{26}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}PCB Schaltplan}{27}{appendix.A}\protected@file@percent }
-\newlabel{sec:anhang-pcb}{{A}{27}{PCB Schaltplan}{appendix.A}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {32}{\ignorespaces PCB Schaltplan -- Seite 1}}{28}{figure.32}\protected@file@percent }
-\newlabel{fig:anhang-schaltplan-1}{{32}{28}{PCB Schaltplan -- Seite 1}{figure.32}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {33}{\ignorespaces PCB Schaltplan -- Seite 2}}{29}{figure.33}\protected@file@percent }
-\newlabel{fig:anhang-schaltplan-2}{{33}{29}{PCB Schaltplan -- Seite 2}{figure.33}{}}
-\gdef \@abspage@last{29}
+\@writefile{lof}{\contentsline {figure}{\numberline {33}{\ignorespaces Messpunkt: vor DMS -- \SI {78.19}{\milli \watt } (Ausgangslage)}}{26}{figure.33}\protected@file@percent }
+\newlabel{fig:deep-dms-alt}{{33}{26}{Messpunkt: vor DMS -- \SI {78.19}{\milli \watt } (Ausgangslage)}{figure.33}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}PCB Schaltplan}{26}{appendix.A}\protected@file@percent }
+\newlabel{sec:anhang-pcb}{{A}{26}{PCB Schaltplan}{appendix.A}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {34}{\ignorespaces PCB Schaltplan -- Seite 1}}{27}{figure.34}\protected@file@percent }
+\newlabel{fig:anhang-schaltplan-1}{{34}{27}{PCB Schaltplan -- Seite 1}{figure.34}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {35}{\ignorespaces PCB Schaltplan -- Seite 2}}{28}{figure.35}\protected@file@percent }
+\newlabel{fig:anhang-schaltplan-2}{{35}{28}{PCB Schaltplan -- Seite 2}{figure.35}{}}
+\gdef \@abspage@last{28}

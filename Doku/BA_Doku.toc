@@ -42,49 +42,49 @@
 \contentsline {subsubsection}{\numberline {4.6.1}Übersicht Stromverlauf ESP32}{13}{subsubsection.4.6.1}%
 \contentsline {subsubsection}{\numberline {4.6.2}Vergleich ESP32 Energieverbrauch}{14}{subsubsection.4.6.2}%
 \contentsline {subsubsection}{\numberline {4.6.3}Optimierung Energieverbrauch Software}{14}{subsubsection.4.6.3}%
-\contentsline {subsection}{\numberline {4.7}Verlüste Hardware}{17}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.7}Verlüste Hardware}{16}{subsection.4.7}%
 \contentsline {subsubsection}{\numberline {4.7.1}Messmethode}{17}{subsubsection.4.7.1}%
 \contentsline {subsubsection}{\numberline {4.7.2}Buck converter}{17}{subsubsection.4.7.2}%
 \contentsline {paragraph}{Altes System}{17}{section*.10}%
 \contentsline {paragraph}{Neues System}{17}{section*.11}%
 \contentsline {paragraph}{Vergleich}{17}{section*.12}%
-\contentsline {paragraph}{Plausibilitätsprüfung anhand des Datenblatts}{18}{section*.13}%
+\contentsline {paragraph}{Plausibilitätsprüfung anhand des Datenblatts}{17}{section*.13}%
 \contentsline {subsubsection}{\numberline {4.7.3}LDO}{18}{subsubsection.4.7.3}%
 \contentsline {paragraph}{Ausgangslage}{18}{section*.14}%
 \contentsline {paragraph}{Optimiertes System -- LDO entfällt}{18}{section*.15}%
 \contentsline {subsubsection}{\numberline {4.7.4}ADC}{18}{subsubsection.4.7.4}%
-\contentsline {subsection}{\numberline {4.8}Gesamtverbrauch und Batterielebensdauer}{19}{subsection.4.8}%
+\contentsline {subsection}{\numberline {4.8}Gesamtverbrauch und Batterielebensdauer}{18}{subsection.4.8}%
 \contentsline {paragraph}{Aktivphase}{19}{section*.16}%
 \contentsline {paragraph}{Tiefschlaf}{19}{section*.17}%
 \contentsline {paragraph}{Energiebilanz pro Zyklus}{19}{section*.18}%
-\contentsline {paragraph}{Vergleich mit der Ausgangslage}{20}{section*.19}%
-\contentsline {section}{\numberline {5}PCB-Design}{20}{section.5}%
+\contentsline {paragraph}{Vergleich mit der Ausgangslage}{19}{section*.19}%
+\contentsline {section}{\numberline {5}PCB-Design}{19}{section.5}%
 \contentsline {paragraph}{ADS1234}{20}{section*.20}%
 \contentsline {paragraph}{ADS1234 -- Hardware-Filterung}{20}{section*.21}%
 \contentsline {paragraph}{Temperatursensor SHT30}{20}{section*.22}%
 \contentsline {paragraph}{TPS63802 Buck-Converter}{20}{section*.23}%
-\contentsline {paragraph}{Messpunkte (Power-Header)}{21}{section*.24}%
-\contentsline {section}{\numberline {6}Messungen}{21}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Messgenauigkeit}{21}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Low-Power Analyse und Optimierung}{21}{subsection.6.2}%
-\contentsline {subsubsection}{\numberline {6.2.1}Vergleich Energieverbrauch Aktiver Zyklus}{21}{subsubsection.6.2.1}%
-\contentsline {paragraph}{ESP32 über 3V3-Pin}{21}{section*.25}%
+\contentsline {paragraph}{Messpunkte (Power-Header)}{20}{section*.24}%
+\contentsline {section}{\numberline {6}Messungen}{20}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Messgenauigkeit}{20}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Low-Power Analyse und Optimierung}{20}{subsection.6.2}%
+\contentsline {subsubsection}{\numberline {6.2.1}Vergleich Energieverbrauch Aktiver Zyklus}{20}{subsubsection.6.2.1}%
+\contentsline {paragraph}{ESP32 über 3V3-Pin}{20}{section*.25}%
 \contentsline {paragraph}{Dehnmessstreifen}{21}{section*.26}%
-\contentsline {paragraph}{ADC}{22}{section*.27}%
+\contentsline {paragraph}{ADC}{21}{section*.27}%
 \contentsline {paragraph}{Verluste Umwandlung}{22}{section*.28}%
 \contentsline {subsubsection}{\numberline {6.2.2}Vergleich Energieverbrauch ESP32}{22}{subsubsection.6.2.2}%
-\contentsline {paragraph}{Boot und Ramp-up}{23}{figure.17}%
-\contentsline {paragraph}{ADC-Messung}{23}{figure.19}%
-\contentsline {paragraph}{BLE}{23}{figure.21}%
-\contentsline {paragraph}{ADS1234 Chip (nur neues System)}{24}{section*.32}%
-\contentsline {paragraph}{Ganzer Zyklus}{24}{figure.24}%
+\contentsline {paragraph}{Boot und Ramp-up}{22}{figure.19}%
+\contentsline {paragraph}{ADC-Messung}{23}{figure.21}%
+\contentsline {paragraph}{BLE}{23}{figure.23}%
+\contentsline {paragraph}{ADS1234 Chip (nur neues System)}{23}{section*.32}%
+\contentsline {paragraph}{Ganzer Zyklus}{24}{figure.26}%
 \contentsline {subsubsection}{\numberline {6.2.3}Verluste Hardware}{24}{subsubsection.6.2.3}%
 \contentsline {paragraph}{Buck-Converter}{24}{section*.34}%
 \contentsline {paragraph}{LDO}{25}{section*.35}%
 \contentsline {paragraph}{ADC}{25}{section*.36}%
 \contentsline {subsubsection}{\numberline {6.2.4}Vergleich Leistungsverbrauch Deep-Sleep}{25}{subsubsection.6.2.4}%
 \contentsline {paragraph}{Dehnmessstreifen}{25}{section*.37}%
-\contentsline {paragraph}{ADC}{26}{section*.38}%
-\contentsline {paragraph}{ESP32}{26}{section*.39}%
-\contentsline {section}{\numberline {7}Fazit, Diskussion und Ausblick}{26}{section.7}%
-\contentsline {section}{\numberline {A}PCB Schaltplan}{27}{appendix.A}%
+\contentsline {paragraph}{ADC}{25}{section*.38}%
+\contentsline {paragraph}{ESP32}{25}{section*.39}%
+\contentsline {section}{\numberline {7}Fazit, Diskussion und Ausblick}{25}{section.7}%
+\contentsline {section}{\numberline {A}PCB Schaltplan}{26}{appendix.A}%

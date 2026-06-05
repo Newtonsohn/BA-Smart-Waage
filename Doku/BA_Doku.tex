@@ -446,85 +446,84 @@
 	Die nachfolgenden Abschnitte beschreiben jede Betriebsphase im Detail und erläutern, welche Massnahmen zur jeweiligen Einsparung geführt haben:
 	\subsubsection{Optimierung Energieverbrauch Software}\label{sub:software}
 	\begin{enumerate}
-		\item \textbf{Ramp Up -- Boot, Initialisierung und ADC} (Abschnitt~\ref{sec:ramp-up}): \\
+
+		\item \textbf{Ramp Up -- Boot, Initialisierung und ADC}: \\
 		Diese Phase umfasst den ESP32-Bootvorgang, die State-Machine-Initialisierung sowie die ADS1234-Messung.
-		Die Ausgangslage verbrauchte \textbf{0.123\,mAh}.
 		Optimierungspotenzial liegt unter anderem in der Reduktion der Boot-Zeit sowie in der Minimierung der ADC-Einschaltdauer.
 
-		\item \textbf{ADC} (Abschnitt~\ref{sec:ramp-up}): \\
-			In der Ausgangslage verwendete die Vorgängerarbeit den \textbf{HX711} -- einen einkanaligen 24-Bit-ADC, an den alle vier Wägezellen als gemeinsame Brücke angeschlossen waren.
-			Die Messung erfasste 20 Samples auf diesem einzigen Kanal; zwischen jedem Sample wurde ein blockierendes \texttt{delay(50\,ms)} ausgeführt, was den ESP32-Kern für die gesamte Wartezeit vollaktiv liess.
+		\item \textbf{ADC}: \\
+		In der Ausgangslage verwendete die Vorgängerarbeit den \textbf{HX711} -- einen einkanaligen 24-Bit-ADC, an den alle vier Wägezellen als gemeinsame Brücke angeschlossen waren.
+		Die Messung erfasste 20~Samples auf diesem einzigen Kanal; zwischen jedem Sample wurde ein blockierendes \texttt{delay(50\,ms)} ausgeführt, was den ESP32-Kern für die gesamte Wartezeit vollaktiv liess.
 
-			\begin{figure}[h]
+		Im optimierten Design werden die vier Kanäle des ADS1234 sequenziell ausgelesen; pro Kanal werden \textbf{5~Samples} erfasst.
+		Nach jedem Sample kehrt der ESP32 sofort in den Light Sleep zurück und wird durch einen GPIO-Interrupt auf dem \texttt{DRDY}-Pin geweckt.
+		Zwischen den vier Kanalgruppen liegt eine Pause von ca.\ \textbf{400\,ms}: die physikalisch bedingte Einschwingzeit des internen sinc\textsuperscript{3}-Filters nach einem Kanalwechsel.
+		Auch diese Wartezeit verbringt der ESP32 im Light Sleep.
+
+		\begin{figure}[H]
 			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC"}
-			\caption{Stromverlauf -- ADC (Ausgangslage)}
-			\label{fig:strom-bootup}
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/Strom ADC"}
+				\caption{ADC-Stromverlauf -- Ausgangslage (HX711)}
+				\label{fig:sw-adc-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/Nachher/ADC"}
+				\caption{ADC-Stromverlauf -- Optimiertes System (ADS1234)}
+				\label{fig:sw-adc-neu}
+			\end{minipage}
 		\end{figure}
 
-			Im optimierten Design werden die vier Kanäle des ADS1234 sequenziell ausgelesen; pro Kanal werden \textbf{5 Samples} erfasst.
-			Nach jedem abgeschlossenen Sample kehrt der ESP32 sofort in den Light Sleep zurück und wird durch einen GPIO-Interrupt auf dem \texttt{DRDY}-Pin geweckt, sobald der ADS1234 die nächste Wandlung bereitstellt.
-			Im Profil sind diese fünf kurzen Aktivierungsspitzen pro Kanalgruppe deutlich erkennbar.
+		\item \textbf{BLE-Initialisierung und Advertisement}: \\
+		In der Ausgangslage verwendete die Firmware die Arduino-BLE-Bibliothek (Bluedroid) und baute für jeden Messzyklus eine vollständige GATT-Verbindung auf.
+		Die Dauer dieser Phase variiert stark in Abhängigkeit vom Scan-Intervall des Gateways -- im gezeigten Profil \textbf{5.6\,s}, in anderen Messungen bis zu \textbf{7\,s}.
 
-			Zwischen den vier Kanalgruppen zeigt sich jeweils eine Pause von ca.\ \textbf{400\,ms}: Dies ist die physikalisch bedingte Einschwingzeit des internen Sigma-Delta-Filters nach einem Kanalwechsel.
-			Der ADS1234 integriert einen digitalen sinc\textsuperscript{3}-Filter; dessen Impulsantwort erstreckt sich über 3--4 Ausgangsperioden, was bei der eingestellten Datenrate von 10\,Hz rund 300--400\,ms entspricht.
-			Erst nach dieser Zeit sind die Ausgabewerte frei von Einflüssen des vorangegangenen Kanals.
-			Auch diese Wartezeit verbringt der ESP32 im Light Sleep -- der Kern schläft, bis \texttt{DRDY} das Ende der Einschwingphase signalisiert.
+		Der fundamentale Optimierungsansatz bestand darin, den Verbindungsaufbau vollständig zu eliminieren: Der Messwert wird direkt in die Manufacturer-Specific-Data des Advertisement-Pakets kodiert -- das Gateway empfängt die Daten durch passives Scannen, ohne eine Verbindung aufzubauen.
+		Im zweiten Schritt wurde Bluedroid durch den schlanken \textbf{NimBLE}-Stack ersetzt, der einen deutlich geringeren Initialisierungsoverhead aufweist.
 
-			\begin{figure}[h]
+		\begin{figure}[H]
 			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Nachher/ADC"}
-			\caption{Stromverlauf -- ADC (Optimiert)}
-			\label{fig:strom-bootup}
-		\end{figure}
-		
-		
-
-		\item \textbf{BLE-Initialisierung und Advertisement} (Abschnitt~\ref{sec:ble-init}): \\
-		In der Ausgangslage verwendete die Firmware die Arduino-BLE-Bibliothek (Bluedroid) und baute für jeden Messzyklus eine vollständige GATT-Verbindung mit dem Gateway auf: Der ESP32 initialisierte den BLE-Stack, startete das Advertisement und wartete, bis das Gateway sich verbindet und den Messwert per Indication abonniert.
-		Die Dauer dieser Phase variiert stark in Abhängigkeit vom Scan-Intervall des Gateways -- im gezeigten Profil \textbf{5.6\,s} bei \textbf{0.7\,C}, in anderen Messungen bis zu \textbf{7\,s} bei \textbf{0.83\,C}.
-
-			\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/subscription"}
-			\caption{Stromverlauf -- BLE Initialisierung und Subscription (Ausgangslage - Arduino BLE-Library)}
-			\label{fig:strom-bootup}
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/Stromverbrauch vorher/subscription"}
+				\caption{BLE -- Ausgangslage (Bluedroid, GATT-Verbindung)}
+				\label{fig:sw-ble-alt}
+			\end{minipage}
+			\hfill
+			\begin{minipage}[t]{0.48\linewidth}
+				\centering
+				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/Nachher/BLE_GANZ"}
+				\caption{BLE -- Optimiertes System (NimBLE, Advertisement)}
+				\label{fig:sw-ble-nimble}
+			\end{minipage}
 		\end{figure}
 
-		Der fundamentale Ansatz der Optimierung bestand darin, den Verbindungsaufbau vollständig zu eliminieren: Der Messwert wird direkt in die Manufacturer-Specific-Data des Advertisement-Pakets kodiert -- das Gateway empfängt die Daten durch passives Scannen, ohne eine Verbindung aufzubauen.
-		Als erster Schritt wurde dieser Ansatz noch mit der bestehenden Arduino-BLE-Bibliothek umgesetzt; Init und zwei Advertisements benötigten \textbf{728\,ms} und \textbf{78.8\,mC}.
+		Als Zwischenschritt wurde der Advertisement-Ansatz zunächst mit der bestehenden Arduino-BLE-Bibliothek validiert (Abbildung~\ref{fig:sw-ble-arduino}), bevor der Wechsel zu NimBLE erfolgte.
 
-			\begin{figure}[h]
+		\begin{figure}[H]
 			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Nachher/BLE_ARDUINO"}
-			\caption{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - Arduino BLE-Library)}
-			\label{fig:strom-bootup}
+			\includegraphics[width=0.6\linewidth]{"Images/Stromverbrauch/Nachher/BLE_ARDUINO"}
+			\caption{BLE -- Zwischenschritt (Arduino BLE-Library, Advertisement)}
+			\label{fig:sw-ble-arduino}
 		\end{figure}
 
-		Im zweiten Schritt wurde die schwergewichtige Bluedroid-Implementierung durch den schlanken \textbf{NimBLE}-Stack ersetzt, der speziell für ressourcenbeschränkte Geräte entwickelt wurde und einen deutlich geringeren Initialisierungsoverhead aufweist.
-		Damit sinkt der Ladungsverbrauch für Init und zwei Advertisements auf ca.\ \textbf{40\,mC}.
-
-			\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Nachher/BLE_GANZ"}
-			\caption{Stromverlauf -- BLE Initialisierung und Advertisement (Optimiert - NimBLE)}
-			\label{fig:strom-bootup}
-		\end{figure}
-
-		Die Wahl von \textbf{zwei Advertisements} pro Zyklus ist ein bewusster Kompromiss: Da die Sendezeit in NimBLE nur als Zeitwert konfigurierbar ist und nicht als diskrete Paketanzahl, werden innerhalb des gewählten Zeitfensters typischerweise zwei Pakete ausgesendet.
+		Die Wahl von \textbf{zwei Advertisements} pro Zyklus ist ein bewusster Kompromiss.
 		In einem Zuverlässigkeitstest über \textbf{100 aufeinanderfolgende Messzyklen} wurden \textbf{91 von 100} Advertisements erfolgreich vom Gateway empfangen, was für ein periodisches Überwachungssystem ausreichend ist.
 
-			\begin{figure}[h]
+		\begin{figure}[H]
 			\centering
-			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/Nachher/ADV_RELIAB"}
-			\caption{Zuverlässigkeitstest -- 100 BLE Advertisements (Optimiert - NimBLE)}
-			\label{fig:strom-bootup}
+			\includegraphics[width=0.6\linewidth]{"Images/Stromverbrauch/Nachher/ADV_RELIAB"}
+			\caption{Zuverlässigkeitstest -- 100 BLE Advertisements (NimBLE)}
+			\label{fig:sw-ble-reliab}
 		\end{figure}
 
-		\item \textbf{BLE-Verbindung und Datenübertragung} (Abschnitt~\ref{sec:ble-data}): \\
+		\item \textbf{BLE-Verbindung und Datenübertragung}: \\
 		Das Gateway baut die Verbindung auf, der Messwert wird per Indication übertragen und die Verbindung anschliessend getrennt.
-		In der Ausgangslage betrug der Ladungsverbrauch dieser Phase (gemeinsam mit BLE-Init gemessen) \textbf{0.194\,mAh}.
-		Durch Optimierung der Connection-Parameter und Reduktion der Wartezeit auf den Gateway konnte dieser Wert gesenkt werden.
+		Durch Optimierung der Connection-Parameter und Reduktion der Wartezeit auf den Gateway konnte der Ladungsverbrauch dieser Phase gesenkt werden.
+
 	\end{enumerate}
 
 
