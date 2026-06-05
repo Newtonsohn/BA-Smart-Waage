@@ -22,42 +22,26 @@
 
 \begin{document}
 	\includepdf[pages=-]{Images/T_VL_Vorlage_Titelseite_BA.pdf}
-	\includepdf[pages=-]{Images/BA_Doku_removed_signed}
-	\newpage
 
 	% ============================================================
-	\section*{Abstract}
+	\section*{Eigenständigkeitserklärung}
 	% ============================================================
 
-	\textbf{English}
-
-	\medskip
-	\noindent
-	This thesis advances a previously developed ESP32-based smart scale prototype for industrial parts and bulk-goods inventory management.
-	Two aspects are addressed in depth: measurement accuracy and energy efficiency.
-
-	For measurement accuracy, the four YZC-133 load cells are each connected to a dedicated channel of the ADS1234 24-bit ADC with a PGA gain of~128 and a data rate of 10~SPS.
-	Individual per-sensor calibration enables corner-load compensation, which was not possible with the single summed channel of the predecessor.
-	Measurements confirm a repeatability of $\pm$\,0.1\,g, though absolute accuracy is limited by mechanical imperfections of the prototype.
-
-	For energy efficiency, three hardware measures were implemented: the load-cell supply is interrupted via MOSFET before entering deep sleep; the ESP32 is powered directly through the 3V3~pin, eliminating the on-board LDO; and the buck-converter output voltage was reduced from 3.3\,V to 3.0\,V, saving an additional 73.4\,mJ per cycle ($-$17.6\,\%).
-	Combined with software-level optimisations including the migration from the Arduino BLE stack to NimbleBLE, the active-cycle energy consumption is reduced from 6503\,mJ to 689.5\,mJ, a reduction of \textbf{89.4\,\%}.
-	A custom PCB was designed to consolidate the power path; a component selection error in the buck converter prevents its immediate use in the current revision.
+	\noindent Hiermit versichere ich, dass ich die vorliegende Arbeit selbstständig, oder gemeinsam mit den aufgeführten Gruppenmitgliedern, verfasst habe. Ich habe ausschliesslich die im Text oder Anhang angegeben Quellen und Hilfsmittel (auch Internetseiten und generative KI-Tools) benutzt. Ich trage die Verantwortung für die Qualität des Textes sowie die Auswahl aller Inhalte und habe sichergestellt, dass Informationen und Argumente mit geeigneten wissenschaftlichen Quellen belegt bzw.\ gestützt werden. Generative KI-Tools wurden summarisch unter der Angabe des Namens und des Zwecks angegeben. Bei Verfehlungen aller Art treten die Paragraphen 39 und 40 (Unredlichkeit und Verfahren bei Unredlichkeit) der ZHAW-Rahmenprüfungsordnung sowie die Bestimmungen der Disziplinarmassnahmen der Hochschulordnung in Kraft.
 
 	\bigskip
-	\textbf{Deutsch}
+	\noindent\textbf{Erklärung zum Einsatz von KI-Tools}
 
 	\medskip
+	\noindent Ich erkläre hiermit, dass ich für die Erstellung dieser Bachelortarbeit die Unterstützung von Claude~\cite{claude_anthropic}, einem KI-gestützten Sprachmodell von Anthropic~\cite{anthropic}, genutzt habe. Dieses Modell wurde eingesetzt, um bestimmte Textabschnitte zu verfeinern, Anregungen für Formulierungen zu erhalten und komplizierte Konzepte verständlicher darzustellen. Ausserdem wurden einzelne Codeabschnitte mittels Claude entwickelt. Alle mit Hilfe von Claude erstellten Inhalte wurden von mir sorgfältig geprüft und den akademischen Standards sowie den spezifischen Anforderungen der ZHAW angepasst. Ich bestätige, dass die vorliegende Arbeit meine eigenen Ideen und Überlegungen widerspiegelt und gemäss den ethischen Richtlinien der akademischen Integrität verfasst wurde.
+
+	\vspace{1cm}
+
 	\noindent
-	Diese Bachelorarbeit baut auf einem bestehenden ESP32-basierten Smart-Waagen-Prototyp für die industrielle Inventarisierung von Kleinteilen und Schüttgut auf und vertieft zwei Schwerpunkte: Messgenauigkeit und Energieeffizienz.
-
-	Zur Verbesserung der Messgenauigkeit wird jede der vier YZC-133-Wägezellen einzeln an einen dedizierten Kanal des ADS1234 (24-Bit-ADC, PGA-Faktor~128, 10~SPS) angeschlossen.
-	Die individuelle Kalibrierung pro Sensor ermöglicht eine Ecklastkompensation, die mit dem summierten Einzelkanalansatz der Vorgängerarbeit nicht realisierbar war.
-	Die Messungen zeigen eine Wiederholbarkeit von $\pm$\,0{,}1\,g; die Absolutgenauigkeit ist durch mechanische Unzulänglichkeiten des Prototyps eingeschränkt.
-
-	Für die Energieoptimierung wurden drei Hardwaremassnahmen umgesetzt: Die Wägezellen werden über einen MOSFET vor dem Deep-Sleep abgeschaltet; der ESP32 wird direkt über den 3V3-Pin versorgt, womit der interne Board-LDO entfällt; die Ausgangsspannung des Buck-Converters wurde von 3{,}3\,V auf 3{,}0\,V abgesenkt, was eine zusätzliche Einsparung von 73{,}4\,mJ pro Zyklus ($-$17{,}6\,\%) erzielt.
-	In Kombination mit Softwareoptimierungen -- darunter die Migration vom Arduino-BLE-Stack auf NimbleBLE -- sinkt der Energieverbrauch pro Aktivzyklus von 6503\,mJ auf 689{,}5\,mJ, eine Reduktion um \textbf{89{,}4\,\%}.
-	Ein eigens entwickeltes PCB wurde zur Konsolidierung des Strompfads ausgelegt; ein Fehler bei der Schaltreglerwahl verhindert dessen unmittelbaren Einsatz in der vorliegenden Revision.
+	\begin{tabular}{@{}p{4.5cm}@{\hspace{0.75cm}}p{4.5cm}@{\hspace{0.75cm}}p{4.5cm}@{}}
+		\small\textit{Ort, Datum} & \small\textit{Name} & \small\textit{Unterschrift} \\[0.4cm]
+		Winterthur, 05.06.2026    & Thomas Lino Rocheteau & \rule{4.5cm}{0.4pt}        \\[0.2cm]
+	\end{tabular}
 
 	\newpage
 	\tableofcontents
@@ -67,96 +51,19 @@
 	\section{Einleitung}
 	% ============================================================
 
-	Die zunehmende Vernetzung industrieller Prozesse stellt neue Anforderungen an eingebettete Systeme -- insbesondere hinsichtlich Energieeffizienz, Messgenauigkeit und Kommunikationszuverlässigkeit.
-	Diese Arbeit baut auf einem bestehenden Proof of Concept~\cite{vorgaengerarbeit} auf und vertieft dessen technische Grundlagen mit Fokus auf die Weiterentwicklung der Smart-Waage selbst.
-
 	\subsection{Ausgangslage}
-
-	Ausgangslage für diese Arbeit bildet die Firma Skysec GmbH, ein Startup, das sich auf die Herstellung von Drohnen zum Schutz von Einrichtungen spezialisiert hat.
-	Für den Herstellungsprozess, insbesondere die Inventarisierung von Kleinteilen und Schüttgut, sollen intelligente Waagen (Smart-Bins) eingesetzt werden.
-	Bestehende kommerzielle Lösungen -- etwa von Bossard -- sind an proprietäre Cloud-Plattformen gebunden und erlauben keine eigenständige Datenhoheit, was für den Industriepartner aufgrund seiner sicherheitskritischen Tätigkeit nicht akzeptabel ist.
-
-	Im Rahmen der vorangegangenen Bachelorarbeit~\cite{vorgaengerarbeit} (Berger \& Müller, BA~FS25) wurde bereits ein funktionsfähiger Prototyp entwickelt: ein ESP32-basiertes Wägesystem mit BLE-Kommunikation, einem Raspberry-Pi-Gateway und einem containerisierten ASP.NET-Core-Backend.
-	Die vorliegende Arbeit knüpft an diesen PoC an und setzt den Schwerpunkt auf die Optimierung der Waage selbst -- mit Fokus auf Messgenauigkeit und Energieverbrauch.
+	% Hier Text einfügen
 
 	\subsection{Zielsetzung}
-
-	Die Zielsetzung gliedert sich in funktionale und organisatorische Ziele gemäss der Projektvereinbarung~\cite{vereinbarung}.
-
-	\begin{table}[H]
-		\centering
-		\caption{Funktionale Ziele gemäss Vereinbarung}
-		\label{tab:ziele-funktional}
-		\begin{tabular}{p{9.5cm}ccc}
-			\toprule
-			\textbf{Funktionales Ziel} & \textbf{Muss} & \textbf{Soll} & \textbf{Optional} \\
-			\midrule
-			Evaluation Hardware-Plattformen (ESP32, STM32, Arduino, Raspberry) & $\times$ & & \\
-			Evaluation Kommunikationsprotokoll (BLE, ESP-NOW)                  & $\times$ & & \\
-			Analyse Leistungsbedarf und Evaluation von Leistungssparmassnahmen & $\times$ & & \\
-			Interface mit der Waage (Tara, Stückzahl, Gewicht, Einheitenumrechner) & $\times$ & & \\
-			Power-Optimierung: Reduktion Aktiv- und Ruheströme                & $\times$ & & \\
-			Evaluation Energiequelle (Batterie vs.\ Akku)                     & $\times$ & & \\
-			Temperaturkorrektur der Dehnmessstreifen                          & & $\times$ & \\
-			Massenproduktionstaugliches PCB                                     & & & $\times$ \\
-			Umporten auf STM32                                                 & & & $\times$ \\
-			Umbau auf Batteriebetrieb                                          & & & $\times$ \\
-			\bottomrule
-		\end{tabular}
-	\end{table}
-
-	\begin{table}[H]
-		\centering
-		\caption{Organisatorische Ziele gemäss Vereinbarung}
-		\label{tab:ziele-org}
-		\begin{tabular}{p{11cm}cc}
-			\toprule
-			\textbf{Organisatorisches Ziel} & \textbf{Muss} & \textbf{Soll} \\
-			\midrule
-			Erstellung eines Projektplans              & $\times$ & \\
-			Beschaffung der benötigten Hardware        & $\times$ & \\
-			Einhaltung des Abgabetermins               & $\times$ & \\
-			Einhaltung der Meilensteine                & & $\times$ \\
-			\bottomrule
-		\end{tabular}
-	\end{table}
-
-	\subsection{Systemabgrenzung und Randbedingungen}
-
-	Folgende Bereiche sind explizit \textbf{nicht} Bestandteil dieser Arbeit:
-	\begin{itemize}
-		\item On-Premise-Lösung (keine Cloud-Anbindung)
-		\item Dynamisches Softwareupdate (OTA)
-		\item Einbindung in Firmennetzwerk
-		\item Fertiges Produkt (Prototyp-Status)
-		\item Verschlüsselte Übermittlung der Sensordaten an das Gateway
-		\item Weiterentwicklung des bestehenden Backends
-	\end{itemize}
-
-	\noindent Randbedingungen:
-	\begin{itemize}
-		\item Arbeitsplätze im Raum TE514\,/\,TE516 sowie Messgeräte, Lötstation und Industrienetzgerät stehen bereit.
-		\item Der Projektstand wird regelmässig mit dem Betreuer besprochen.
-		\item Der Quellcode wird auf GitHub gehostet.
-	\end{itemize}
+	% Hier Text einfügen
 
 	\subsection{Meilensteine}
 
 	\begin{enumerate}
-		\item \textbf{Hardware-Entwicklung:} Evaluation alternativer Plattformen; Redesign des Strompfads für Low-Power-Betrieb.
-		\item \textbf{Quality of Life:} Implementierung von Bedienelementen (Taster) sowie Software-Funktionen (Tara, Kalibrierung, Einheitenumrechner).
-		\item \textbf{Kommunikationsprotokolle:} Evaluation und Implementierung von ESP-NOW vs.\ BLE (NimbleBLE).
+		\item \textbf{Hardware-Entwicklung:} Custom ESP32 Low-Power Board vs. kommerzielle Lösungen.
+		\item \textbf{Quality of Life Improvements:} Implementierung von Bedienelementen (Taster) sowie Software-Funktionen (Tara, Kalibrierung).
+		\item \textbf{Kommunikationsprotokolle:} Evaluation von ESP-NOW vs. BLE.
 	\end{enumerate}
-
-	\subsection{Aufbau der Arbeit}
-
-	Die Arbeit ist in folgende Kapitel gegliedert:
-	Kapitel~2 beschreibt die technische Ausgangslage und die getroffenen Designentscheidungen.
-	In Kapitel~3 werden die Low-Power-Optimierungen erläutert -- von der Hardwareanpassung bis zur Strommessung.
-	Kapitel~4 behandelt die Optimierung der Messgenauigkeit, einschliesslich Sensorik, ADC-Ansteuerung und Kalibrierung.
-	Eine Geräteübersicht beider Prototypen ist in Kapitel~5 dargestellt.
-	Das PCB-Design ist in Kapitel~6 dokumentiert.
-	Kapitel~7 fasst die Messungen zusammen, und Kapitel~8 schliesst mit Fazit und Ausblick.
 
 
 	% ============================================================
@@ -190,8 +97,7 @@
 	Der ESP32-C3 bietet auf SoC-Ebene einen deutlich besseren Sleep-Strom als das SBC-Entwicklungsboard und wäre mit moderatem Aufwand adaptierbar, benötigt aber ebenfalls eine eigene Peripheriebeschaltung.
 	Da die Vorgängerarbeit~\cite{vorgaengerarbeit} bereits auf dem SBC-NodeMCU-ESP32-C basiert, kann dessen bestehende Hardware- und Softwarebasis direkt übernommen werden, ohne eine Peripherieschaltung neu auslegen zu müssen.
 	Angesichts des erheblichen Einsparpotenzials auf Seiten der DMS-Signalkette und der Software fiel die Entscheidung daher auf den SBC-NodeMCU-ESP32-C, um den Entwicklungsaufwand zu minimieren und den Fokus auf die relevanten Optimierungen zu legen.
-	Der hohe Sleep-Strom des Boards -- verursacht durch CP2102, Board-LDO und Power-LED -- wurde dabei als bekannte Einschränkung in Kauf genommen.
-	
+
 	% ============================================================
 	\section{Low-Power Optimierung}
 	% ============================================================
@@ -205,6 +111,7 @@
 	
 	\subsection{Strompfad Schema}
 	Die folgenden Diagramme zeigen den Strompfad der alten und neuen Waage.
+	Das Power Profiler Kit~II (PPK2) als Messinstrument wird im nachfolgenden Unterkapitel vorgestellt.
 
 		\subsubsection{Ausgangslage}
 			\begin{figure}[h]
@@ -235,28 +142,42 @@
 	\subsection{Strommessungen und Low-Power-Optimierung}
 
 	Ein zentrales Ziel dieser Arbeit ist die Minimierung des Stromverbrauchs, um eine möglichst lange Batterielaufzeit zu erreichen.
-	Die folgenden Messungen dokumentieren den Energieverbrauch in den einzelnen Betriebsphasen und quantifizieren den Effekt der implementierten Optimierungen.
-	Tabellen~\ref{tab:sw-vergleich} und~\ref{tab:sys-vergleich} fassen die verbrauchte Energie pro Phase zusammen -- jeweils im direkten Vergleich zwischen Ausgangslage und optimiertem System.
+	Die folgenden Messungen dokumentieren den Ladungsverbrauch in den einzelnen Betriebsphasen und quantifizieren den Effekt der implementierten Optimierungen.
+	Tabellen~\ref{tab:sw-vergleich} und~\ref{tab:sys-vergleich} fassen die verbrauchte Ladung pro Phase zusammen -- jeweils im direkten Vergleich zwischen Ausgangslage und optimiertem System.
 
 	\subsection{Übersicht Zyklus}
+	Die Strommessungen wurden mit dem \textit{Nordic Semiconductor Power Profiler Kit~II} (PPK2) in Verbindung mit der Software \textit{nRF Connect for Desktop} (Power Profiler App) durchgeführt.
+	Das PPK2 wurde als Amperemeter in den jeweiligen Versorgungspfad eingeschleift; das Gerät erfasst den Strom mit einer Abtastrate von bis zu $100{,}000\,\text{Samples/s}$, was eine präzise zeitliche Auflösung auch kurzer Stromspitzen ermöglicht.
+	Da das PPK2 auf eine maximale Eingangsspannung von \SI{5}{\volt} ausgelegt ist, kann es nicht direkt an der Batterie (\SI{11.1}{\volt}) betrieben werden; alle Messungen erfolgen daher am Ausgang des LM2596S-Schaltreglers~\cite{lm2596_datasheet}.
 
-	Für die Strommessungen kamen zwei Messgeräte zum Einsatz, die je nach Messaufgabe in den Versorgungspfad eingeschleift wurden.
+	Für diese Arbeit wurden zwei Messkonfigurationen eingesetzt:
 
-	Das \textbf{Nordic Semiconductor Power Profiler Kit~II} (PPK2) wurde für das qualitative Stromverlauf-Profiling eingesetzt und liefert eine zeitlich aufgelöste Visualisierung der einzelnen Betriebsphasen (Boot, ADC-Messung, BLE, Deep Sleep) in der nRF Connect Power Profiler App.
+	\begin{itemize}
+		\item \textbf{Konfig~A -- ESP32 am 3{,}3\,V-Pin:} Das PPK2 misst den Strom des ESP32 sowie der direkt angeschlossenen Messperipherie bei \SI{3.3}{\volt}. Diese Konfiguration gilt für beide Systeme: Im neuen System ist der ESP32 ohnehin direkt am \texttt{3V3}-Ausgang des LM2596S versorgt; beim alten System wurde ein separates Netzteil an den \texttt{3V3}-Pin angeschlossen und die \texttt{V\_IN}-Verbindung getrennt, um den internen LDO sowie den dauerhaft versorgten Dehnmessstreifen aus dem Messpfad auszuschliessen.
+		\item \textbf{Konfig~B -- Altes System unverändert am 5\,V-Rail:} Das PPK2 erfasst den Gesamtstrom des alten Systems am Ausgang des LM2596S (\SI{5}{\volt}) -- einschliesslich LDO-Verlust (interne 5\,V\,$\to$\,3{,}3\,V-Konvertierung) und Dauerstrom der Dehnmessstreifen. Das neue System kann in dieser Konfiguration nicht gemessen werden, da es hardwareseitig direkt auf \SI{3.3}{\volt} ausgelegt ist.
+	\end{itemize}
 
-	Die quantitativen Energie- und Leistungsmessungen wurden mit dem \textbf{JouleScope} durchgeführt.
-	Das JouleScope misst gleichzeitig Strom und Spannung und berechnet daraus direkt die verbrauchte Energie in Millijoule -- unter Berücksichtigung des tatsächlichen Spannungsniveaus am jeweiligen Messpunkt.
-	Je nach Messung wurde das Gerät an unterschiedlichen Stellen in den Strompfad eingeschleift: vor dem Buck-Converter (Batterieseite), nach dem Buck-Converter (Power-Rail), direkt vor einzelnen Verbrauchern (ESP32, ADC, Dehnmessstreifen) oder am LDO-Ein- bzw.\ Ausgang.
+	\paragraph{Vergleichsstrategie}
+	Zwei Vergleichstabellen werden eingesetzt:
+	\begin{itemize}
+		\item \textbf{Software-Vergleich} (Tabelle~\ref{tab:sw-vergleich}): Altes System umverdrahtet (Konfig~A) gegen neues System (Konfig~A), beide bei \SI{3.3}{\volt}. Da das Spannungsniveau identisch ist, lassen sich \si{mC}-Werte direkt gegenüberstellen. LDO-Verlust und Dehnmessstreifen-Dauerstrom werden aus dem Messpfad ausgeschlossen, sodass ausschliesslich der Effekt der Software-Optimierungen sichtbar wird.
+		\item \textbf{Gesamtsystem-Vergleich} (Tabelle~\ref{tab:sys-vergleich}): Altes System unverändert (Konfig~B, \SI{5}{\volt}) gegen neues System (Konfig~A, \SI{3.3}{\volt}). Die unterschiedlichen Spannungsniveaus machen einen direkten \si{mC}-Vergleich ungültig; der Verbrauch wird daher in \si{mAh} angegeben, und die vollständige Energiebilanz folgt in Abschnitt~\ref{sec:gesamtverbrauch}.
+	\end{itemize}
+
+	Im alten System sind LDO-Verlust und Dehnmessstreifen-Dauerstrom nicht vernachlässigbar und werden daher separat erfasst (Konfig~B). Im neuen System entfällt der LDO, und die Dehnmessstreifen werden über ein MOSFET geschaltet -- beide Verluste sind im Tiefschlaf vernachlässigbar, weshalb Konfig~A für beide Vergleiche ausreicht.
+
+	In der nRF Connect Power Profiler App lassen sich Zeitfenster (\emph{Selektionen}) manuell markieren, woraufhin die Software automatisch den mittleren Strom, die Dauer sowie den gesamten Ladungsverbrauch der Selektion in Millicoulomb (\si{mC}) und Milliampere-Stunden (\si{mAh}) berechnet.
+	Alle in dieser Arbeit angegebenen Ladungswerte basieren auf solchen Selektionen aus aufgezeichneten Stromprofilen.
 
 	\subsection{Gesamtsystem Stromverbrauch}
 
-	Tabelle~\ref{tab:sw-vergleich} vergleicht die Software-Ausgangslage mit dem optimierten System auf Basis der JouleScope-Messungen am 3V3-Pin des ESP32.
-	Tabelle~\ref{tab:sys-vergleich} stellt den Gesamtenergieverbrauch beider Systeme gegenüber; die Werte beziehen sich auf JouleScope-Messungen vor dem Buck-Converter (Batterieseite) und umfassen damit sämtliche Wandlungsverluste.
+	Tabelle~\ref{tab:sw-vergleich} vergleicht die Software-Ausgangslage mit dem optimierten System; beide wurden in Konfig~A (\SI{3.3}{\volt}) gemessen, sodass die Ladungswerte in \si{mC} direkt gegenübergestellt werden können.
+	Tabelle~\ref{tab:sys-vergleich} stellt das alte Gesamtsystem (Konfig~B, \SI{5}{\volt}) dem neuen System (Konfig~A, \SI{3.3}{\volt}) gegenüber; da die Spannungsniveaus differieren, wird der Verbrauch in \si{mAh} angegeben.
 	
 	\subsubsection{Vergleich Energieverbrauch Aktiver Zyklus}
 	\begin{table}[H]
 	\centering
-	\caption{Gesamtsystem Energiebedarf Zusammensetzung -- Vergleich Aktiver Zyklus}
+	\caption{Gesamtsystem Energiebedarf Zusammensetzung - Vergleich Aktiver Zyklus\textsuperscript}
 	\label{tab:sys-vergleich}
 	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrr@{}}
 		\toprule
@@ -282,33 +203,33 @@
 
 	
 	\subsubsection{Vergleich Leistungsverbrauch Deep-Sleep}
-
-	Tabelle~\ref{tab:sys-vergleich-deep-sleep} vergleicht den Leistungsverbrauch im Deep Sleep.
-	Einzelmessungen der Verbraucher: Abb.~\ref{fig:deep-dms-alt} (DMS), \ref{fig:deep-adc-alt}/\ref{fig:deep-adc-neu} (ADC).
-	Gesamtmessungen vor dem Buck-Converter: Abb.~\ref{fig:deep-vorbuck-alt}/\ref{fig:deep-vorbuck-neu}.
-	Trotz der Komponenteneinsparungen ($-87{,}7\,\%$ nach Buck) begrenzt der Leerlaufverlust des LM2596S von \SI{69.77}{\milli\watt} (Abb.~\ref{fig:deep-leerlauf-buck}) die tatsächliche Ersparnis auf Batterieebene erheblich: Er übersteigt allein bereits den Gesamtverbrauch aller Komponenten des neuen Systems.
-
-	\begin{table}[H]
+		\begin{table}[H]
 	\centering
-	\caption{Vergleich Leistungsverbrauch Deep-Sleep -- Ausgangslage vs.\ Optimiertes System}
+	\caption{5V und 3V Rail hinter Buck converter - Vergleich (Deep-Sleep)\textsuperscript}
 	\label{tab:sys-vergleich-deep-sleep}
-	\begin{tabular}{@{}lrrr@{}}
+	\begin{tabular}{@{}lrrrrrr@{}}
 		\toprule
-		Verbraucher & Alt [mW] & Neu [mW] & Ersparnis \\
+		Verbraucher 					& Alt [mW] 	& Neu [mW] 	& Ersparnis \\
 		\midrule
-		\multicolumn{4}{l}{\textit{Nach Buck-Converter (Power Rail)}} \\[2pt]
-		\quad Dehnmessstreifen       & 78{,}19  & 0        & $-$100\,\% (MOSFET) \\
-		\quad ADC                    & 9{,}762  & 4{,}042  & $-$58{,}6\,\% \\
-		\quad ESP32                  & 27{,}53  & 10{,}15  & $-$63{,}1\,\% \\
+		\multicolumn{4}{l}{\textit{Verbrauch an Power Rail}} \\[2pt]
+		Nach Buck-Conv.
+		Dehnmessstreifen			    & 78.19		&	0		&			\\
+		ADC								& 9.762		&	4.042	&			\\
+		ESP32							& 27.53		&	10.15	&			\\
+		
 		\midrule
-		Summiert (nach Buck)         & 115{,}4  & 14{,}19  & $-$87{,}7\,\% \\
+		 Summiert		     			& 115.4		& 	14.19 	& 	 		\\
+		 Nach Buck gemessen				&			&			&			\\
 		\midrule
-		\multicolumn{4}{l}{\textit{Vor Buck-Converter (Batterieseite)}} \\[2pt]
-		\textbf{Gesamt gemessen}     & \textbf{268{,}2} & \textbf{90{,}96} & $-$66{,}1\,\% \\
+		
+		\textbf{Gesamt (Vor Buck)}    	& 268.2		&  90.96	& 		 	\\
 		\bottomrule
 	\end{tabular}
 	\\[4pt]
-	\end{table}
+
+\end{table}
+
+	Der Buck converter hat bereits im Leerlauf einen Verbrauch von 69.77 mW. Der Stromverbrauch ist verglichen mit den 14.19 mW des neuen Systems gigantisch.
 
 	\subsection{Vergleich Energieverbrauch ESP32}
 	
@@ -368,8 +289,7 @@
 
 		\item \textbf{Ramp Up -- Boot, Initialisierung und ADC}: \\
 		Diese Phase umfasst den ESP32-Bootvorgang, die State-Machine-Initialisierung sowie die ADS1234-Messung.
-		In der Vorgängerarbeit wurden Kalibrierparameter bei jedem Aufwachen aus dem Deep Sleep neu aus dem nichtflüchtigen Speicher (NVS) ausgelesen.
-		Im optimierten System werden diese Werte einmalig beim ersten Boot geladen und anschliessend im RTC-Speicher gehalten, der den Deep Sleep überlebt -- das NVS-Auslesen entfällt damit bei jedem Folge-Zyklus und verkürzt die Boot-Phase entsprechend.
+		Optimierungspotenzial liegt unter anderem in der Reduktion der Boot-Zeit sowie in der Minimierung der ADC-Einschaltdauer.
 
 		\item \textbf{ADC}: \\
 		In der Ausgangslage verwendete die Vorgängerarbeit den \textbf{HX711} -- einen einkanaligen 24-Bit-ADC, an den alle vier Wägezellen als gemeinsame Brücke angeschlossen waren.
@@ -440,20 +360,23 @@
 			\label{fig:sw-ble-reliab}
 		\end{figure}
 
+		\item \textbf{BLE-Verbindung und Datenübertragung}: \\
+		Das Gateway baut die Verbindung auf, der Messwert wird per Indication übertragen und die Verbindung anschliessend getrennt.
+		Durch Optimierung der Connection-Parameter und Reduktion der Wartezeit auf den Gateway konnte der Ladungsverbrauch dieser Phase gesenkt werden.
+
 	\end{enumerate}
 
 
 	% Hier Text einfügen (optimierte Messungen BLE-Verbindung -- Screenshot nachher)
 
-	\subsection{Verluste Hardware}
-	Dieses Unterkapitel quantifiziert die Wandlungsverluste des Buck-Converters und des LDO sowie den Energiebedarf des ADC.
+	\subsection{Verlüste Hardware}
+	Dieses Kapitel bezieht sich auf die Verlüste vom ADC, Buck converter und LDO
 	\subsubsection{Messmethode}
-	Für Buck-Converter und LDO wird die Energie jeweils \emph{vor} und \emph{nach} dem Bauteil über einen vollständigen Zyklus erfasst; die Differenz entspricht dem jeweiligen Wandlungsverlust.
-	Der Energiebedarf des ADC wird direkt am Versorgungspin des Chips gemessen.
+	Es wird jeweils über einen Zyklus die Energie vor und nach dem LDO und Buck converter gemessen, die Differenz dieser Energien ist dann dem Bauteil zu verschulden. Bei den ADC wird dann einfach der Strompfad zum Bauteil angeschaut.
 	
 	\subsubsection{Buck converter}\label{sub:Buck}
 
-	Zur Bestimmung des Verlusts am LM2596S-Schaltregler wird die Energie \emph{vor} dem Konverter (Eingang, Batterieseite) mit der Energie \emph{nach} dem Konverter (Ausgang, Lastseite) verglichen; die Differenz entspricht dem Schaltregler-Board zuzuschreibenden Verlust.
+	Zur Bestimmung des Verlusts am LM2596S-Schaltregler wird die Energie \emph{vor} dem Konverter (Eingang, Batterieseite) mit der Energie \emph{nach} dem Konverter (Ausgang, Lastseite) verglichen; die Differenz entspricht dem dem Schaltregler-Board zuzuschreibenden Verlust.
 	Die Messwerte entstammen den JouleScope-Aufzeichnungen
 	(Abbildungen~\ref{fig:buck-vor-alt}, \ref{fig:buck-vor-neu},
 	\ref{fig:buck-nach-alt} und~\ref{fig:buck-nach-neu})
@@ -485,8 +408,10 @@
 	Das Datenblatt des LM2596S~\cite{lm2596_datasheet} gibt für eine Konfiguration von \SI{12}{\volt} Eingang auf \SI{3.3}{\volt} Ausgang bei einem Ausgangsstrom von \SI{3}{\ampere} einen typischen Wirkungsgrad von \SI{79}{\percent} an.
 	Die gemessenen Werte von ca.\ \SI{50}{\percent} liegen erwartungsgemäss darunter -- zum einen weil beide Systeme mit mittleren Lastströmen weit unter \SI{3}{\ampere} betrieben werden, zum anderen weil es sich nicht um den nackten LM2596S-Chip handelt, sondern um ein fertiges Schaltregler-Board mit zusätzlicher Peripherie (Freilaufdiode, Spule, Filterkapazitoren, Schutzschaltungen), die den Gesamtwirkungsgrad weiter senken.
 
-	Bei geringer Nutzlast dominiert zudem der Quiescent-Strom des LM2596S von ca.\ \SI{5.5}{\milli\ampere} den Eingangsstrom überproportional -- bei \SI{3}{\ampere} Nennlast wäre er vernachlässigbar.
+	Bei geringer Nutzlast dominiert zudem der Quiescent-Strom des LM2596S von ca.\ \SI{5.5}{\milli\ampere} den Eingangsstrom überproportional.
+	Für das neue System mit ca.\ \SI{35.4}{\milli\ampere} mittlerem Laststrom entspricht der Quiescent-Strom bereits rund \SI{13}{\percent} des Gesamteingangsstroms -- bei \SI{3}{\ampere} wäre er vernachlässigbar.
 	Da der LM2596S keinen Burst- oder PFM-Modus für Leichtlast unterstützt, ist dieser Verlust strukturell bedingt.
+	Die Messung bestätigt qualitativ die in Abschnitt~\ref{sec:gesamtverbrauch} verwendete Effizienzannahme von \SI{61}{\percent}~\cite{lm2596_datasheet}.
 	\subsubsection{LDO}\label{sub:ldo}
 
 	Der interne LDO des ESP32-Entwicklerboards wandelt die vom LM2596S gelieferte Spannung
@@ -514,14 +439,14 @@
 
 	\subsubsection{ADC}
 
-	Der ADS1234 wird nach der Messung über den \texttt{!PDWN}-Pin in den Standby-Modus versetzt
+	Der ADS1234 wird nach der Messung über den \texttt{PWDN}-Pin in den Standby-Modus versetzt
 	und vor dem nächsten Zyklus wieder aktiviert.
 	Da der ESP32 im Anschluss in den Deep Sleep übergeht und die GPIO-Pins floatend werden,
-	bleibt der ADC im Tiefschlaf teilweise aktiv; ein Pull-down-Widerstand am \texttt{!PDWN}-Pin
+	bleibt der ADC im Tiefschlaf teilweise aktiv; ein Pull-down-Widerstand am \texttt{PWDN}-Pin
 	hätte eine vollständige Abschaltung ermöglicht.
 	Im alten System war der HX711 hardwareseitig nicht im Messpfad eingebunden und wird daher
 	separat betrachtet.
-	Die Zahlenwerte sind Tabelle~\ref{tab:sys-vergleich} zu entnehmen;
+	Die Zahlenwerte sind Tabelle~\ref{tab:sw-vergleich} zu entnehmen;
 	die Messprofile sind in Abbildungen~\ref{fig:adc-verlust-alt}
 	und~\ref{fig:adc-verlust-neu} dargestellt.
 
@@ -530,14 +455,14 @@
 		\begin{minipage}[t]{0.48\linewidth}
 			\centering
 			\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC"}
-			\caption{ADC-Verlust -- Ausgangslage (HX711); \SI{9.765}{\milli\watt}}
+			\caption{ADC-Verlust -- Ausgangslage (HX711)}
 			\label{fig:adc-verlust-alt}
 		\end{minipage}
 		\hfill
 		\begin{minipage}[t]{0.48\linewidth}
 			\centering
 			\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/neu/ADC_Chip"}
-			\caption{ADC-Verlust -- Optimiertes System (ADS1234); \SI{3.738}{\milli\watt}}
+			\caption{ADC-Verlust -- Optimiertes System (ADS1234)}
 			\label{fig:adc-verlust-neu}
 		\end{minipage}
 	\end{figure}
@@ -545,39 +470,63 @@
 	\subsection{Gesamtverbrauch und Batterielebensdauer}
 	\label{sec:gesamtverbrauch}
 
-	Die Batterielaufzeit ergibt sich aus der Energiebilanz pro Messzyklus; Grundlage sind die direkt am JouleScope gemessenen Werte vor dem Buck-Converter (Batterieseite):
-	\begin{itemize}
-		\item \textbf{Aktivzyklus-Energie:} \SI{689.5}{\milli\joule} (neu) vs.\ \SI{6503}{\milli\joule} (alt), siehe Tabelle~\ref{tab:sys-vergleich}
-		\item \textbf{Deep-Sleep-Leistung:} \SI{90.96}{\milli\watt} (neu) vs.\ \SI{268.2}{\milli\watt} (alt), siehe Tabelle~\ref{tab:sys-vergleich-deep-sleep}
-	\end{itemize}
+	Die Batterielaufzeit ergibt sich aus der Energiebilanz pro Messzyklus, skaliert über die Effizienz des LM2596S-Schaltreglers~\cite{lm2596_datasheet} auf Batterieebene.
+	Als Batteriekapazität wird ein typischer Wert von $3 \times 2600\,\text{mAh}$ bei \SI{11.1}{\volt} angenommen:
+	\begin{equation}
+		E_{\text{Batterie}} = \SI{2600}{\milli\ampere\hour} \times \SI{11.1}{\volt} \approx \SI{28.86}{\watt\hour} \approx \SI{103.9}{\kilo\joule}
+	\end{equation}
 
-	Als Batteriekapazität wird $3 \times \SI{2600}{\milli\ampere\hour}$ bei \SI{11.1}{\volt} angenommen:
-	\[
-		E_{\text{Bat}} = \SI{103.9}{\kilo\joule}
-	\]
+	\paragraph{Aktivphase}
+	Die Aktivphase des optimierten Systems umfasst ADC-Messung (\textbf{100\,mC}) und BLE-Advertisement (\textbf{40\,mC}), gemessen bei \SI{3.3}{\volt}:
+	\begin{equation}
+		E_{\text{aktiv}} = (Q_{\text{ADC}} + Q_{\text{BLE}}) \cdot \SI{3.3}{\volt} = \SI{140}{\milli\coulomb} \cdot \SI{3.3}{\volt} \approx \SI{462}{\milli\joule}
+	\end{equation}
 
-	Die Energie pro Messzyklus ergibt sich zu (da $t_{\text{aktiv}} \ll T$):
-	\[
-		E_{\text{Zyklus}}(T) \approx E_{\text{aktiv}} + P_{\text{sleep}} \cdot T
-	\]
+	\paragraph{Tiefschlaf}
+	Der gemessene Ruhestrom am \SI{3.3}{\volt}-Rail beträgt \textbf{13{,}75\,mA}:
+	\begin{equation}
+		P_{\text{sleep}} = \SI{13.75}{\milli\ampere} \cdot \SI{3.3}{\volt} \approx \SI{45.4}{\milli\watt}
+	\end{equation}
 
-	\begin{table}[H]
+	\paragraph{Energiebilanz pro Zyklus}
+	Bei einem Messintervall $T$ und einer Aktivphase von ca.\ $t_{\text{aktiv}} \approx \SI{5}{\second}$ ergibt sich am 3{,}3\,V-Rail:
+	\begin{equation}
+		E_{\text{Zyklus, Rail}} = E_{\text{aktiv}} + P_{\text{sleep}} \cdot (T - t_{\text{aktiv}})
+	\end{equation}
+
+	Der LM2596S erreicht bei der durchschnittlichen Last des neuen Systems (\SI{3.3}{\volt}, \SI{35.4}{\milli\ampere}) eine Effizienz von ca.\ \textbf{61\,\%}~\cite{lm2596_datasheet}.
+	Der tiefe Wirkungsgrad ist auf den Quiescent-Strom des LM2596S von ca.\ \SI{5.5}{\milli\ampere} zurückzuführen, der bei geringer Nutzlast -- insbesondere im Tiefschlaf -- überproportional ins Gewicht fällt.
+	Die Skalierung auf Batterieebene und die resultierende Laufzeit ergeben sich zu:
+	\begin{equation}
+		E_{\text{Zyklus, Bat}} = \frac{E_{\text{Zyklus, Rail}}}{\eta_{\text{Buck}}} \qquad \Rightarrow \qquad
+		t_{\text{Laufzeit}} = \frac{E_{\text{Batterie}}}{E_{\text{Zyklus, Bat}}} \cdot T
+	\end{equation}
+
+	Tabelle~\ref{tab:batterielaufzeit} fasst die Laufzeiten für verschiedene Messintervalle zusammen.
+
+	\begin{table}[h]
 	\centering
-	\caption{Berechnete Batterielaufzeit -- Vergleich Alt vs.\ Neu ($3 \times \SI{2600}{\milli\ampere\hour}$, \SI{11.1}{\volt})}
+	\caption{Berechnete Batterielaufzeit -- Optimiertes System ($\eta_{\text{Buck}} = 61\,\%$,\ $3 \times 2600\,\text{mAh}$ bei \SI{11.1}{\volt})}
 	\label{tab:batterielaufzeit}
-	\begin{tabular}{@{}lrrrr@{}}
+	\begin{tabular}{@{}lrrr@{}}
 		\toprule
-		Intervall $T$ & $E_{\text{Zyklus, neu}}$ & Laufzeit neu & $E_{\text{Zyklus, alt}}$ & Laufzeit alt \\
+		Intervall $T$ & $E_{\text{Zyklus, Rail}}$ [J] & $E_{\text{Zyklus, Bat}}$ [J] & Laufzeit \\
 		\midrule
-		1\,min\ \ (\SI{60}{\second})   & \SI{6.15}{\joule}   & $\approx$\,\textbf{12\,Tage} & \SI{22.6}{\joule}  & $\approx$\,3\,Tage \\
-		10\,min (\SI{600}{\second})  & \SI{55.3}{\joule}  & $\approx$\,\textbf{13\,Tage} & \SI{167}{\joule}  & $\approx$\,4\,Tage \\
-		30\,min (\SI{1800}{\second}) & \SI{164}{\joule} & $\approx$\,\textbf{13\,Tage} & \SI{489}{\joule} & $\approx$\,4\,Tage \\
+		1\,min\ \ (60\,s)   & 2{,}96  & 4{,}85  & $\approx$ 15\,Tage \\
+		10\,min (600\,s)  & 27{,}5  & 45{,}0  & $\approx$ 16\,Tage \\
+		30\,min (1800\,s) & 81{,}9  & 134{,}3 & $\approx$ 16\,Tage \\
 		\bottomrule
 	\end{tabular}
 	\end{table}
 
-	Die Laufzeit ist nahezu intervallunabhängig, da der Deep-Sleep-Ruhestrom die Energiebilanz dominiert.
-	Das grösste verbleibende Einsparpotenzial liegt in der Reduktion des Tiefschlaf-Ruhestroms -- primär durch Ersetzen des SBC-NodeMCU-ESP32-C-Boards und des LM2596S.
+	Die berechneten Laufzeiten sind nahezu unabhängig vom Messintervall: Der Tiefschlaf-Ruhestrom von \SI{13.75}{\milli\ampere} dominiert die Energiebilanz ab einem Intervall von wenigen Minuten.
+	Das grösste verbleibende Einsparpotenzial liegt daher in der Reduktion des Tiefschlaf-Ruhestroms, beispielsweise durch einen modernen Schaltregler mit Leichtlast-Optimierung wie den TPS62842~\cite{TPS62842_datasheet}.
+
+	\paragraph{Vergleich mit der Ausgangslage}
+	Auf Batterieebene ergibt sich ein direkter Vergleich aus den gemessenen Durchschnittsströmen.
+	Das alte System wies am 5\,V-Rail einen mittleren Strom von \textbf{104\,mA} auf; mit einer LM2596S-Effizienz von \textbf{79\,\%} entspricht das einem Batteriestrom von ca.\ \textbf{59\,mA}.
+	Das optimierte System erreicht am 3{,}3\,V-Rail \textbf{35{,}4\,mA}; mit $\eta = 61\,\%$ entspricht das ca.\ \textbf{17\,mA} auf Batterieebene -- eine Reduktion um den Faktor \textbf{3{,}5}.
+	Die Batterielaufzeit steigt damit von ca.\ \textbf{44\,h} ($\approx$\,1{,}8\,Tage) auf ca.\ \textbf{150\,h} ($\approx$\,6{,}3\,Tage).
 	
 
 	% ============================================================
@@ -608,8 +557,8 @@
 		\end{tabular}
 	\end{table}
 
-	Bei \SI{3{,}0}{\volt} Erregerspannung liegen beide Ausgangspins der Brücke auf einem Gleichtaktpotenzial von ca.\ \SI{1{,}5}{\volt} ($V_{\text{ex}}/2$).
-	Das Nutzsignal ist die \emph{Differenz} zwischen diesen beiden Pins: bei Vollast nominell $1{,}0\,\text{mV/V} \times 3{,}0\,\text{V} = \SI{3{,}0}{\milli\volt}$.
+	Bei \SI{3{,}3}{\volt} Erregerspannung liegen beide Ausgangspins der Brücke auf einem Gleichtaktpotenzial von ca.\ \SI{1{,}65}{\volt} ($V_{\text{ex}}/2$).
+	Das Nutzsignal ist die \emph{Differenz} zwischen diesen beiden Pins: bei Vollast nominell $1{,}0\,\text{mV/V} \times 3{,}3\,\text{V} = \SI{3{,}3}{\milli\volt}$.
 	Der differentielle Eingang des ADS1234 erfasst genau diese Differenz und unterdrückt das Gleichtaktsignal durch seine hohe Gleichtaktunterdrückung (CMRR).
 	Die vier Zellen sind in X-Formation an den Ecken der Waagplattform montiert.
 
@@ -617,8 +566,8 @@
 
 	Für die Signalerfassung wird der ADS1234 von Texas Instruments eingesetzt \cite{ads1234_datasheet}.
 	Der Chip ist ein 24-Bit-Sigma-Delta-ADC mit vier differenziellen Eingangskanälen und einem integrierten programmierbaren Verstärker (PGA) mit den Verstärkungsfaktoren 1, 2, 64 und 128.
-	Mit PGA-Gain 128 ergibt sich für das \SI{3{,}0}{\milli\volt}-Signal der YZC-133 ein verstärktes Differenzsignal von ca. \SI{384}{\milli\volt}, das den Eingangsbereich des ADC gut ausnutzt.
-	Die wählbare Ausgabedatenrate beträgt 10~SPS oder 80~SPS; im vorliegenden System wird 10~SPS verwendet, da dies das Eingangsrauschen durch die längere Integrationszeit maximal reduziert.
+	Mit PGA-Gain 128 ergibt sich für das \SI{3{,}3}{\milli\volt}-Signal der YZC-133 ein verstärktes Differenzsignal von ca. \SI{422}{\milli\volt}, das den Eingangsbereich des ADC gut ausnutzt.
+	Die wählbare Ausgabedatenrate beträgt 10~SPS oder 80~SPS; im vorliegenden System wird 10~SPS verwendet, da dies das Eingangsrauschen durch die längere Integrationszeit maximally reduziert.
 
 	\subsubsection{Von einem auf vier ADC-Kanäle}
 
@@ -634,6 +583,7 @@
 	Die Empfindlichkeit der YZC-133 streut mit $\pm 15\,\%$ zwischen den Exemplaren.
 	In der Einzelkanal-Lösung mittelte sich diese Streuung über die parallele Zusammenschaltung heraus, konnte aber nicht pro Sensor korrigiert werden.
 	Mit vier separaten Kanälen wird die Empfindlichkeitsdifferenz jeder Wägezelle durch den individuell bestimmten Skalierungsfaktor (\texttt{spanFactor}) in der Software exakt kompensiert.
+	Zusätzlich verbessert die digitale Summation vier statistisch unkorrelierter ADC-Messungen das Signal-Rausch-Verhältnis gegenüber einer einzigen Messung um den Faktor $\sqrt{4} = 2$ ($+6\,\text{dB}$), da sich das Rauschen der Kanäle inkohärent addiert, während sich die Nutzsignale kohärent addieren.
 
 
 	\subsection{ADS1234 -- Ansteuerung und Kalibrierung}
@@ -643,7 +593,7 @@
 
 	Der ADS1234 ist ein 24-Bit-Sigma-Delta-ADC von Texas Instruments, der speziell für den Einsatz mit Brückensensoren wie Dehnungsmessstreifen (DMS) ausgelegt ist \cite{ads1234_datasheet}.
 	Er stellt vier unabhängige Eingangskanäle bereit, die über zwei digitale Adressleitungen (\texttt{A0}, \texttt{A1}) ausgewählt werden.
-	Die Kommunikation mit dem Mikrocontroller erfolgt über ein synchrones serielles Protokoll mit den Leitungen \texttt{DRDY/DOUT} (kombiniertes Datenbereit- und Datensignal), \texttt{SCLK} (Takt) sowie \texttt{!PDWN} (Power-Down/Reset).
+	Die Kommunikation mit dem Mikrocontroller erfolgt über ein synchrones serielles Protokoll mit den Leitungen \texttt{DRDY/DOUT} (kombiniertes Datenbereit- und Datensignal), \texttt{SCLK} (Takt) sowie \texttt{PDWN} (Power-Down/Reset).
 
 	\begin{table}[h]
 		\centering
@@ -653,7 +603,7 @@
 			Signal & GPIO & Funktion \\ \midrule
 			\texttt{DRDY/DOUT} & 2  & Datenbereit-Anzeige und serieller Datenausgang \\
 			\texttt{SCLK}      & 15 & Serieller Takt (Master-Ausgang) \\
-			\texttt{!PDWN}      & 26 & Power-Down / Reset \\
+			\texttt{PDWN}      & 26 & Power-Down / Reset \\
 			\texttt{DMS\_PWR}  & 17 & Versorgung der Wägezellen (schaltbar) \\
 			\texttt{A0}        & 32 & Kanal-Adresse Bit 0 \\
 			\texttt{A1}        & 4  & Kanal-Adresse Bit 1 \\ \bottomrule
@@ -672,7 +622,7 @@
 	return (int32_t)raw;
 	\end{verbatim}
 
-	\subsubsection{Kanalwechsel CH4 $\rightarrow$ CH1: !PDWN-Workaround}
+	\subsubsection{Kanalwechsel CH4 $\rightarrow$ CH1: PDWN-Workaround}
 
 	Der ADS1234 kodiert den aktiven Kanal über die beiden Adressleitungen als 2-Bit-Binärzahl: Kanal~1 entspricht \texttt{A0=0, A1=0}, Kanal~4 entspricht \texttt{A0=1, A1=1}.
 	Der Chip erkennt einen Kanalwechsel intern anhand steigender Flanken auf \texttt{A0} oder \texttt{A1}.
@@ -681,7 +631,7 @@
 	Die Leitung bleibt \texttt{LOW}, was der Software fälschlicherweise signalisiert, dass bereits ein gültiger Messwert des neuen Kanals vorliegt, obwohl noch der alte Kanal aktiv ist.
 
 	Als Lösung wird nach dem Setzen der Adressleitungen auf Kanal~1 geprüft, ob \texttt{DRDY} bereits \texttt{LOW} ist.
-	Trifft dies zu, wird ein \texttt{!PDWN}-Puls von \SI{500}{\micro\second} ausgelöst, der den ADC in den Power-Down-Zustand versetzt und anschliessend neu startet.
+	Trifft dies zu, wird ein \texttt{PDWN}-Puls von \SI{500}{\micro\second} ausgelöst, der den ADC in den Power-Down-Zustand versetzt und anschliessend neu startet.
 	Dieser Reset zwingt den Chip, den ausgewählten Kanal neu zu initialisieren und eine frische Wandlung durchzuführen, bevor \texttt{DRDY} das nächste Mal \texttt{LOW} wird.
 
 	\begin{verbatim}
@@ -744,8 +694,13 @@
 	\end{equation}
 
 	 \subsection{Messreihe Messgenauigkeit}
+	 
+	 \subsubsection{Vorgängerarbeit Messreihe}
+	 Die Messgenauigkeit der Vorgängerarbeit wurde nicht berücktsichtigt und nicht gemessen.
+	 
+	 \subsubsection{Optimiertes Design Messreihe}
 
-	Zur Beurteilung der Messgenauigkeit wurden an sechs Messpositionen (vier Ecken sowie die Mitte der Wägefläche) jeweils 5 aufeinanderfolgende Messwerte aufgezeichnet.
+	Zur Beurteilung der Messgenauigkeit wurden an sechs Messpositionen (vier Ecken sowie die Mitte der Wägefläche) jeweils mehrere aufeinanderfolgende Messwerte aufgezeichnet.
 	Die Ergebnisse sind in Tabelle~\ref{tab:messreihe} zusammengefasst.
 
 	\begin{table}[h]
@@ -782,20 +737,6 @@
 	In einem Logistiksystem führt dies dazu, dass der erfasste Lagerbestand kurzzeitig falsche Werte annimmt und hin- und herspringt, bis sich die Waage wieder einschwingt.
 	Eine softwareseitige Filterung -- etwa durch eine Schwellwertentscheidung auf Basis der zeitlichen Änderungsrate -- wäre notwendig, um stabile Messwerte zu gewährleisten, wurde im Rahmen dieser Arbeit jedoch nicht mehr umgesetzt.
 	% ============================================================
-	\section{Geräteübersicht}
-	% ============================================================
-
-	Abbildung~\ref{fig:vergleich-alt-neu} zeigt die beiden Prototypen nebeneinander: links die neue Waage (optimiertes Design, rosa Gehäuse) mit drei Bedientastern und verbesserter Elektronik, rechts die Ausgangslage aus der Vorgängerarbeit~\cite{vorgaengerarbeit} (schwarzes Gehäuse, ohne Bedienelemente).
-	Beide Geräte verfügen über ein E-Paper-Display zur Statusanzeige.
-
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.85\textwidth]{Images/Vergleich_alt_neu}
-		\caption{Geräteübersicht: neue Waage (links, rosa) und Vorgängerprototyp (rechts, schwarz)}
-		\label{fig:vergleich-alt-neu}
-	\end{figure}
-
-	% ============================================================
 \section{PCB-Design}
 % ============================================================
 
@@ -810,7 +751,7 @@ Einzelkanalmessungen sowie die in Abschnitt~\ref{sec:kalibrierung} beschriebene
 Ecklastkompensation.
 
 \paragraph{ADS1234 -- Hardware-Filterung}
-Im PCB wurde ein analoger Filterschaltkreis (RC-Tiefpass) vor den Differenzeingängen des ADS1234
+Im PCB wurde ein analoges Filterschaltkreis (RC-Tiefpass) vor den Differenzeingängen des ADS1234
 vorgesehen, jedoch nicht bestückt und nicht weiter untersucht.
 Die entsprechenden Bestückungsplätze wurden für den Betrieb mit Lötzinn überbrückt.
 
@@ -820,20 +761,26 @@ Wägezellen softwareseitig kompensieren zu können.
 Die Hardwareanbindung (I\textsuperscript{2}C) ist vollständig implementiert; eine softwareseitige
 Auswertung wurde im Rahmen dieser Arbeit nicht realisiert.
 
-\paragraph{TPS62842 Buck-Converter}
-Für das PCB wurde der TPS62842 als Schaltregler gewählt, um die Versorgungsspannung direkt auf die für den ESP32 benötigten \SI{3.0}{\volt} zu regeln -- in der Annahme, der LM2596S könne nicht unter \SI{5}{\volt} regeln.
-Dass der TPS62842 mit einer maximalen Eingangsspannung von \SI{6.5}{\volt} für den direkten Betrieb an der Batterie (Nennspannung \SI{7.4}{\volt}, max.\ \SI{8.4}{\volt}) ungeeignet ist, war dabei bekannt und wäre in einer Folgerevision zu adressieren gewesen.
-Der eigentliche Irrtum wurde erst gegen Ende der Arbeit erkannt: Der LM2596S kann die Ausgangsspannung durchaus auf \SI{3.0}{\volt} absenken -- der TPS62842 wäre damit überflüssig.
-Die gravierendere, ebenfalls erst spät erkannte Schwäche ist die schlechte Effizienz des LM2596S bei Leichtlast, die massgeblich für den hohen Ruhestrom im Deep Sleep verantwortlich ist (vgl.\ Abschnitt~\ref{sub:Buck}).
+\paragraph{TPS63802 Buck-Converter}
+Für das PCB wurde irrtümlicherweise der TPS63802 als Schaltregler gewählt, da ursprünglich
+angenommen wurde, der LM2596S könne die Spannung nicht auf \SI{3.0}{\volt} regeln.
+Dieser Irrtum wurde erst gegen Ende der Arbeit durch erneute Sichtung der Vorgängerdokumentation
+erkannt -- der LM2596S ist dazu durchaus in der Lage.
+Unabhängig davon erweist sich der TPS63802 als für diesen Anwendungsfall ungeeignet:
+Seine maximale Eingangsspannung von \SI{6.5}{\volt} ist zu gering für zwei in Reihe geschaltete
+18650-Zellen (Nennspannung \SI{7.4}{\volt}, Maximalspannung \SI{8.4}{\volt}).
+Ausserdem unterschreitet die Entladeschlussspannung einer Einzelzelle von \SI{3.0}{\volt}
+in Kombination mit der Dropout-Spannung des Reglers die minimal erforderliche Eingangsspannung.
 
 \paragraph{Messpunkte (Power-Header)}
 Auf dem PCB wurden 2$\times$1-Pin-Header als Strommess-Breakouts in die Versorgungspfade der
 einzelnen Verbraucher eingeschleift.
-Diese Messpunkte haben sich bei der Leistungsanalyse als äusserst
+Diese Messpunkte haben sich bei der Leistungsanalyse (vgl.\ Kapitel~\ref{sub:Buck}) als äusserst
 hilfreich erwiesen, da sie den direkten Anschluss des JouleScope ohne Unterbrechung der
 Leiterbahnen ermöglichen.
 
 	\section{Messungen}
+	\subsection{Messgenauigkeit}
 	\subsection{Low-Power Analyse und Optimierung}
 
 		\subsubsection{Reduktion Versorgungsspannung 3{,}3\,V auf 3{,}0\,V}\label{sec:spannungsreduktion}
@@ -859,14 +806,14 @@ Leiterbahnen ermöglichen.
 		\end{figure}
 
 		Die Reduktion der Versorgungsspannung um \SI{0.3}{\volt} ergibt eine Energieeinsparung von \SI{73.4}{\milli\joule} pro Zyklus, was einer Verbesserung von \SI{17.6}{\percent} entspricht.
-		Der Grund ist, dass der ESP32 bei niedrigerer Versorgungsspannung weniger Leistung aufnimmt.
+		Dieser Effekt resultiert daraus, dass der Energieverbrauch eines Verbrauchers mit konstantem Widerstandscharakter quadratisch mit der Spannung skaliert ($P = V^2/R$), sowie aus dem verbesserten Wirkungsgrad des Buck-Converters bei niedrigerem Ausgangsspannungsniveau.
 
 		\subsubsection{Vergleich Energieverbrauch Aktiver Zyklus}
 
 		\paragraph{ESP32 über 3V3-Pin}
 		Der Messpunkt liegt direkt am 3V3-Versorgungspin des ESP32.
 		In der Ausgangslage wird der ESP32 mit \SI{3.3}{\volt} gespeist, was dem Ausgang des internen Board-LDO entspricht.
-		Im optimierten System entfällt der LDO; die Speisung erfolgt direkt über den 3V3-Pin mit \SI{3.0}{\volt}.
+		Im optimierten System entfällt der LDO; die Speisung erfolgt direkt über den 3V3-Pin, mit der optimierten\SI{3.0}{\volt} Spannung.
 
 		\begin{figure}[H]
 			\centering
@@ -887,7 +834,7 @@ Leiterbahnen ermöglichen.
 
 		\paragraph{Dehnmessstreifen}
 		In der \textbf{Ausgangslage} sind die Wägezellen dauerhaft mit Spannung versorgt.
-		Der gemessene Leistungsverbrauch von \SI{78.19}{\milli\watt} (Abb.~\ref{fig:deep-dms-alt}) ergibt über die aktive Zyklusdauer von \SI{10}{\second} einen Energiebedarf von:
+		Der gemessene Leistungsverbrauch von \SI{78.19}{\milli\watt} (entnommen aus Abschnitt~\ref{par:ldo}) ergibt über die aktive Zyklusdauer von \SI{10}{\second} einen Energiebedarf von:
 		\[
 			P_{\text{DMS}} \times t_{\text{aktiv}} = \SI{78.19}{\milli\watt} \times \SI{10}{\second} = \SI{781.9}{\milli\joule}
 		\]
@@ -941,8 +888,7 @@ Leiterbahnen ermöglichen.
 		
 		\subsubsection{Vergleich Energieverbrauch ESP32}\label{par:esp32}
 
-		Dieser Abschnitt dokumentiert die JouleScope-Messungen am ESP32-3V3-Pin pro Betriebsphase (ohne DMS und LDO).
-		Um Software- und Hardwareeinflüsse zu trennen, wurde das alte System für diesen Vergleich ebenfalls mit \SI{3{,}0}{\volt} am 3V3-Pin gespeist; die Gesamtsystemmessungen (Tabelle~\ref{tab:sys-vergleich}) verwenden hingegen die reale Systemkonfiguration (\SI{3{,}3}{\volt} im alten, \SI{3{,}0}{\volt} im neuen System).
+		Dieser Abschnitt dokumentiert die JouleScope-Messungen am ESP32-3V3-Pin pro Betriebsphase, ohne DMS und LDO).
 		Da der ADS1234 am gleichen Rail angeschlossen ist, enthält jede Phasenmessung des neuen Systems
 		dessen Anteil. Für den fairen Vergleich wird der gemessene ADS1234-Anteil von
 		\SI{13.42}{\milli\joule} von allen Neu-Werten abgezogen; die bereinigten Werte entsprechen
@@ -1013,7 +959,7 @@ Leiterbahnen ermöglichen.
 
 		\paragraph{ADS1234 Chip (nur neues System)}
 		Im alten System befand sich der HX711 ausserhalb des Messpfades und wurde nicht separat erfasst.
-		Im neuen System ist der ADS1234 am selben 3{,}0\,V-Rail angeschlossen; sein Gesamtanteil pro
+		Im neuen System ist der ADS1234 am selben 3{,}3\,V-Rail angeschlossen; sein Gesamtanteil pro
 		Zyklus wird separat über den AVDD/DVDD-Pin gemessen und als Korrekturterm von allen
 		Phasenmessungen abgezogen.
 
@@ -1114,159 +1060,25 @@ Leiterbahnen ermöglichen.
 			\end{minipage}
 		\end{figure}
 
+		\paragraph{ADC}
 		\subsubsection{Vergleich Leistungsverbrauch Deep-Sleep}\label{par:deep}
-
 		\paragraph{Dehnmessstreifen}
-		In der Ausgangslage sind die Wägezellen dauerhaft mit Spannung versorgt und verbrauchen auch im Tiefschlaf \SI{78.19}{\milli\watt}.
-		Im optimierten System werden sie vor dem Deep Sleep über den MOSFET vollständig abgeschaltet; ihr Beitrag im Tiefschlaf entfällt damit ersatzlos.
-
-		\begin{figure}[H]
+		Alt:
+					\begin{figure}[h]
 			\centering
-			\begin{minipage}[t]{0.48\linewidth}
-				\centering
-				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS"}
-				\caption{Messpunkt: vor DMS -- Ausgangslage; \SI{78.19}{\milli\watt}}
-				\label{fig:deep-dms-alt}
-			\end{minipage}
-			\hfill
-			\begin{minipage}[t]{0.48\linewidth}
-				\centering
-				\vspace{1.5cm}
-				\centering
-				{\large $\rightarrow$ Entfällt}\\[0.4em]
-				\small MOSFET schaltet Versorgung\\vor Deep Sleep ab.
-			\end{minipage}
+			\includegraphics[width=0.85\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/DMS"}
+			\caption{Messpunkt: vor DMS -- \SI{78.19}{\milli\watt} (Ausgangslage)}
+			\label{fig:deep-dms-alt}
 		\end{figure}
 
-		\paragraph{ADC-Chip}
-		Der ADS1234 verbraucht im Tiefschlaf \SI{9.762}{\milli\watt} in der Ausgangslage.
-		Im optimierten System konnte dieser Wert auf \SI{4.042}{\milli\watt} gesenkt werden.
-		Ein vollständiges Abschalten ist jedoch nicht möglich, da kein Hardware-Pull-down am \texttt{!PDWN}-Pin verbaut ist und der GPIO im Deep Sleep floaten kann.
-
-		\begin{figure}[H]
-			\centering
-			\begin{minipage}[t]{0.48\linewidth}
-				\centering
-				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/nurADC"}
-				\caption{ADC-Chip im Deep Sleep -- Ausgangslage (HX711); \SI{9.762}{\milli\watt}}
-				\label{fig:deep-adc-alt}
-			\end{minipage}
-			\hfill
-			\begin{minipage}[t]{0.48\linewidth}
-				\centering
-				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/neu/NurADC"}
-				\caption{ADC-Chip im Deep Sleep -- Optimiertes System (ADS1234); \SI{4.042}{\milli\watt}}
-				\label{fig:deep-adc-neu}
-			\end{minipage}
-		\end{figure}
-
-		\paragraph{Vor Buck-Converter (Gesamtsystem im Deep Sleep)}
-		Die Messungen vor dem Buck-Converter erfassen den vollständigen Ruhestrom des Systems auf Batterieebene -- einschliesslich aller Buck-Converter-Verluste.
-
-		\begin{figure}[H]
-			\centering
-			\begin{minipage}[t]{0.48\linewidth}
-				\centering
-				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/alt/vor_Buck"}
-				\caption{Vor Buck-Converter im Deep Sleep -- Ausgangslage; \SI{268.2}{\milli\watt}}
-				\label{fig:deep-vorbuck-alt}
-			\end{minipage}
-			\hfill
-			\begin{minipage}[t]{0.48\linewidth}
-				\centering
-				\includegraphics[width=\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/neu/Vor_buck"}
-				\caption{Vor Buck-Converter im Deep Sleep -- Optimiertes System; \SI{90.96}{\milli\watt}}
-				\label{fig:deep-vorbuck-neu}
-			\end{minipage}
-		\end{figure}
-
-		\paragraph{Buck-Converter Leerlaufverlust}
-		Abbildung~\ref{fig:deep-leerlauf-buck} zeigt den Eigenverbrauch des LM2596S ohne angeschlossene Last.
-		Mit \SI{69.77}{\milli\watt} übersteigt dieser Leerlaufverlust bereits den Gesamtverbrauch aller Verbraucher des neuen Systems (\SI{14.19}{\milli\watt}) um das Fünffache.
-
-		\begin{figure}[H]
-			\centering
-			\includegraphics[width=0.55\linewidth]{"Images/Stromverbrauch/JouleScope/Deepsleep/Leerlauf_Buck"}
-			\caption{LM2596S Leerlaufverlust (kein Verbraucher angeschlossen); \SI{69.77}{\milli\watt}}
-			\label{fig:deep-leerlauf-buck}
-		\end{figure}
-
+		\paragraph{ADC}
+		\paragraph{ESP32}
+		
 	% ============================================================
-
+	
 	\section{Fazit, Diskussion und Ausblick}
 	% ============================================================
-
-	\subsection{Fazit}
-
-	Diese Arbeit hatte zwei Schwerpunkte: die Optimierung des Energieverbrauchs und die Verbesserung der Messgenauigkeit einer ESP32-basierten Smart-Waage für die industrielle Inventarisierung.
-
-	\paragraph{Energieoptimierung.}
-	Durch den kombinierten Einsatz von Hardware- und Softwaremassnahmen konnte der Energieverbrauch pro Aktivzyklus von \SI{6503}{\milli\joule} auf \SI{689.5}{\milli\joule} gesenkt werden, was einer Reduktion von \textbf{89{,}4\,\%} entspricht.
-	Die wirkungsvollsten Einzelmassnahmen waren der Entfall des internen Board-LDOs durch direkte Einspeisung über den \texttt{3V3}-Pin (\SI{1210}{\milli\joule} gespart) sowie die Migration des BLE-Stacks von der Arduino-BLE-Bibliothek auf NimbleBLE, welche die Aktivzeit der Funkphase erheblich verkürzte.
-	Die MOSFET-Abschaltung der Dehnmessstreifen im Tiefschlaf sowie die Reduktion der Buck-Converter-Ausgangsspannung von \SI{3.3}{\volt} auf \SI{3.0}{\volt} leisteten weitere messbare Beiträge.
-	Auf Batterieebene steigt die Laufzeit gegenüber der Ausgangslage von ca.\ \textbf{3\,Tagen} auf ca.\ \textbf{12\,Tagen} -- eine Verbesserung um den Faktor~4 (vgl.\ Tabelle~\ref{tab:batterielaufzeit}).
-
-	\paragraph{Messgenauigkeit.}
-	Der Wechsel von einem summierten Einzelkanal auf vier individuelle ADS1234-Kanäle mit separater Kalibrierung pro Sensor ermöglicht erstmals eine Ecklastkompensation.
-	Die Wiederholbarkeit der Messung ist mit $\pm$\,0{,}1\,g gut; die absolute Genauigkeit ist jedoch aufgrund einer unzureichenden Kalibrierung und mechanischer Mängel des Prototypen eingeschränkt -- bei Mittenbelastung mit \SI{3}{\kilogram} wurden bis zu \SI{+205}{\gram} Abweichung gemessen.
-
-	\subsection{Kritische Beurteilung}
-
-	Trotz der erzielten Fortschritte weist das System eine Reihe fundamentaler Schwächen auf, die einer praxistauglichen Umsetzung entgegenstehen.
-
-	\paragraph{Entwicklungsboard und Sleep-Strom.}
-	Die Entscheidung, das SBC-NodeMCU-ESP32-C-Entwicklungsboard beizubehalten, war pragmatisch, erweist sich aber als grösste Limitierung des Systems.
-	Das Board verbraucht im Deep Sleep ca.\ \SI{13.75}{\milli\ampere} am 3{,}3\,V-Rail -- massgeblich verursacht durch den dauernd aktiven CP2102-USB-UART-Chip, den internen LDO und die Power-LED, die auch im Tiefschlaf nicht abgeschaltet werden können.
-	Zum Vergleich: das nRF52840 erreicht im System-OFF-Modus \SI{0.4}{\micro\ampere} -- einen um den Faktor \textbf{34\,000} niedrigeren Ruhestrom.
-	Die Folge ist, dass der Sleep-Strom die Energiebilanz vollständig dominiert: Die berechnete Batterielaufzeit ist nahezu unabhängig vom Messintervall (12--13 Tage bei 1\,min bis 30\,min Intervall), was den Nutzen längerer Schlafphasen zunichtemacht.
-	In einem realen Logistiksystem, das auf Batterie läuft, macht dieses Board das Produkt in der vorliegenden Form \textbf{nicht industrietauglich}.
-
-	\paragraph{ADC-Ruhestrom durch fehlenden Pull-down.}
-	Der \texttt{!PDWN}-Pin des ADS1234 wird im Deep Sleep nicht durch einen Hardware-Pull-down auf \texttt{LOW} gehalten.
-	Da der GPIO im unkonfigurierten Zustand floaten oder auf \texttt{HIGH} gezogen sein kann, bleibt der ADC möglicherweise aktiv und verbraucht unnötig ca.\ \SI{1}{\milli\ampere} im Schlaf.
-	Dieser Fehler hätte mit einem einzigen Pull-down-Widerstand auf der Platine behoben werden können.
-
-	\paragraph{Ineffizienter Buck-Converter.}
-	Der eingesetzte LM2596S ist für den vorliegenden Anwendungsfall ungeeignet.
-	Sein Leerlaufverbrauch beträgt \SI{69.77}{\milli\watt} -- fast fünfmal so viel wie der Gesamtverbrauch des neuen Systems im Tiefschlaf (\SI{14.19}{\milli\watt}).
-	Bei der im Tiefschlaf anliegenden Teillast sinkt der Wirkungsgrad auf unter 50\,\%, was bedeutet, dass mehr Energie im Schaltregler verheizt als an die Last geliefert wird.
-	Dieser Umstand wurde erst spät im Projektverlauf erkannt und konnte nicht mehr behoben werden.
-	In Kombination mit dem hohen Board-Sleep-Strom ist der LM2596S der zweitgrösste Energiefresser des Systems.
-	Hinzu kommt, dass keine geeignete Kombination aus effizientem Schaltregler und passendem Akku-Setup evaluiert werden konnte; die in Abschnitt~\ref{sec:gesamtverbrauch} berechnete Batterielaufzeit basiert daher auf dem vorhandenen, ineffizienten LM2596S und ist nicht repräsentativ für eine optimierte Hardwarekonfiguration.
-
-	\paragraph{Nicht evaluierte Muss-Ziele.}
-	Zwei Muss-Ziele gemäss Projektvereinbarung wurden nicht erfüllt.
-	Die Evaluation der Energiequelle (Batterie vs.\ Akku) wurde vernachlässigt; eine strukturierte Gegenüberstellung unter realistischen Lastprofilen hätte die Laufzeitberechnung auf eine solidere Grundlage gestellt.
-	Die Evaluation des Kommunikationsprotokolls ESP-NOW wurde bewusst nicht durchgeführt: Da eine professionelle Waage langfristig auf ein energieeffizientes Custom-PCB mit einem nRF-Chip migriert werden sollte -- wie im Ausblick beschrieben -- und ESP-NOW auf nRF-Chips nicht verfügbar ist, wäre eine Implementierung auf dem ESP32 eine sackgassenartige Optimierung ohne Zukunft.
-
-	\paragraph{Messgenauigkeit.}
-	Die aktuelle Kalibrierung genügt nicht für den produktiven Einsatz.
-	Die positionsabhängigen Abweichungen (bis $-24{,}5$\,g an Ecke~2 und $+35$\,g bei Mittenbelastung mit \SI{1}{\kilogram}) sowie die stark ausgeprägte Überschätzung bei \SI{3}{\kilogram} zeigen, dass die Kalibrierstrategie und die mechanische Ausführung des Prototypen überarbeitet werden müssen.
-	Zudem fehlt eine Transientunterdrückung: Beim Aufbringen oder Abnehmen von Gewicht werden instabile Messwerte ungefiltert ans Backend übermittelt, was im Logistiksystem zu Bestandsschwankungen führt.
-
-	\subsection{Ausblick}
-
-	Die vorliegende Arbeit legt eine solide Grundlage, lässt aber klare Ansatzpunkte für folgende Arbeiten offen.
-
-	\paragraph{Plattformwechsel.}
-	Der wirkungsvollste einzelne Schritt wäre der Wechsel auf eine Hardware-Plattform mit minimalem Sleep-Strom.
-	Das nRF52840 wäre mit \SI{0.4}{\micro\ampere} System-OFF-Strom ideal; alternativ bietet der ESP32-C3 mit \SI{5}{\micro\ampere} Deep-Sleep auf einem schlanken Custom-Board einen guten Kompromiss bei geringerem Portierungsaufwand.
-
-	\paragraph{Buck-Converter und Energiequelle.}
-	Der LM2596S muss durch einen modernen Schaltregler mit niedrigem Quiescent-Strom und Leichtlast-Optimierung (z.\,B.\ PFM-Modus) ersetzt werden; die konkrete Bauteilwahl muss mit dem endgültigen Akku-Setup (Zellanzahl, Spannungsbereich) abgestimmt werden.
-	Parallel dazu sollte eine strukturierte Evaluation der Energiequelle (Lithium-Polymer-Akku vs.\ Primärzelle) unter realistischen Zyklusbedingungen durchgeführt werden.
-
-	\paragraph{ADC-Abschaltung.}
-	Ein Hardware-Pull-down-Widerstand auf dem \texttt{!PDWN}-Pin des ADS1234 stellt sicher, dass der ADC im Deep Sleep vollständig abgeschaltet ist und keine unnötigen \SI{1}{\milli\ampere} verbraucht.
-
-	\paragraph{Messgenauigkeit und Mechanik.}
-	Eine überarbeitete Kalibrierung -- idealerweise mit positionsabhängiger Gewichtung der vier Kanäle -- sowie eine präzisere, formschlüssige Montage der Wägezellen im Gehäuse würden die Absolutgenauigkeit erheblich verbessern.
-	Eine softwareseitige Transientenfilterung (z.\,B.\ Schwellwertentscheidung auf der zeitlichen Änderungsrate) sollte implementiert werden, um stabile Messwerte an das Backend zu liefern.
-	Längerfristig wäre eine Temperaturkompensation der Dehnmessstreifen sinnvoll, da die YZC-133-Zellen temperaturbedingte Drifts aufweisen können.
-
-	\paragraph{Weg zum Produkt.}
-	Für eine produktionsreife Version sind ein massenproduktionstaugliches PCB-Layout, ein robustes Gehäusedesign sowie eine Ende-zu-Ende-Validierung unter realen Logistikbedingungen notwendig.
-	Die in dieser Arbeit erzielten Software-Optimierungen und das ADS1234-Kanalkonzept stellen dabei eine wiederverwendbare Basis dar.
+	% Hier Text einfügen
 
 	\bibliographystyle{plain}
 	\bibliography{quellen}
@@ -1293,19 +1105,5 @@ Leiterbahnen ermöglichen.
 			\label{fig:anhang-schaltplan-2}
 		\end{figure}
 	\end{landscape}
-
-	\section{Projektvereinbarung}\label{sec:anhang-vereinbarung}
-
-	\includepdf[pages=-]{Images/BA26_brnn_241-Vereinbarung_signed}
-
-	\section{Quellcode}\label{sec:anhang-quellcode}
-
-	Der vollständige Quellcode dieser Arbeit ist öffentlich auf GitHub verfügbar:
-
-	\medskip
-	\noindent\url{https://github.com/Newtonsohn/BA-Smart-Waage}
-	\medskip
-
-	\noindent Das Repository enthält die Firmware des ESP32 (PlatformIO/Arduino-Framework), die Mess- und Auswertungsskripte sowie die LaTeX-Quelldateien dieser Dokumentation.
 
 \end{document}
