@@ -22,12 +22,7 @@
 
 \begin{document}
 	\includepdf[pages=-]{Images/T_VL_Vorlage_Titelseite_BA.pdf}
-
-
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=\textwidth]{Images/signed}
-	\end{figure}
+	\includepdf[pages=-]{Images/BA_Doku_removed_signed}
 	\newpage
 
 	% ============================================================
@@ -825,13 +820,11 @@ Wägezellen softwareseitig kompensieren zu können.
 Die Hardwareanbindung (I\textsuperscript{2}C) ist vollständig implementiert; eine softwareseitige
 Auswertung wurde im Rahmen dieser Arbeit nicht realisiert.
 
-\paragraph{TPS63802 Buck-Converter}
-Für das PCB wurde irrtümlicherweise der TPS63802 als Schaltregler gewählt, da ursprünglich
-angenommen wurde, der LM2596S könne die Spannung nicht auf \SI{3.0}{\volt} regeln.
-Dieser Irrtum wurde erst gegen Ende der Arbeit durch erneute Sichtung der Vorgängerdokumentation
-erkannt -- der LM2596S ist dazu durchaus in der Lage.
-Unabhängig davon erweist sich der TPS63802 als für diesen Anwendungsfall ungeeignet:
-Bereits zwei in Reihe geschaltete 18650-Zellen überschreiten mit einer Nennspannung von \SI{7.4}{\volt} (Maximalspannung \SI{8.4}{\volt}) die maximale Eingangsspannung des Reglers von \SI{6.5}{\volt} deutlich.
+\paragraph{TPS62842 Buck-Converter}
+Für das PCB wurde der TPS62842 als Schaltregler gewählt, um die Versorgungsspannung direkt auf die für den ESP32 benötigten \SI{3.0}{\volt} zu regeln -- in der Annahme, der LM2596S könne nicht unter \SI{5}{\volt} regeln.
+Dass der TPS62842 mit einer maximalen Eingangsspannung von \SI{6.5}{\volt} für den direkten Betrieb an der Batterie (Nennspannung \SI{7.4}{\volt}, max.\ \SI{8.4}{\volt}) ungeeignet ist, war dabei bekannt und wäre in einer Folgerevision zu adressieren gewesen.
+Der eigentliche Irrtum wurde erst gegen Ende der Arbeit erkannt: Der LM2596S kann die Ausgangsspannung durchaus auf \SI{3.0}{\volt} absenken -- der TPS62842 wäre damit überflüssig.
+Die gravierendere, ebenfalls erst spät erkannte Schwäche ist die schlechte Effizienz des LM2596S bei Leichtlast, die massgeblich für den hohen Ruhestrom im Deep Sleep verantwortlich ist (vgl.\ Abschnitt~\ref{sub:Buck}).
 
 \paragraph{Messpunkte (Power-Header)}
 Auf dem PCB wurden 2$\times$1-Pin-Header als Strommess-Breakouts in die Versorgungspfade der
@@ -1301,6 +1294,18 @@ Leiterbahnen ermöglichen.
 		\end{figure}
 	\end{landscape}
 
+	\section{Projektvereinbarung}\label{sec:anhang-vereinbarung}
+
 	\includepdf[pages=-]{Images/BA26_brnn_241-Vereinbarung_signed}
+
+	\section{Quellcode}\label{sec:anhang-quellcode}
+
+	Der vollständige Quellcode dieser Arbeit ist öffentlich auf GitHub verfügbar:
+
+	\medskip
+	\noindent\url{https://github.com/Newtonsohn/BA-Smart-Waage}
+	\medskip
+
+	\noindent Das Repository enthält die Firmware des ESP32 (PlatformIO/Arduino-Framework), die Mess- und Auswertungsskripte sowie die LaTeX-Quelldateien dieser Dokumentation.
 
 \end{document}
