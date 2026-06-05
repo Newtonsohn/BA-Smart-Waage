@@ -519,10 +519,10 @@
 
 	\subsubsection{ADC}
 
-	Der ADS1234 wird nach der Messung über den \texttt{!PDWN}-Pin in den Standby-Modus versetzt
+	Der ADS1234 wird nach der Messung über den \texttt{PWDN}-Pin in den Standby-Modus versetzt
 	und vor dem nächsten Zyklus wieder aktiviert.
 	Da der ESP32 im Anschluss in den Deep Sleep übergeht und die GPIO-Pins floatend werden,
-	bleibt der ADC im Tiefschlaf teilweise aktiv; ein Pull-down-Widerstand am \texttt{!PDWN}-Pin
+	bleibt der ADC im Tiefschlaf teilweise aktiv; ein Pull-down-Widerstand am \texttt{PWDN}-Pin
 	hätte eine vollständige Abschaltung ermöglicht.
 	Im alten System war der HX711 hardwareseitig nicht im Messpfad eingebunden und wird daher
 	separat betrachtet.
@@ -677,7 +677,7 @@
 	return (int32_t)raw;
 	\end{verbatim}
 
-	\subsubsection{Kanalwechsel CH4 $\rightarrow$ CH1: !PDWN-Workaround}
+	\subsubsection{Kanalwechsel CH4 $\rightarrow$ CH1: /PDWN-Workaround}
 
 	Der ADS1234 kodiert den aktiven Kanal über die beiden Adressleitungen als 2-Bit-Binärzahl: Kanal~1 entspricht \texttt{A0=0, A1=0}, Kanal~4 entspricht \texttt{A0=1, A1=1}.
 	Der Chip erkennt einen Kanalwechsel intern anhand steigender Flanken auf \texttt{A0} oder \texttt{A1}.
@@ -1258,9 +1258,10 @@ Leiterbahnen ermöglichen.
 	\paragraph{Plattformwechsel.}
 	Der wirkungsvollste einzelne Schritt wäre der Wechsel auf eine Hardware-Plattform mit minimalem Sleep-Strom.
 	Das nRF52840 wäre mit \SI{0.4}{\micro\ampere} System-OFF-Strom ideal; alternativ bietet der ESP32-C3 mit \SI{5}{\micro\ampere} Deep-Sleep auf einem schlanken Custom-Board einen guten Kompromiss bei geringerem Portierungsaufwand.
+	In beiden Fällen muss das CP2102, der Board-LDO sowie die Power-LED aus dem Strompfad entfernt werden -- ein Custom-PCB ist zwingend.
 
 	\paragraph{Buck-Converter und Energiequelle.}
-	Der LM2596S muss durch einen modernen Schaltregler mit niedrigem Quiescent-Strom und Leichtlast-Optimierung (z.\,B.\ PFM-Modus) ersetzt werden; die konkrete Bauteilwahl muss mit dem endgültigen Akku-Setup (Zellanzahl, Spannungsbereich) abgestimmt werden.
+	Der LM2596S muss durch einen modernen Schaltregler mit niedrigem Quiescent-Strom und Leichtlast-Optimierung ersetzt werden -- etwa den TPS62842~\cite{TPS62842_datasheet} (\SI{55}{\nano\ampere} Quiescent-Strom).
 	Parallel dazu sollte eine strukturierte Evaluation der Energiequelle (Lithium-Polymer-Akku vs.\ Primärzelle) unter realistischen Zyklusbedingungen durchgeführt werden.
 
 	\paragraph{ADC-Abschaltung.}
