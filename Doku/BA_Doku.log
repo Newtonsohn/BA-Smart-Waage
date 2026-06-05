@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.5)  5 JUN 2026 17:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.5)  5 JUN 2026 17:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1036,8 +1036,8 @@ s been already used, duplicate ignored
 l.797 
       ]
 Overfull \hbox (11.45001pt too wide) in paragraph at lines 824--828
- []\OT1/cmr/bx/n/12 TPS63802 Buck-Converter[] \OT1/cmr/m/n/12 F[]ur das PCB wur
--de der TPS63802 als Schalt-reg-ler gew[]ahlt,
+ []\OT1/cmr/bx/n/12 TPS62842 Buck-Converter[] \OT1/cmr/m/n/12 F[]ur das PCB wur
+-de der TPS62842 als Schalt-reg-ler gew[]ahlt,
  []
 
 [23

@@ -59,7 +59,7 @@
 \contentsline {paragraph}{ADS1234}{23}{section*.18}%
 \contentsline {paragraph}{ADS1234 -- Hardware-Filterung}{23}{section*.19}%
 \contentsline {paragraph}{Temperatursensor SHT30}{23}{section*.20}%
-\contentsline {paragraph}{TPS63802 Buck-Converter}{23}{section*.21}%
+\contentsline {paragraph}{TPS62842 Buck-Converter}{23}{section*.21}%
 \contentsline {paragraph}{Messpunkte (Power-Header)}{24}{section*.22}%
 \contentsline {section}{\numberline {7}Messungen}{24}{section.7}%
 \contentsline {subsection}{\numberline {7.1}Low-Power Analyse und Optimierung}{24}{subsection.7.1}%
