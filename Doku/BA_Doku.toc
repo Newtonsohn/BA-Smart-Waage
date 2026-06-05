@@ -100,3 +100,5 @@
 \contentsline {paragraph}{Messgenauigkeit und Mechanik.}{33}{section*.48}%
 \contentsline {paragraph}{Weg zum Produkt.}{33}{section*.49}%
 \contentsline {section}{\numberline {A}PCB Schaltplan}{34}{appendix.A}%
+\contentsline {section}{\numberline {B}Projektvereinbarung}{37}{appendix.B}%
+\contentsline {section}{\numberline {C}Quellcode}{51}{appendix.C}%
