@@ -113,7 +113,7 @@ void CalibrationState::runCalibrationZero() {
 
   updateCalibrationDisplay("Zeroing", true);
   for (int ch = 1; ch <= 4; ch++) {
-    Properties::zeroOffset[ch - 1] = hw->readAverageNoSleep(ch, CAL_SAMPLES);
+    Properties::zeroOffset[ch - 1] = hw->readAverage(ch, CAL_SAMPLES);
     snprintf(buf, sizeof(buf), "  CH%d zero: %ld", ch, (long)Properties::zeroOffset[ch - 1]);
     Logger::log(buf);
   }
@@ -131,7 +131,7 @@ void CalibrationState::runCalibrationZero() {
   float deflection[4];
   float totalAbsDeflection = 0;
   for (int ch = 1; ch <= 4; ch++) {
-    float val = hw->readAverageNoSleep(ch, CAL_SAMPLES);
+    float val = hw->readAverage(ch, CAL_SAMPLES);
     deflection[ch - 1] = val - Properties::zeroOffset[ch - 1];
     totalAbsDeflection += fabsf(deflection[ch - 1]);
     int sign = (deflection[ch - 1] >= 0) ? 1 : -1;
@@ -172,7 +172,7 @@ void CalibrationState::runCalibrationZero() {
     int domCh = 0;
     float maxAbsDelta = 0;
     for (int ch = 1; ch <= 4; ch++) {
-      float val = hw->readAverageNoSleep(ch, CAL_SAMPLES);
+      float val = hw->readAverage(ch, CAL_SAMPLES);
       delta[ch - 1] = val - Properties::zeroOffset[ch - 1];
       if (fabsf(delta[ch - 1]) > maxAbsDelta) {
         maxAbsDelta = fabsf(delta[ch - 1]);
