@@ -14,7 +14,7 @@ const int ADS1234_A0        = 4;  // channel select bit 0, 4 -> alt IO32
 const int ADS1234_A1        = 2;   // channel select bit 1, 2 ->alt IO4
 
 // Display Pins
-const int DISPLAY_CS_PIN    = 32;   // Blau 14
+const int DISPLAY_CS_PIN    = 32;   // Blau 14, aber 14 wird jetzt von drdy/dout genutzt, also 32 -> alt IO14
 const int DISPLAY_DC_PIN    = 5;   // Weiss 5
 const int DISPLAY_RESET_PIN = 19;   // Orange 19
 const int DISPLAY_BUSY_PIN  = 16;   // Violett 16

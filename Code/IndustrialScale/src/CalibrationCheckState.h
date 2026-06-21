@@ -16,6 +16,7 @@ public:
 
 private:
   std::shared_ptr<HwContext> hw;
+  bool waitForButton(const char* msg);
   unsigned long startTime = 0;
   bool calibrationRequested = false;
   int lastCountdownPrinted = -1;

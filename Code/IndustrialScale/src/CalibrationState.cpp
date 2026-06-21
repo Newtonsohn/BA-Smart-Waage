@@ -3,19 +3,34 @@
 #include <cmath>
 #include <cstdio>
 #include <Arduino.h>
+#include <Fonts/FreeSansBold12pt7b.h>
+#include <Fonts/FreeSans9pt7b.h>
 
-#define CAL_SAMPLES      10       // averaged samples per channel per step
-#define CAL_WEIGHT_G     3000.0f  // center calibration weight in grams
-#define CORNER_WEIGHT_G  1000.0f  // corner trim weight in grams
-#define MIN_DEFLECTION   10000.0f // minimum total deflection to accept cal
+
+
+#define CAL_SAMPLES            10       // averaged samples per channel per step
+#define CAL_WEIGHT_G          1000.0f  // center calibration weight in grams
+#define CORNER_WEIGHT_G       1000.0f  // corner trim weight in grams
+#define MIN_DEFLECTION        10000.0f // minimum total deflection to accept cal
+#define CAL_BUTTON_PIN        36       // GPIO36 calibration button input
+#define DISPLAY_X_MARGIN      10
+#define DISPLAY_Y_TITLE       20
+#define DISPLAY_Y_INSTRUCTION 50
+
+static volatile bool calibrationButtonInterrupt = false;
+
+static void IRAM_ATTR onCalibrationButtonInterrupt() {
+  calibrationButtonInterrupt = true;
+}
 
 CalibrationState::CalibrationState() {}
+
 
 void CalibrationState::enter() {
   Logger::log("Enter Calibration State");
 
   hw = HwContext::get();
-  runCalibration();
+  runCalibrationZero();
 }
 
 void CalibrationState::update() {}
@@ -39,47 +54,84 @@ void CalibrationState::printAllChannels() {
   Logger::log(buf);
 }
 
-void CalibrationState::waitForSerial(const char* msg) {
+bool CalibrationState::waitForButton(const char* msg) {
   Logger::log(msg);
-  while (Serial.available()) Serial.read();  // flush pending
+  Logger::log("waiting for button press...");
+  calibrationButtonInterrupt = false;
+  pinMode(CAL_BUTTON_PIN, INPUT);
+  attachInterrupt(digitalPinToInterrupt(CAL_BUTTON_PIN), onCalibrationButtonInterrupt, FALLING);
 
   unsigned long lastPrint = 0;
-  while (!Serial.available()) {
+  while (calibrationButtonInterrupt == false) {
     if (millis() - lastPrint >= 1000) {
       lastPrint = millis();
       printAllChannels();
     }
     delay(50);
   }
-  while (Serial.available()) Serial.read();  // consume
+  detachInterrupt(digitalPinToInterrupt(CAL_BUTTON_PIN));
+  return true;
+}
+
+
+void CalibrationState::updateCalibrationDisplay(const char* stepText, bool showArrow) {
+  char instruction[40];
+  if (showArrow) {
+    snprintf(instruction, sizeof(instruction), "%s ->", stepText);
+  } else {
+    snprintf(instruction, sizeof(instruction), "%s", stepText);
+  }
+
+  hw->display->setFullWindow();
+  hw->display->setTextColor(GxEPD_BLACK);
+  hw->display->firstPage();
+  do {
+    hw->display->fillScreen(GxEPD_WHITE);
+
+    hw->display->setFont(&FreeSansBold12pt7b);
+    hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
+    hw->display->print("Calibrating");
+
+    hw->display->setFont(&FreeSans9pt7b);
+    hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_INSTRUCTION);
+    hw->display->print(instruction);
+  } while (hw->display->nextPage());
 }
 
 // ── calibration sequence ──────────────────────────────────────────────────────
 
-void CalibrationState::runCalibration() {
+void CalibrationState::runCalibrationZero() {
   char buf[100];
   Logger::log("=== Calibration start ===");
 
   // ── Step 1: zero offset ───────────────────────────────────────────────────
-  waitForSerial("[1/3] Remove ALL weight from the scale, then send any key.");
-
+  updateCalibrationDisplay("Zeroing", false);
   Logger::log("Measuring zero offset...");
+  while (waitForButton("[1/3] Remove all weight from scale, then send any key.") != true) {
+    delay(100);
+  }
+
+  updateCalibrationDisplay("Zeroing", true);
   for (int ch = 1; ch <= 4; ch++) {
-    Properties::zeroOffset[ch - 1] = hw->readAverage(ch, CAL_SAMPLES);
+    Properties::zeroOffset[ch - 1] = hw->readAverageNoSleep(ch, CAL_SAMPLES);
     snprintf(buf, sizeof(buf), "  CH%d zero: %ld", ch, (long)Properties::zeroOffset[ch - 1]);
     Logger::log(buf);
   }
 
   // ── Step 2: centered span ─────────────────────────────────────────────────
+  updateCalibrationDisplay("Centered", false);
   snprintf(buf, sizeof(buf),
            "[2/3] Place %.0fg weight CENTERED on scale, then send any key.", CAL_WEIGHT_G);
-  waitForSerial(buf);
-
   Logger::log("Measuring centered span...");
+  while (waitForButton(buf) != true) {
+    delay(100);
+  }
+
+  updateCalibrationDisplay("Centered", true);
   float deflection[4];
   float totalAbsDeflection = 0;
   for (int ch = 1; ch <= 4; ch++) {
-    float val = hw->readAverage(ch, CAL_SAMPLES);
+    float val = hw->readAverageNoSleep(ch, CAL_SAMPLES);
     deflection[ch - 1] = val - Properties::zeroOffset[ch - 1];
     totalAbsDeflection += fabsf(deflection[ch - 1]);
     int sign = (deflection[ch - 1] >= 0) ? 1 : -1;
@@ -90,6 +142,7 @@ void CalibrationState::runCalibration() {
 
   if (totalAbsDeflection < MIN_DEFLECTION) {
     Logger::log("ERROR: Deflection too small — check load cell wiring. Calibration aborted.");
+    updateCalibrationDisplay("Error", false);
     return;
   }
 
@@ -105,16 +158,21 @@ void CalibrationState::runCalibration() {
   Logger::log("[3/3] Corner trim: place weight over each corner one at a time.");
 
   for (int k = 1; k <= 4; k++) {
+    char cornerText[16];
+    snprintf(cornerText, sizeof(cornerText), "Corner %d", k);
+
+    updateCalibrationDisplay(cornerText, false);
     snprintf(buf, sizeof(buf),
              "  Corner %d/4: place %.0fg over corner %d, then send any key.",
              k, CORNER_WEIGHT_G, k);
-    waitForSerial(buf);
+    waitForButton(buf);
 
+    updateCalibrationDisplay(cornerText, true);
     float delta[4];
     int domCh = 0;
     float maxAbsDelta = 0;
     for (int ch = 1; ch <= 4; ch++) {
-      float val = hw->readAverage(ch, CAL_SAMPLES);
+      float val = hw->readAverageNoSleep(ch, CAL_SAMPLES);
       delta[ch - 1] = val - Properties::zeroOffset[ch - 1];
       if (fabsf(delta[ch - 1]) > maxAbsDelta) {
         maxAbsDelta = fabsf(delta[ch - 1]);
@@ -152,4 +210,8 @@ void CalibrationState::runCalibration() {
     Logger::log(buf);
   }
   Logger::log("=== Calibration complete, saved to NVS ===");
+  updateCalibrationDisplay("Complete", false);
+
 }
+
+

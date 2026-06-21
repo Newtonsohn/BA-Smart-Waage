@@ -9,6 +9,8 @@ class CalibrationState : public State {
 public:
   CalibrationState();
 
+
+
   void enter() override;  // blocking — runs full calibration sequence
   void update() override;
   void exit() override;
@@ -18,10 +20,15 @@ private:
   std::shared_ptr<HwContext> hw;
 
   // Block until any byte is received on Serial. Prints live ADC while waiting.
-  void waitForSerial(const char* msg);
+  bool waitForButton(const char* msg);
 
+
+    
   // Print current raw ADC value for all 4 channels.
   void printAllChannels();
 
-  void runCalibration();
+  // Draw the current calibration step. The arrow is shown while ADC sampling is active.
+  void updateCalibrationDisplay(const char* stepText, bool showArrow);
+
+  void runCalibrationZero();
 };

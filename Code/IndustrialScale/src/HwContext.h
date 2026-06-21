@@ -31,8 +31,11 @@ public:
   // Applies PDWN workaround for CH4→CH1 transition where DRDY doesn't reset.
   int32_t readChannel(int ch);
 
-  // Average n samples from channel ch with light sleep between samples.
+    // Average n samples from channel ch with light sleep between samples.
   float readAverage(int ch, int n);
+
+  // Average n samples from channel ch without entering light sleep.
+  float readAverageNoSleep(int ch, int n);
 
   // Calibrated weight in grams: sum of spanFactor[i] * (avg_ch[i] - zeroOffset[i]).
   // Returns 0 if calibrationValid is false.

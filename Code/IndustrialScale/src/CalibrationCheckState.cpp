@@ -11,15 +11,25 @@
 #define CAL_PROGRESS_W     240
 #define CAL_PROGRESS_H     20
 #define CAL_TOTAL_STEPS    (CALIBRATION_WINDOW_MS / 1000)
+#define CAL_BUTTON_PIN        36       // GPIO36 calibration button input
+
 
 #define CALIBRATION_WINDOW_MS  5000
 
 CalibrationCheckState::CalibrationCheckState() {}
 
+static volatile bool calibrationButtonInterrupt = false;
+static void IRAM_ATTR checkCalibrationButtonInterrupt() {
+  calibrationButtonInterrupt = true;
+}
+
 void CalibrationCheckState::enter() {
   Logger::log("Enter CalibrationCheck State");
 
   startTime = millis();
+  calibrationRequested = false;
+  lastCountdownPrinted = -1;
+  calibrationButtonInterrupt = false;
   hw = HwContext::get();
 
   while (Serial.available()) Serial.read();  // flush any pending bytes
@@ -37,7 +47,13 @@ void CalibrationCheckState::enter() {
   Logger::log("--- Calibration window open ---");
   Logger::log("Send any key via Serial within 5s to start calibration.");
   Logger::log("5...");
+
+  pinMode(CAL_BUTTON_PIN, INPUT);
+  attachInterrupt(digitalPinToInterrupt(CAL_BUTTON_PIN), checkCalibrationButtonInterrupt, FALLING);
+  
 }
+
+
 
 void CalibrationCheckState::update() {
   // Print countdown once per second
@@ -60,13 +76,23 @@ void CalibrationCheckState::update() {
     hw->display->display(true);
   }
 
+  if (calibrationButtonInterrupt == true) {
+    delay(50);  // debounce
+    calibrationButtonInterrupt = false;
+    calibrationRequested = true;
+    detachInterrupt(digitalPinToInterrupt(CAL_BUTTON_PIN));
+    return;
+  }
   if (Serial.available()) {
     while (Serial.available()) Serial.read();  // consume
     calibrationRequested = true;
   }
+  
 }
 
 void CalibrationCheckState::exit() {
+  detachInterrupt(digitalPinToInterrupt(CAL_BUTTON_PIN));
+
   if (calibrationRequested) {
     Logger::log("Calibration requested — entering calibration.");
   } else {

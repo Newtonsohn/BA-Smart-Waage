@@ -37,6 +37,7 @@ int32_t HwContext::readADS1234() {
 }
 
 int32_t HwContext::readChannel(int ch) {
+  // Make sure the e-paper controller is deselected while the ADS1234 is bit-banged.
   setChannel(ch);
   // CH4(A1=1,A0=1) → CH1(A1=0,A0=0): no rising edge on A0/A1, so ADS1234 never
   // raises DRDY. Toggle PDWN to force a fresh conversion cycle.
@@ -45,7 +46,9 @@ int32_t HwContext::readChannel(int ch) {
     delayMicroseconds(500);
     digitalWrite(Properties::ADS1234_PDWN, HIGH);
   }
-  return readADS1234();
+
+  int32_t value = readADS1234();
+  return value;
 }
 
 float HwContext::readAverage(int ch, int n) {
@@ -64,6 +67,17 @@ float HwContext::readAverage(int ch, int n) {
 
   gpio_wakeup_disable((gpio_num_t)Properties::ADS1234_DRDY_DOUT);
   esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_GPIO);
+
+  return (float)sum / n;
+}
+
+float HwContext::readAverageNoSleep(int ch, int n) {
+  setChannel(ch);
+
+  long long sum = 0;
+  for (int i = 0; i < n; i++) {
+    sum += readADS1234();
+  }
 
   return (float)sum / n;
 }
