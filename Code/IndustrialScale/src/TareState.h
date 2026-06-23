@@ -7,10 +7,11 @@
 
 /**
  * @class TareState
- * @brief State exectues the taring
+ * @brief State executes the taring
  *
- * In this state the taring is done. Also the calibration- and the zero factor are calculated and stored 
- * for further use
+ * In this state the raw zero offset of each channel is re-captured with the scale
+ * empty and stored to NVS, so the empty scale reads 0 g. The calibrated spanFactor
+ * (corner balancing) is left untouched.
  */
 class TareState : public State {
 public:
@@ -55,9 +56,15 @@ private:
   void updateDisplayAddWeight();
 
   /**
-   * @brief Print progress bar on E-Ink display
+   * @brief Draw the (empty) progress bar outline on the E-Ink display
    */
-  void updateDisplayProgressBar();
+  void drawProgressBarOutline();
+
+  /**
+   * @brief Re-capture the raw zero offset of each channel (the actual taring)
+   *        and persist it to NVS, advancing the progress bar per channel.
+   */
+  void performTare();
 
   /**
    * @brief Write final message to display

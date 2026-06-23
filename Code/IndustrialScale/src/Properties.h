@@ -27,6 +27,10 @@ extern int tareTime;
 extern bool loggingEnabled;
 extern const char* BACKEND_URL;
 
+// Weight filter (exponential "forgetting" moving average)
+extern int   weightFilterSamples;        // EMA window N; new sample weighted by 1/N
+extern float weightFilterSnapThreshold;  // g; a jump >= this snaps directly (no slow filter)
+
 // BLE
 extern const char* SERVICE_UUID;
 extern const char* CHARACTERISTIC_CONFIG_UUID;
@@ -39,6 +43,20 @@ extern float spanFactor[4];   // g/count per channel (encodes polarity)
 extern bool  calibrationValid;
 extern float currentWeight;
 extern float prevWeight;
+extern bool  weightFilterInitialized;  // false until the first sample seeds the filter
+
+/**
+ * @brief Feed a freshly measured weight into the exponential forgetting filter.
+ *
+ * Updates and returns Properties::currentWeight. On the first sample, or when the
+ * new measurement differs from the filtered value by at least
+ * weightFilterSnapThreshold, the value is taken directly (snap) so a completely
+ * new load is reported immediately instead of being slowly filtered in.
+ *
+ * @param newWeight freshly measured (unfiltered) weight in grams
+ * @return the updated filtered weight in grams
+ */
+float updateWeightFilter(float newWeight);
 
 // Configuration
 extern char deviceName[MAX_STRING_LENGTH_64];

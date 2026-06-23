@@ -1,6 +1,7 @@
 #include "TareState.h"
 #include <Fonts/FreeSansBold12pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
+#include <Arduino.h>
 #include "Properties.h"
 
 #define DISPLAY_X_MARGIN      10
@@ -11,7 +12,9 @@
 #define PROGRESS_BAR_WIDTH    240
 #define PROGRESS_BAR_HEIGHT   20
 #define PROGRESS_BAR_PADDING  2
-#define PROGRESS_STEP_DELAY   250
+
+#define TARE_CHANNEL_COUNT    4
+#define TARE_SAMPLES          10   // averaged samples per channel
 
 TareState::TareState() {}
 
@@ -22,7 +25,10 @@ void TareState::enter() {
 
   updateDisplayInitText();
   updateDisplayAddWeight();
-  updateDisplayProgressBar();
+  drawProgressBarOutline();
+
+  performTare();
+
   updateDisplayTaringComplete();
 
   Logger::log("Tare screen complete");
@@ -53,19 +59,40 @@ void TareState::updateDisplayAddWeight() {
   hw->display->display(true);
 }
 
-void TareState::updateDisplayProgressBar() {
-  int steps = Properties::tareTime;
-  for (int i = 0; i <= steps; i++) {
-    hw->display->drawRect(DISPLAY_X_MARGIN, DISPLAY_Y_PROGRESS,
-                          PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT, GxEPD_BLACK);
-    int fillWidth = (i * (PROGRESS_BAR_WIDTH / steps)) - PROGRESS_BAR_PADDING;
+void TareState::drawProgressBarOutline() {
+  hw->display->drawRect(DISPLAY_X_MARGIN, DISPLAY_Y_PROGRESS,
+                        PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT, GxEPD_BLACK);
+  hw->display->display(true);
+}
+
+void TareState::performTare() {
+  // Taring = re-capture the raw zero reading of each channel so the empty scale
+  // reads 0 g. spanFactor (the calibrated corner balancing) is left untouched,
+  // so the corner compensation from calibration is preserved.
+  Logger::log("Taring: capturing zero offset per channel...");
+
+  if (!Properties::calibrationValid) {
+    Logger::log("Note: scale not calibrated — capturing zero offset anyway.");
+  }
+
+  char buf[48];
+  for (int ch = 1; ch <= TARE_CHANNEL_COUNT; ch++) {
+    float zero = hw->readAverage(ch, TARE_SAMPLES);
+    Properties::zeroOffset[ch - 1] = zero;
+
+    snprintf(buf, sizeof(buf), "  CH%d zero: %ld", ch, (long)zero);
+    Logger::log(buf);
+
+    int fillWidth = (ch * (PROGRESS_BAR_WIDTH / TARE_CHANNEL_COUNT)) - PROGRESS_BAR_PADDING;
     if (fillWidth > 0) {
       hw->display->fillRect(DISPLAY_X_MARGIN + 1, DISPLAY_Y_PROGRESS + 1,
                             fillWidth, PROGRESS_BAR_HEIGHT - PROGRESS_BAR_PADDING, GxEPD_BLACK);
     }
     hw->display->display(true);
-    delay(PROGRESS_STEP_DELAY);
   }
+
+  Properties::saveConfigToNVS();
+  Logger::log("Taring complete — zero offsets saved to NVS.");
 }
 
 void TareState::updateDisplayTaringComplete() {

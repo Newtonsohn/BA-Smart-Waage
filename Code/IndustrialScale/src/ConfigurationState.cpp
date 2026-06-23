@@ -48,10 +48,12 @@ void ConfigurationState::update() {
 
       float weight = 0;
       if (Properties::calibrationValid) {
+        float rawWeight = 0;
         for (int ch = 1; ch <= 4; ch++) {
           int32_t raw = hw->readChannel(ch);
-          weight += Properties::spanFactor[ch - 1] * (raw - Properties::zeroOffset[ch - 1]);
+          rawWeight += Properties::spanFactor[ch - 1] * (raw - Properties::zeroOffset[ch - 1]);
         }
+        weight = Properties::updateWeightFilter(rawWeight);  // smoothed, updates currentWeight
       }
       char weightBuf[20];
       snprintf(weightBuf, sizeof(weightBuf), "%.1f g", weight);

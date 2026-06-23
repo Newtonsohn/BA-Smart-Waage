@@ -16,7 +16,8 @@ void MeasureState::enter() {
     Logger::log("Warning: not calibrated — weight reported as 0");
     Properties::currentWeight = 0.0f;
   } else {
-    Properties::currentWeight = hw->measureWeight();
+    float rawWeight = hw->measureWeight();
+    Properties::updateWeightFilter(rawWeight);  // updates Properties::currentWeight
   }
 
   weightChanged = fabs(Properties::currentWeight - Properties::prevWeight) >= Properties::itemWeight * WEIGHT_CHANGE_THRESHOLD;

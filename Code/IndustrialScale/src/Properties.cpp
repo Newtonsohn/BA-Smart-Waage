@@ -1,5 +1,6 @@
 #include "Properties.h"
 #include "nvs.h"
+#include <cmath>
 
 #define MAX_STRING_LENGTH_64 64
 #define MAC_ADDRESS_LENGTH 6
@@ -26,6 +27,10 @@ int connectionTimeout = 1800;
 int tareTime = 10;
 bool loggingEnabled = true;
 
+// Weight filter
+int   weightFilterSamples       = 5;       // EMA window N (new sample weighted 1/N)
+float weightFilterSnapThreshold = 200.0f;  // g; bigger jump => take new value directly
+
 const char* BACKEND_URL = "https://192.168.2.100:7093/bins/integration?mac=";
 
 // BLE
@@ -40,6 +45,7 @@ RTC_DATA_ATTR float spanFactor[4]  = {0, 0, 0, 0};
 RTC_DATA_ATTR bool  calibrationValid = false;
 RTC_DATA_ATTR float currentWeight  = 0.0f;
 RTC_DATA_ATTR float prevWeight     = 0.0f;
+RTC_DATA_ATTR bool  weightFilterInitialized = false;
 
 // Configuration
 char deviceName[MAX_STRING_LENGTH_64] = "SmartScale";
@@ -58,6 +64,23 @@ bool sendDataFailed       = false;
 RTC_DATA_ATTR int heartbeatCounter = 0;
 bool wakeUpCauseIsTimer   = false;
 char failureMessage[MAX_STRING_LENGTH_64] = "";
+
+float updateWeightFilter(float newWeight) {
+  int n = weightFilterSamples;
+  if (n < 1) n = 1;  // guard: n=1 disables filtering (always take newest)
+
+  if (!weightFilterInitialized ||
+      fabsf(newWeight - currentWeight) >= weightFilterSnapThreshold) {
+    // First ever sample, or a completely new load: take it directly instead of
+    // letting the filter crawl towards it over several samples.
+    currentWeight = newWeight;
+    weightFilterInitialized = true;
+  } else {
+    // Exponential moving average: add the new sample weighted by 1/n.
+    currentWeight = (currentWeight * (n - 1) + newWeight) / n;
+  }
+  return currentWeight;
+}
 
 esp_err_t saveConfigToNVS() {
   nvs_handle_t nvs_handle;
