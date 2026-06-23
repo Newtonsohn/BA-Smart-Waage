@@ -24,6 +24,12 @@ void DisplayInitState::enter() {
   hw->display->setRotation(DISPLAY_ROTATION_90_DEGREE);
   hw->display->fillScreen(GxEPD_WHITE);
   hw->display->setTextColor(GxEPD_BLACK);
+
+  // Push one full (flickering) refresh now, at boot, so the e-ink panel's
+  // mandatory initial full refresh is consumed here. Every screen after this
+  // (calibration check, tare check, ...) then uses smooth partial refreshes
+  // instead of inheriting the one-time flicker.
+  hw->display->clearScreen();
 }
 void DisplayInitState::update() {}
 

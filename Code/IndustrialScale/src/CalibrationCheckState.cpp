@@ -26,7 +26,6 @@ static void IRAM_ATTR checkCalibrationButtonInterrupt() {
 void CalibrationCheckState::enter() {
   Logger::log("Enter CalibrationCheck State");
 
-  startTime = millis();
   calibrationRequested = false;
   lastCountdownPrinted = -1;
   calibrationButtonInterrupt = false;
@@ -50,7 +49,10 @@ void CalibrationCheckState::enter() {
 
   pinMode(CAL_BUTTON_PIN, INPUT);
   attachInterrupt(digitalPinToInterrupt(CAL_BUTTON_PIN), checkCalibrationButtonInterrupt, FALLING);
-  
+
+  // Start the countdown only after the (slow) initial e-ink refresh so the full
+  // 5s window is available and the progress bar starts empty.
+  startTime = millis();
 }
 
 
@@ -117,7 +119,7 @@ StateType CalibrationCheckState::nextState() {
     return StateType::CALIBRATION;
   }
   if (millis() - startTime >= CALIBRATION_WINDOW_MS) {
-    return StateType::BLE_INIT;
+    return StateType::TARE_CHECK;
   }
   return StateType::CALIBRATION_CHECK;
 }

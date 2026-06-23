@@ -35,10 +35,11 @@ void TareState::exit() {
 }
 
 StateType TareState::nextState() {
-  return StateType::CALIBRATION_CHECK;
+  return StateType::BLE_INIT;
 }
 
 void TareState::updateDisplayInitText() {
+  hw->display->fillScreen(GxEPD_WHITE);
   hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
   hw->display->setFont(&FreeSansBold12pt7b);
   hw->display->print("Taring");

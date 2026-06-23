@@ -64,6 +64,6 @@ StateType AdcInitState::nextState() {
   if (Properties::wakeUpCauseIsTimer) {
     return StateType::MEASURE;
   } else {
-    return StateType::TARE;
+    return StateType::CALIBRATION_CHECK;
   }
 }

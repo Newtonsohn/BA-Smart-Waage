@@ -8,6 +8,7 @@
 #include "AdcInitState.h"
 #include "CalibrationCheckState.h"
 #include "CalibrationState.h"
+#include "TareCheckState.h"
 #include "TareState.h"
 #include "MeasureState.h"
 #include "BleInitState.h"
@@ -68,6 +69,7 @@ void StateMachine::transitionTo(StateType newState) {
     case StateType::ADC_INIT: currentState = new AdcInitState(); break;
     case StateType::CALIBRATION_CHECK: currentState = new CalibrationCheckState(); break;
     case StateType::CALIBRATION: currentState = new CalibrationState(); break;
+    case StateType::TARE_CHECK: currentState = new TareCheckState(); break;
     case StateType::TARE: currentState = new TareState(); break;
     case StateType::MEASURE: currentState = new MeasureState(); break;
     case StateType::BLE_INIT: currentState = new BleInitState(); break;

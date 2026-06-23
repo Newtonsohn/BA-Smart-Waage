@@ -9,6 +9,7 @@ enum class StateType {
   ADC_INIT,
   CALIBRATION_CHECK,
   CALIBRATION,
+  TARE_CHECK,
   TARE,
   MEASURE,
   BLE_INIT,

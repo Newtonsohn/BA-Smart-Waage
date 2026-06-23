@@ -130,7 +130,7 @@ void CalibrationState::exit() {
 }
 
 StateType CalibrationState::nextState() {
-  return StateType::BLE_INIT;
+  return StateType::TARE_CHECK;
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -172,20 +172,21 @@ void CalibrationState::updateCalibrationDisplay(const char* stepText, bool showA
     snprintf(instruction, sizeof(instruction), "%s", stepText);
   }
 
-  hw->display->setFullWindow();
+  // Draw to the buffer and push a partial refresh (display(true)) instead of the
+  // paged full-window refresh, so the wizard steps update smoothly without the
+  // full-screen flicker.
+  hw->display->fillScreen(GxEPD_WHITE);
   hw->display->setTextColor(GxEPD_BLACK);
-  hw->display->firstPage();
-  do {
-    hw->display->fillScreen(GxEPD_WHITE);
 
-    hw->display->setFont(&FreeSansBold12pt7b);
-    hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
-    hw->display->print("Calibrating");
+  hw->display->setFont(&FreeSansBold12pt7b);
+  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_TITLE);
+  hw->display->print("Calibrating");
 
-    hw->display->setFont(&FreeSans9pt7b);
-    hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_INSTRUCTION);
-    hw->display->print(instruction);
-  } while (hw->display->nextPage());
+  hw->display->setFont(&FreeSans9pt7b);
+  hw->display->setCursor(DISPLAY_X_MARGIN, DISPLAY_Y_INSTRUCTION);
+  hw->display->print(instruction);
+
+  hw->display->display(true);
 }
 
 // ── calibration sequence ──────────────────────────────────────────────────────
