@@ -36,33 +36,44 @@ int32_t HwContext::readADS1234() {
   return (int32_t)raw;
 }
 
-int32_t HwContext::readChannel(int ch) {
+void HwContext::selectChannel(int ch) {
   setChannel(ch);
   // CH4(A1=1,A0=1) → CH1(A1=0,A0=0): no rising edge on A0/A1, so ADS1234 never
-  // raises DRDY. Toggle PDWN to force a fresh conversion cycle.
+  // raises DRDY. Toggle PDWN to force a fresh conversion cycle. Only needed on the
+  // channel switch — repeated same-channel reads reset DRDY via the 25th SCLK pulse.
   if (ch == 1 && digitalRead(Properties::ADS1234_DRDY_DOUT) == LOW) {
     digitalWrite(Properties::ADS1234_PDWN, LOW);
     delayMicroseconds(500);
     digitalWrite(Properties::ADS1234_PDWN, HIGH);
   }
+}
 
-  int32_t value = readADS1234();
-  return value;
+int32_t HwContext::readChannel(int ch) {
+  selectChannel(ch);
+  return readADS1234();
+}
+
+void HwContext::sleepUntilDataReady() {
+  // Light-sleep until DRDY falls. Caller must arm GPIO wakeup on DRDY first.
+  // Loop guards against spurious wakeups.
+  while (digitalRead(Properties::ADS1234_DRDY_DOUT) == HIGH) {
+    esp_light_sleep_start();
+  }
 }
 
 float HwContext::readAverage(int ch, int n) {
   gpio_wakeup_enable((gpio_num_t)Properties::ADS1234_DRDY_DOUT, GPIO_INTR_LOW_LEVEL);
   esp_sleep_enable_gpio_wakeup();
 
-  // Throw away first sample after selecting channel.
-  readChannel(ch);
+  // Switch channel once (with PDWN workaround), then throw away the first sample.
+  selectChannel(ch);
+  sleepUntilDataReady();
+  readADS1234();
 
   long long sum = 0;
   for (int i = 0; i < n; i++) {
-    if (digitalRead(Properties::ADS1234_DRDY_DOUT) == HIGH) {
-      esp_light_sleep_start();
-    }
-    sum += readChannel(ch);
+    sleepUntilDataReady();
+    sum += readADS1234();
   }
 
   gpio_wakeup_disable((gpio_num_t)Properties::ADS1234_DRDY_DOUT);
