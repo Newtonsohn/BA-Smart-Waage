@@ -29,7 +29,7 @@ bool loggingEnabled = true;
 
 // Weight filter
 int   weightFilterSamples       = 5;       // EMA window N (new sample weighted 1/N)
-float weightFilterSnapThreshold = 200.0f;  // g; bigger jump => take new value directly
+float weightFilterSnapThreshold = 5.0f;  // g; bigger jump => take new value directly
 
 const char* BACKEND_URL = "https://192.168.2.100:7093/bins/integration?mac=";
 
